@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Buyer;  
+use App\Models\Buyer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendOTP;
 
 class BuyerAuthController extends Controller
 {
@@ -23,14 +27,13 @@ class BuyerAuthController extends Controller
     {
         $request->validate([
             'FullName' => 'required|string|max:255',
-            'NIC' => 'required|string|unique:buyers,NIC',  // Correct table name
+            'NIC' => 'required|string|unique:buyers,NIC',
             'ContactNo' => 'required|string|max:15',
             'Address' => 'required|string|max:255',
-            'Email' => 'required|string|email|max:255|unique:buyers,Email',  // Correct table name
+            'Email' => 'required|string|email|max:255|unique:buyers,Email',
             'password' => 'required|string|min:6',
         ]);
 
-        // Create a new buyer (use the Buyer model)
         Buyer::create($request->all());
 
         return redirect()->route('buyer.login')->with('success', 'Buyer registered successfully!');
@@ -38,39 +41,64 @@ class BuyerAuthController extends Controller
 
     public function buyerLogin(Request $request)
     {
-        // Validate the incoming request
         $request->validate([
             'Email' => 'required|string|email',
             'password' => 'required|string|min:8',
         ]);
 
-        // Get credentials
         $credentials = $request->only('Email', 'password');
 
-        // Find the buyer by email
-        $buyer = Buyer::where('Email', $credentials['Email'])->first();
+        if (Auth::guard('buyer')->attempt($credentials)) {
+            $buyer = Auth::guard('buyer')->user();
 
-        // Check if buyer exists and if the password is correct
-        if ($buyer && Hash::check($credentials['password'], $buyer->password)) {
-            // Attempt to authenticate the buyer using the buyer guard
-            Auth::guard('buyer')->login($buyer);
+            // Generate OTP
+            $otp = Str::random(6);
+            Session::put('otp', $otp);
+            Session::put('buyer_id', $buyer->BuyerID);
 
-            // Redirect to the farmer dashboard
-            return view('buyer.dashboard', ['name' => $buyer->FullName]);
+            // Send OTP to buyer via email
+            Mail::to($buyer->Email)->send(new SendOTP($otp));
+
+            // Log the OTP for debugging
+            \Log::info("OTP for buyer {$buyer->Email}: {$otp}");
+
+            // Redirect to OTP verification page
+            return redirect()->route('buyer.otp.verify');
         }
 
-        // If login fails, return an error message
         return back()->with('error', 'Invalid email or password');
     }
 
+    public function showOTPVerificationForm()
+    {
+        return view('buyer.OTPVerification');
+    }
 
-    // Handle the logout request
+    public function verifyOTP(Request $request)
+    {
+        $request->validate([
+            'otp' => 'required|string|size:6',
+        ]);
+
+        $otp = Session::get('otp');
+        $buyer_id = Session::get('buyer_id');
+
+        if ($request->otp === $otp) {
+            $buyer = Buyer::find($buyer_id);
+            Auth::guard('buyer')->login($buyer);
+
+            // Clear the OTP and buyer_id from session
+            Session::forget(['otp', 'buyer_id']);
+
+            return redirect()->route('buyer.dashboard');
+        }
+
+        return back()->with('error', 'Invalid OTP');
+    }
+
     public function logout()
     {
-        // Log out the buyer
         Auth::guard('buyer')->logout();
-
-        // Redirect to the buyer login page
         return redirect()->route('buyer.login');
     }
 }

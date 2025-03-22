@@ -72,6 +72,10 @@ Route::prefix('buyer')->name('buyer.')->group(function () {
     Route::post('register', [BuyerAuthController::class, 'buyerRegister']);
     Route::post('logout', [BuyerAuthController::class, 'logout'])->name('logout');
 
+    // OTP Verification Routes
+    Route::get('otp-verify', [BuyerAuthController::class, 'showOTPVerificationForm'])->name('otp.verify');
+    Route::post('otp-verify', [BuyerAuthController::class, 'verifyOTP'])->name('otp.verify.submit');
+
     // Protected routes with middleware
     Route::middleware(['auth:buyer'])->group(function () {
         Route::get('dashboard', function () {
