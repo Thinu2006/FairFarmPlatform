@@ -79,7 +79,7 @@ Route::prefix('buyer')->name('buyer.')->group(function () {
     Route::get('otp-verify', [BuyerAuthController::class, 'showOTPVerificationForm'])->name('otp.verify');
     Route::post('otp-verify', [BuyerAuthController::class, 'verifyOTP'])->name('otp.verify.submit');
 
-    // Forgot Password Routes
+    // Keep the password reset routes from HEAD
     Route::get('forgot-password', [BuyerAuthController::class, 'showForgotPasswordForm'])->name('password.request');
     Route::post('/forgot-password', [BuyerAuthController::class, 'sendResetLinkEmail'])->name('password.email'); 
     Route::get('reset-password/{token}', [BuyerAuthController::class, 'showResetPasswordForm'])->name('password.reset');
