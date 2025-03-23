@@ -129,4 +129,17 @@ class FarmerSellingPaddyTypesController extends Controller
         // Pass the data to the view
         return view('farmer.FarmerPaddyListing', compact('sellingPaddyTypes'));
     }
+
+
+    /**
+     * Display the products page with farmer's selling paddy types.
+     */
+    public function products()
+    {
+        // Fetch all farmer selling paddy types with related farmer and paddy type details
+        $sellingPaddyTypes = FarmerSellingPaddyType::with(['farmer', 'paddyType'])->get();
+
+        // Pass the data to the products view
+        return view('buyer.products', compact('sellingPaddyTypes'));
+    }
 }

@@ -31,6 +31,7 @@ class PaddyTypeController extends Controller
         $paddy = new PaddyType($request->only(['PaddyName', 'MaxPricePerKg']));
 
         if ($request->hasFile('Image')) {
+            // Store the image in the 'public/paddy_images' directory
             $paddy->Image = $request->file('Image')->store('paddy_images', 'public');
         }
 

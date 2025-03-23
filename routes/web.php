@@ -5,6 +5,7 @@ use App\Http\Controllers\FarmerController;
 use App\Http\Controllers\BuyerController;
 use App\Http\Controllers\FarmerAuthController;
 use App\Http\Controllers\BuyerAuthController;
+use App\Http\Controllers\BuyerDashboardController;
 use App\Http\Controllers\PaddyTypeController;
 use App\Http\Controllers\FarmerSellingPaddyTypesController;
 use Illuminate\Support\Facades\Route;
@@ -64,6 +65,8 @@ Route::prefix('farmer')->name('farmer.')->group(function () {
     });
 });
 
+
+
 // Buyer Routes
 Route::prefix('buyer')->name('buyer.')->group(function () {
     Route::get('login', [BuyerAuthController::class, 'showBuyerLogin'])->name('login');
@@ -72,10 +75,19 @@ Route::prefix('buyer')->name('buyer.')->group(function () {
     Route::post('register', [BuyerAuthController::class, 'buyerRegister']);
     Route::post('logout', [BuyerAuthController::class, 'logout'])->name('logout');
 
+    // OTP Verification Routes
+    Route::get('otp-verify', [BuyerAuthController::class, 'showOTPVerificationForm'])->name('otp.verify');
+    Route::post('otp-verify', [BuyerAuthController::class, 'verifyOTP'])->name('otp.verify.submit');
+
+    // Forgot Password Routes
+    Route::get('forgot-password', [BuyerAuthController::class, 'showForgotPasswordForm'])->name('password.request');
+    Route::post('/forgot-password', [BuyerAuthController::class, 'sendResetLinkEmail'])->name('password.email'); 
+    Route::get('reset-password/{token}', [BuyerAuthController::class, 'showResetPasswordForm'])->name('password.reset');
+    Route::post('reset-password', [BuyerAuthController::class, 'resetPassword'])->name('password.update');
+
     // Protected routes with middleware
     Route::middleware(['auth:buyer'])->group(function () {
-        Route::get('dashboard', function () {
-            return view('buyer.dashboard');
-        })->name('dashboard');
+        Route::get('dashboard', [BuyerDashboardController::class, 'index'])->name('dashboard');
+        Route::get('products', [FarmerSellingPaddyTypesController::class, 'products'])->name('products');
     });
 });
