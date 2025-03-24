@@ -52,7 +52,7 @@ class BuyerAuthController extends Controller
 
         \Log::info('Login attempt:', [
             'Email' => $credentials['Email'],
-            'Password' => $credentials['password'], // Log the plaintext password (for debugging only)
+            'Password' => $credentials['password'], 
         ]);
 
         if (Auth::guard('buyer')->attempt($credentials)) {
@@ -180,15 +180,6 @@ class BuyerAuthController extends Controller
             return back()->withErrors(['Email' => 'No password reset request found for this email address.']);
         }
 
-        // Debugging: Log token and email details
-        \Log::info('Reset password request:', [
-            'Email' => $email,
-            'Token from URL' => $request->token,
-            'Hashed Token from URL' => Hash::make($request->token), // Hash the token from the URL
-            'Hashed Token from DB' => $resetRecord->token,
-            'Token matches' => Hash::check($request->token, $resetRecord->token),
-        ]);
-
         // Check if the token matches
         if (!Hash::check($request->token, $resetRecord->token)) {
             return back()->withErrors(['Email' => 'Invalid token or email address.']);
@@ -198,32 +189,27 @@ class BuyerAuthController extends Controller
         $tokenCreatedAt = \Carbon\Carbon::parse($resetRecord->created_at);
         $tokenExpired = $tokenCreatedAt->diffInMinutes(now()) > 60;
 
-        \Log::info('Token expiry check:', [
-            'Token Created At' => $resetRecord->created_at,
-            'Current Time' => now(),
-            'Token Expired' => $tokenExpired,
-        ]);
-
         if ($tokenExpired) {
             return back()->withErrors(['Email' => 'The password reset link has expired.']);
         }
 
-        // Update the buyer's password
+        // Update the buyer's password - DON'T use Hash::make() since the mutator will handle it
         $buyer = Buyer::where('Email', $email)->first();
-
+        
         \Log::info('Buyer before password update:', [
             'BuyerID' => $buyer->BuyerID,
             'Email' => $buyer->Email,
             'Current Password Hash' => $buyer->password,
         ]);
 
-        $buyer->password = Hash::make($request->password);
+        // Set the plain text password - the mutator will hash it automatically
+        $buyer->password = $request->password;
         $buyer->save();
 
-        \Log::info('Buyer after password update:', [
+        \Log::info('buyer after password update:', [
             'BuyerID' => $buyer->BuyerID,
             'Email' => $buyer->Email,
-            'New Password Hash' => $buyer->password,
+            'Current Password Hash' => $buyer->password,
         ]);
 
         // Delete the password reset record

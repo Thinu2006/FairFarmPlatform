@@ -16,7 +16,7 @@
         }
     </style>
 </head>
-<body class="bg-cover bg-center min-h-screen flex justify-center items-center px-4" style="background-image: url('{{ asset('images/BuyerLoginBG.jpg') }}');">
+<body class="bg-cover bg-center min-h-screen flex justify-center items-center px-4" style="background-image: url('{{ asset('images/FarmerLoginBG.jpg') }}');">
     <div class="bg-white shadow-lg rounded-2xl flex w-full max-w-4xl h-[400px] overflow-hidden">
         <!-- Left Section -->
         <div class="w-1/2 p-10 flex flex-col justify-center items-center text-white text-center bg-gradient-to-r from-green-900 to-green-700 hidden md:flex">
@@ -28,7 +28,7 @@
         <div class="w-full md:w-1/2 p-6 md:p-10 items-center justify-center">
             <div class="max-w-md w-full mx-auto"> 
                 <h2 class="text-3xl font-bold mb-12 text-green-700 text-center">Reset Password</h2>
-                <form method="POST" action="{{ route('buyer.password.update') }}" class="space-y-8">
+                <form method="POST" action="{{ route('farmer.password.update') }}" class="space-y-8">
                     @csrf
                     <input type="hidden" name="token" value="{{ $token }}">
                     <input type="hidden" name="Email" value="{{ $Email }}">

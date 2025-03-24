@@ -27,7 +27,7 @@
         </div>
 
         <!-- Right Section -->
-        <div class="w-full md:w-1/2 p-10">
+        <div class="w-full md:w-1/2 p-6 md:p-10 items-center justify-center">
             <h2 class="text-3xl font-bold mb-6 text-green-700 text-center">Create Account</h2>
 
             <form method="POST" action="{{ route('buyer.register') }}" class="space-y-3">
@@ -60,7 +60,7 @@
                 @error('password') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
 
                 <div class="text-center px-10">
-                    <button type="submit" class="w-full bg-green-700 text-white py-3 mt-4 rounded-lg hover:bg-green-800 transition">Register as Buyer</button>
+                    <button type="submit" class="w-full bg-green-700 text-white py-3 mt-4 rounded-lg hover:bg-green-800 transition">Register </button>
                 </div>
             </form>
             <p class="text-sm text-center mt-5">Already have an account? <a href="{{ url('buyer/login') }}" class="text-green-700 font-bold hover:text-green-800">Sign In</a></p>

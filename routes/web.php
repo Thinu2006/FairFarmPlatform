@@ -57,6 +57,13 @@ Route::prefix('farmer')->name('farmer.')->group(function () {
     Route::post('register', [FarmerAuthController::class, 'register']);
     Route::post('logout', [FarmerAuthController::class, 'logout'])->name('logout');
 
+
+    // Forgot password routes
+    Route::get('forgot-password', [FarmerAuthController::class, 'showForgotPasswordForm'])->name('password.request');
+    Route::post('/forgot-password', [FarmerAuthController::class, 'sendResetLinkEmail'])->name('password.email'); 
+    Route::get('reset-password/{token}', [FarmerAuthController::class, 'showResetPasswordForm'])->name('password.reset');
+    Route::post('reset-password', [FarmerAuthController::class, 'resetPassword'])->name('password.update');
+
     // Protected routes with the fixed middleware
     Route::middleware(['auth:farmer'])->group(function () {
         Route::get('dashboard', [FarmerController::class, 'dashboard'])->name('dashboard');
@@ -83,7 +90,7 @@ Route::prefix('buyer')->name('buyer.')->group(function () {
     Route::get('otp-verify', [BuyerAuthController::class, 'showOTPVerificationForm'])->name('otp.verify');
     Route::post('otp-verify', [BuyerAuthController::class, 'verifyOTP'])->name('otp.verify.submit');
 
-    // Keep the password reset routes from HEAD
+    // Forgot password routes
     Route::get('forgot-password', [BuyerAuthController::class, 'showForgotPasswordForm'])->name('password.request');
     Route::post('/forgot-password', [BuyerAuthController::class, 'sendResetLinkEmail'])->name('password.email'); 
     Route::get('reset-password/{token}', [BuyerAuthController::class, 'showResetPasswordForm'])->name('password.reset');

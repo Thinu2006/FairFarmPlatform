@@ -16,7 +16,7 @@
         }
     </style>
 </head>
-<body class="bg-cover bg-center min-h-screen flex justify-center items-center px-4" style="background-image: url('{{ asset('images/BuyerLoginBG.jpg') }}');">
+<body class="bg-cover bg-center min-h-screen flex justify-center items-center px-4" style="background-image: url('{{ asset('images/FarmerLoginBG.jpg') }}');">
     <div class="bg-white shadow-lg rounded-2xl flex w-full max-w-4xl h-[350px] overflow-hidden">
         <!-- Left Section -->
         <div class="w-1/2 p-10 flex flex-col justify-center items-center text-white text-center bg-gradient-to-r from-green-900 to-green-700 hidden md:flex">
@@ -28,7 +28,7 @@
         <div class="w-full md:w-1/2 p-6 md:p-10 flex flex-col justify-center">
             <div class="max-w-md w-full mx-auto"> 
                 <h2 class="text-3xl font-bold mb-12 text-green-700 text-center">Reset Password</h2>
-                <form method="POST" action="{{ route('buyer.password.email') }}" class="space-y-6">
+                <form method="POST" action="{{ route('farmer.password.email') }}" class="space-y-6">
                     @csrf
                     <div>
                         <label for="Email" class="block text-sm font-medium text-gray-700"></label>
@@ -63,7 +63,7 @@
 
             <p class="text-sm text-center mt-5">
                 Remember your password? 
-                <a href="{{ route('buyer.login') }}" class="text-green-700 font-bold hover:text-green-800">Login</a>
+                <a href="{{ route('farmer.login') }}" class="text-green-700 font-bold hover:text-green-800">Login</a>
             </p>
         </div>
     </div>

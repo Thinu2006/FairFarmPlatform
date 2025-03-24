@@ -24,6 +24,10 @@
             transform: translateY(-5px);
             transition: transform 0.3s ease;
         }
+        /* Smooth transition for mobile menu */
+        #nav-links {
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -31,7 +35,9 @@
     @include('layouts.header')
 
     <!-- Content Section -->
-    @yield('content')
+    <main>
+        @yield('content')
+    </main>
 
     <!-- Footer -->
     @include('layouts.footer')

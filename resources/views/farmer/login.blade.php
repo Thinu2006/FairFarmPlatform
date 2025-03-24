@@ -55,9 +55,9 @@
             @endif
 
             <!-- Forgot Password Link -->
-            <!-- <p class="text-sm text-center mt-5">
-                <a href="{{ route('buyer.password.request') }}" class="text-green-700 font-bold hover:text-green-800">Forgot Password?</a>
-            </p> -->
+            <p class="text-sm text-center mt-5">
+                <a href="{{ route('farmer.password.request') }}" class="text-green-700 font-bold hover:text-green-800">Forgot Password?</a>
+            </p>
 
             <p class="text-sm text-center mt-5">New to Fair Farm? <a href="{{ route('farmer.register') }}" class="text-green-700 font-bold hover:text-green-800">Sign Up</a></p>
         </div>

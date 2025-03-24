@@ -27,17 +27,25 @@
         </div>
 
         <!-- Right Section - Signup Form -->
-        <div class="w-full md:w-1/2 p-10">
+        <div class="w-full md:w-1/2 p-6 md:p-10 items-center justify-center">
             <h2 class="text-3xl font-bold mb-6 text-green-700 text-center">Create Account</h2>
 
             <form method="POST" action="{{ route('farmer.register') }}" class="space-y-3">
                 @csrf
                 <input type="text" name="FullName" placeholder="Full Name" class="block w-full p-2 border rounded-lg focus:outline-green-600" required />
+                @error('FullName') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+
                 <input type="text" name="NIC" placeholder="NIC" class="block w-full p-2 border rounded-lg focus:outline-green-600" required />
+                @error('NIC') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+
                 <input type="text" name="ContactNo" placeholder="Contact Number" class="block w-full p-2 border rounded-lg focus:outline-green-600" required />
+                @error('ContactNo') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+
                 <input type="text" name="Address" placeholder="Address" class="block w-full p-2 border rounded-lg focus:outline-green-600" required />
+                @error('Address') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+
                 <input type="email" name="Email" placeholder="Email" class="block w-full p-2 border rounded-lg focus:outline-green-600" required />
-                
+                @error('Email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 
                 <div class="relative">
                     <input type="password" name="password" id="password" placeholder="Password" class="block w-full p-2 border rounded-lg focus:outline-green-600" required />
@@ -49,7 +57,7 @@
                     </span>
                 </div>
                 <div class="text-center px-10">
-                    <button type="submit" class="w-full bg-green-700 text-white py-3 mt-4 rounded-lg hover:bg-green-800 transition">Register as Farmer</button>
+                    <button type="submit" class="w-full bg-green-700 text-white py-3 mt-4 rounded-lg hover:bg-green-800 transition">Register</button>
                 </div>
             </form>
             
