@@ -16,19 +16,18 @@
         }
     </style>
 </head>
-<body class="bg-cover bg-center min-h-screen flex justify-center items-center px-4" 
-      style="background-image: url('./../../Images/bg.jpg');">
+<body class="bg-cover bg-center min-h-screen flex justify-center items-center px-4" style="background-image: url('{{ asset('images/BuyerLoginBG.jpg') }}');">  
 
-    <div class="bg-white shadow-lg rounded-lg flex w-full max-w-4xl overflow-hidden">
-        <!-- Left Section - Welcome Message -->
-        <div class="w-1/2 p-10 flex flex-col justify-center items-center text-white text-center bg-gradient-to-r from-green-900 to-green-700">
+    <div class="bg-white shadow-lg rounded-lg flex flex-col md:flex-row w-full max-w-4xl overflow-hidden">
+        <!-- Left Section -->
+        <div class="hidden md:flex w-full md:w-1/2 p-10 flex-col justify-center items-center text-white text-center bg-gradient-to-r from-green-900 to-green-700">
             <h1 class="text-4xl font-bold">Join Fair Farm</h1>
             <p class="mt-5">Sign up now and start buying high-quality paddy directly from trusted farmers.</p>
             <p class="mt-5 text-sm italic opacity-90">"Connecting farmers and buyers for a fair and transparent marketplace."</p>
         </div>
 
-        <!-- Right Section - Signup Form -->
-        <div class="w-1/2 p-10">
+        <!-- Right Section -->
+        <div class="w-full md:w-1/2 p-10">
             <h2 class="text-3xl font-bold mb-6 text-green-700 text-center">Create Account</h2>
 
             <form method="POST" action="{{ route('buyer.register') }}" class="space-y-3">
@@ -60,11 +59,6 @@
                 </div>
                 @error('password') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
 
-                <div class="flex items-center text-sm mt-4">
-                    <input type="checkbox" class="mr-2" required>
-                    <span>I agree to the <a href="./terms&condition.php" class="text-green-700 font-bold hover:text-green-800">terms & conditions</a></span>
-                </div>
-
                 <div class="text-center px-10">
                     <button type="submit" class="w-full bg-green-700 text-white py-3 mt-4 rounded-lg hover:bg-green-800 transition">Register as Buyer</button>
                 </div>
@@ -73,7 +67,6 @@
         </div>
     </div>
 
-    <!-- JavaScript for Password Visibility Toggle -->
     <script>
         function togglePasswordVisibility() {
             const passwordInput = document.getElementById('password');

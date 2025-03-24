@@ -14,36 +14,80 @@
         h1, h2 {
             font-family: "Playfair Display", serif;
         }
+        body {
+            background-image: url('{{ asset('images/AdminLoginBG.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
     </style>
 </head>
-<body class="bg-cover bg-center min-h-screen flex justify-center items-center px-4" 
-      style="background-image: url('./../../Images/admin.jpg');">
-
-    <div class="bg-white shadow-lg rounded-lg flex w-full max-w-2xl overflow-hidden">
-        <!-- Left Section -->
-        <div class="w-1/2 p-10 flex flex-col justify-center items-center text-white text-center bg-gradient-to-r from-gray-900 to-gray-700">
-            <h1 class="text-4xl font-bold">Admin Portal</h1>
-            <p class="mt-5">Manage Fair Farm efficiently and securely.</p>
-            <p class="mt-5 text-sm italic opacity-90">"Ensuring a seamless marketplace for farmers and buyers."</p>
+<body class="min-h-screen flex items-center justify-center p-6">
+    <!-- Login Container -->
+    <div class="bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row w-full max-w-4xl overflow-hidden min-h-[400px]"> 
+        <!-- Left Section (Image or Branding) -->
+        <div class="bg-gradient-to-r from-gray-900 to-gray-700 text-white hidden md:flex w-full md:w-1/2 p-10 flex-col justify-center items-center text-center ">
+            <h1 class="text-4xl font-bold mb-4">Admin Portal</h1>
+            <p class="text-lg mb-2">Manage Fair Farm efficiently and securely.</p>
+            <p class="text-sm italic opacity-90">"Ensuring a seamless marketplace for farmers and buyers."</p>
         </div>
 
-        <!-- Right Section - Login Form -->
-        <div class="w-1/2 p-10">
-            <h2 class="text-3xl font-bold mb-6 text-gray-700 text-center">Login</h2>
-            <form method="POST" action="{{ route('admin.login') }}" class="form-container mt-8">
+        <!-- Right Section (Login Form) -->
+        <div class="w-full md:w-1/2 p-6 md:p-12 items-center justify-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2 text-center">Login</h2>
+            <form method="POST" action="{{ route('admin.login') }}" class="space-y-10">
                 @csrf
-                <div class="mb-4">
-                    <input type="text" name="Username" id="Username" placeholder="Username" class="block w-full p-3 border rounded-lg mb-4 focus:outline-gray-600" required>
+                <!-- Email Input -->
+                <input type="email" name="Email"id="Email" placeholder="Email" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-700 focus:border-transparent transition-all" required />
+
+                <!-- Password Input with Toggle -->
+                <div class="relative mt-8">
+                    <input type="password" name="Password" id="Password" placeholder="Password" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-700 focus:border-transparent transition-all " required/>
+                    <span class="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer" onclick="togglePasswordVisibility()">
+                        <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </span>
                 </div>
-                <div class="mb-4">
-                    <input type="password" name="Password" id="Password" placeholder="Password" class="block w-full p-3 border rounded-lg mb-4 focus:outline-gray-600" required>
-                </div>
-                <div class="text-center pt-6 px-10">
-                    <button type="submit" class="w-full bg-gray-700 text-white py-3 rounded-lg hover:bg-gray-800 transition">Sign In</button>
+
+                <div class="text-center px-20 ">
+                    <button type="submit" class="w-full bg-gray-800 text-white py-3 rounded-lg hover:bg-gray-900 transition-all focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2">
+                        Sign In
+                    </button>
                 </div>
             </form>
+            
+            <!-- Error Message Display -->
+            @if(session('error'))
+                <p class="text-red-500 text-center mt-4">{{ session('error') }}</p>
+            @endif
+
+            <!-- Forgot Password Link -->
+            <!-- <p class="text-sm text-center mt-5">
+                <a href="{{ route('buyer.password.request') }}" class="text-gray-900 font-bold hover:text-gray-600">Forgot Password?</a>
+            </p> -->
+
+
         </div>
     </div>
 
+    <!-- JavaScript for Password Visibility Toggle -->
+
+    <script>
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('Password');
+            const eyeIcon = document.getElementById('eye-icon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />`;
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
+            }
+        }
+    </script>
 </body>
 </html>

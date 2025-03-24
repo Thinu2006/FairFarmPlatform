@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Admin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendOTP;
 
 class AdminAuthController extends Controller
 {
@@ -21,29 +22,65 @@ class AdminAuthController extends Controller
     {
         // Validate the incoming request
         $request->validate([
-            'Username' => 'required|string',
+            'Email' => 'required|string|email',
             'Password' => 'required|string|min:8',
         ]);
 
         // Get credentials
-        $credentials = $request->only('Username', 'Password');
+        $credentials = $request->only('Email', 'Password');
 
-        // Find the admin by username
-        $admin = Admin::where('Username', $credentials['Username'])->first();
+        // Find the admin by email
+        $admin = Admin::where('Email', $credentials['Email'])->first();
 
         // Check if admin exists and if the password is correct
         if ($admin && Hash::check($credentials['Password'], $admin->Password)) {
-            // Attempt to authenticate the admin
-            Auth::guard('admin')->login($admin, $request->remember);
+            // Generate OTP
+            $otp = rand(100000, 999999);
+
+            // Store OTP in session
+            session(['admin_otp' => $otp, 'admin_email' => $admin->Email]);
+
+            // Send OTP to email
+            Mail::to($admin->Email)->send(new SendOTP($otp));
+
+            // Redirect to OTP verification page
+            return redirect()->route('admin.otp.verify');
+        }
+
+        // If login fails, return an error message
+        return back()->with('error', 'Invalid email or password');
+    }
+
+    // Show OTP verification form
+    public function showOTPVerificationForm()
+    {
+        return view('admin.otp-verify');
+    }
+
+    // Handle OTP verification
+    public function verifyOTP(Request $request)
+    {
+        $request->validate([
+            'otp' => 'required|numeric',
+        ]);
+
+        if ($request->otp == session('admin_otp')) {
+            // Find the admin by email
+            $admin = Admin::where('Email', session('admin_email'))->first();
+
+            // Authenticate the admin
+            Auth::guard('admin')->login($admin);
+
+            // Clear OTP session
+            session()->forget(['admin_otp', 'admin_email']);
 
             // Redirect to the admin dashboard
             return redirect()->route('admin.dashboard');
         }
 
-        // If login fails, return an error message
-        return back()->with('error', 'Invalid username or password');
+        // If OTP verification fails, return an error message
+        return back()->with('error', 'Invalid OTP');
     }
-
 
     // Handle the logout request
     public function logout()

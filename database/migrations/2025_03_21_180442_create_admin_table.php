@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('admin', function (Blueprint $table) {
             $table->id('AdminID');
             $table->string('Username');
+            $table->string('Email')->unique();
             $table->string('Password');
             $table->rememberToken();
             $table->timestamps();

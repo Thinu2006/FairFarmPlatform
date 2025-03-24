@@ -10,11 +10,17 @@ use App\Http\Controllers\PaddyTypeController;
 use App\Http\Controllers\FarmerSellingPaddyTypesController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/', function () {
+    return view('welcome');
+});
+
 // Admin Routes
 Route::prefix('admin')->name('admin.')->group(function () {
     // Admin authentication routes
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
     Route::post('login', [AdminAuthController::class, 'login']);
+    Route::get('otp-verify', [AdminAuthController::class, 'showOTPVerificationForm'])->name('otp.verify'); // Fixed route
+    Route::post('otp-verify', [AdminAuthController::class, 'verifyOTP'])->name('otp.verify.submit'); // Fixed route
     Route::post('logout', [AdminAuthController::class, 'logout'])->name('logout');
 
     // Admin protected routes (requires admin authentication)
@@ -64,8 +70,6 @@ Route::prefix('farmer')->name('farmer.')->group(function () {
         Route::get('paddy-listing', [FarmerSellingPaddyTypesController::class, 'index'])->name('paddy.listing');
     });
 });
-
-
 
 // Buyer Routes
 Route::prefix('buyer')->name('buyer.')->group(function () {
