@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\FarmerSellingPaddyType;
 use App\Models\PaddyType;
 use Illuminate\Http\Request;
+use App\Models\Farmer;
 
 class FarmerSellingPaddyTypesController extends Controller
 {
@@ -141,5 +142,35 @@ class FarmerSellingPaddyTypesController extends Controller
 
         // Pass the data to the products view
         return view('buyer.products', compact('sellingPaddyTypes'));
+    }
+
+
+    /**
+     * Display the farmer selections page.
+     */
+    public function farmerSelections()
+    {
+        $selections = FarmerSellingPaddyType::with(['farmer', 'paddyType'])
+            ->latest()
+            ->paginate(10);
+        
+        $paddyTypes = PaddyType::all();
+        
+        return view('admin.farmer.farmer-paddy-selection', compact('selections', 'paddyTypes'));
+    }
+
+    /**
+     * Delete a farmer selected paddy type.
+     */
+    public function destroyFarmerSelectedPaddyType($id)
+    {
+        try {
+            $selection = FarmerSellingPaddyType::findOrFail($id);
+            $selection->delete();
+            
+            return redirect()->back()->with('success', 'Paddy selection deleted successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error deleting paddy selection: ' . $e->getMessage());
+        }
     }
 }

@@ -19,8 +19,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Admin authentication routes
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
     Route::post('login', [AdminAuthController::class, 'login']);
-    Route::get('otp-verify', [AdminAuthController::class, 'showOTPVerificationForm'])->name('otp.verify'); // Fixed route
-    Route::post('otp-verify', [AdminAuthController::class, 'verifyOTP'])->name('otp.verify.submit'); // Fixed route
+    Route::get('otp-verify', [AdminAuthController::class, 'showOTPVerificationForm'])->name('otp.verify');
+    Route::post('otp-verify', [AdminAuthController::class, 'verifyOTP'])->name('otp.verify.submit');
     Route::post('logout', [AdminAuthController::class, 'logout'])->name('logout');
 
     // Admin protected routes (requires admin authentication)
@@ -45,8 +45,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Buyer management routes
         Route::get('buyer', [BuyerController::class, 'index'])->name('buyer.index');
         Route::delete('buyer/{id}', [BuyerController::class, 'destroy'])->name('buyer.destroy');
+
+        // Farmer Paddy Selections
+        Route::get('farmer-paddy-selections', [FarmerSellingPaddyTypesController::class, 'farmerSelections'])->name('farmer.paddy.selections');
+    
+        Route::delete('farmer-paddy-selections/{id}', [FarmerSellingPaddyTypesController::class, 'destroyFarmerSelectedPaddyType'])->name('farmer.paddy.delete');
     });
 });
+
+
 
 // Farmer Routes
 Route::prefix('farmer')->name('farmer.')->group(function () {
