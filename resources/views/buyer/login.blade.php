@@ -14,11 +14,16 @@
         h1, h2 {
             font-family: "Playfair Display", serif;
         }
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
     </style>
 </head>
 
 <body class="bg-cover bg-center min-h-screen flex justify-center items-center px-4" style="background-image: url('{{ asset('images/BuyerLoginBG.jpg') }}');">
-    <div class="bg-white shadow-lg rounded-2xl flex w-full max-w-4xl h-[430px] overflow-hidden ">
+    <div class="bg-white shadow-lg rounded-2xl flex w-full max-w-4xl h-[430px] overflow-hidden">
         <!-- Left Section (Hidden on small screens) -->
         <div class="w-1/2 p-10 flex flex-col justify-center items-center text-white text-center bg-gradient-to-r from-green-900 to-green-700 hidden md:flex">
             <h1 class="text-4xl font-bold">Welcome to Fair Farm</h1>
@@ -29,13 +34,15 @@
         <!-- Right Section - Login Form -->
         <div class="w-full md:w-1/2 p-6 md:p-10 items-center justify-center">
             <h2 class="text-3xl font-bold mb-6 text-green-700 text-center">Login</h2>
-            <form method="POST" action="{{ route('buyer.login') }}" class="space-y-6">
+            <form method="POST" action="{{ route('buyer.login') }}" class="space-y-6" onsubmit="return validateForm()">
                 @csrf
                 <div>
-                    <input type="email" name="Email" placeholder="Email" class="block w-full p-3 border-2 rounded-lg mb-4 focus:outline-green-600" required>
+                    <input type="email" name="Email" id="email" placeholder="Email" class="block w-full p-3 border-2 rounded-lg focus:outline-green-600" required>
+                    <div id="emailError" class="error-message"></div>
                 </div>
                 <div class="relative">
-                    <input type="password" name="password" id="password" placeholder="Password" class="block w-full p-3 border-2 rounded-lg mb-4 focus:outline-green-600" required />
+                    <input type="password" name="password" id="password" placeholder="Password" class="block w-full p-3 border-2 rounded-lg focus:outline-green-600" required />
+                    <div id="passwordError" class="error-message"></div>
                     <span class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" onclick="togglePasswordVisibility()">
                         <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -59,11 +66,11 @@
             </p>
 
             <!-- Sign Up Link -->
-            <p class="text-sm text-center mt-5 ">New to Fair Farm? <a href="{{ route('buyer.register') }}" class="text-green-700 font-bold hover:text-green-800">Sign Up</a></p>
+            <p class="text-sm text-center mt-5">New to Fair Farm? <a href="{{ route('buyer.register') }}" class="text-green-700 font-bold hover:text-green-800">Sign Up</a></p>
         </div>
     </div>
 
-    <!-- JavaScript for Password Visibility Toggle -->
+    <!-- JavaScript for Password Visibility Toggle and Validation -->
     <script>
         function togglePasswordVisibility() {
             const passwordInput = document.getElementById('password');
@@ -78,6 +85,65 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
             }
         }
+
+        // Validate Email
+        function validateEmail(email) {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailPattern.test(email);
+        }
+
+        // Validate Password (just check it's not empty for login)
+        function validatePassword(password) {
+            return password.length > 0;
+        }
+
+        // Form validation
+        function validateForm() {
+            let isValid = true;
+            
+            // Email validation
+            const email = document.getElementById('email').value.trim();
+            const emailError = document.getElementById('emailError');
+            if (!validateEmail(email)) {
+                emailError.textContent = 'Please enter a valid email address';
+                isValid = false;
+            } else {
+                emailError.textContent = '';
+            }
+            
+            // Password validation
+            const password = document.getElementById('password').value;
+            const passwordError = document.getElementById('passwordError');
+            if (!validatePassword(password)) {
+                passwordError.textContent = 'Please enter your password';
+                isValid = false;
+            } else {
+                passwordError.textContent = '';
+            }
+            
+            return isValid;
+        }
+
+        // Add event listeners for real-time validation
+        document.getElementById('email').addEventListener('blur', function() {
+            const email = this.value.trim();
+            const emailError = document.getElementById('emailError');
+            if (!validateEmail(email)) {
+                emailError.textContent = 'Please enter a valid email address';
+            } else {
+                emailError.textContent = '';
+            }
+        });
+
+        document.getElementById('password').addEventListener('blur', function() {
+            const password = this.value;
+            const passwordError = document.getElementById('passwordError');
+            if (!validatePassword(password)) {
+                passwordError.textContent = 'Please enter your password';
+            } else {
+                passwordError.textContent = '';
+            }
+        });
     </script>
 </body>
 </html>

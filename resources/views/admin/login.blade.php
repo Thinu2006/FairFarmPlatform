@@ -27,6 +27,7 @@
         </div>
 
         <!-- Right Section (Login Form) -->
+        <!-- Right Section (Login Form) -->
         <div class="w-full p-6 md:p-8 lg:p-12 flex flex-col justify-center md:w-1/2">
             <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 md:mb-8 text-center">Login</h2>
             <form method="POST" action="{{ route('admin.login') }}" class="space-y-4 md:space-y-6">
@@ -59,6 +60,19 @@
                     </span>
                 </div>
 
+                <!-- Remember Me Checkbox -->
+                <div class="flex items-center">
+                    <input 
+                        type="checkbox" 
+                        name="remember" 
+                        id="remember" 
+                        class="h-4 w-4 text-gray-800 focus:ring-gray-700 border-gray-300 rounded"
+                    >
+                    <label for="remember" class="ml-2 block text-sm text-gray-900">
+                        Remember me
+                    </label>
+                </div>
+
                 <!-- Login Button -->
                 <button type="submit" class="w-full bg-gray-800 text-white py-2 md:py-3 rounded-lg hover:bg-gray-900 transition-all focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2">
                     Sign In
@@ -69,11 +83,6 @@
             @if(session('error'))
                 <p class="text-red-500 text-center mt-3 md:mt-4">{{ session('error') }}</p>
             @endif
-
-            <!-- Forgot Password Link (commented out) -->
-            <!-- <p class="text-xs md:text-sm text-center mt-3 md:mt-4">
-                <a href="{{ route('buyer.password.request') }}" class="text-gray-900 font-bold hover:text-gray-600">Forgot Password?</a>
-            </p> -->
         </div>
     </div>
 

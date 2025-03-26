@@ -14,6 +14,11 @@
         h1, h2 {
             font-family: "Playfair Display", serif;
         }
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
     </style>
 </head>
 <body class="bg-cover bg-center min-h-screen flex justify-center items-center px-4" style="background-image: url('{{ asset('images/BuyerLoginBG.jpg') }}');">  
@@ -30,37 +35,53 @@
         <div class="w-full md:w-1/2 p-6 md:p-10 items-center justify-center">
             <h2 class="text-3xl font-bold mb-6 text-green-700 text-center">Create Account</h2>
 
-            <form method="POST" action="{{ route('buyer.register') }}" class="space-y-3">
+            <form method="POST" action="{{ route('buyer.register') }}" class="space-y-3" onsubmit="return validateForm()">
                 @csrf
-                <input type="text" name="FullName" placeholder="Full Name" class="block w-full p-2 border rounded-lg focus:outline-green-600" required />
-                @error('FullName') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                <div>
+                    <input type="text" name="FullName" placeholder="Full Name" class="block w-full p-2 border rounded-lg focus:outline-green-600" required />
+                    @error('FullName') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
 
-                <input type="text" name="NIC" placeholder="NIC" class="block w-full p-2 border rounded-lg focus:outline-green-600" required />
-                @error('NIC') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                <div>
+                    <input type="text" name="NIC" id="nic" placeholder="NIC" class="block w-full p-2 border rounded-lg focus:outline-green-600" required />
+                    <div id="nicError" class="error-message"></div>
+                    @error('NIC') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
 
-                <input type="text" name="ContactNo" placeholder="Contact Number" class="block w-full p-2 border rounded-lg focus:outline-green-600" required />
-                @error('ContactNo') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                <div>
+                    <input type="text" name="ContactNo" id="contactNo" placeholder="Contact Number" class="block w-full p-2 border rounded-lg focus:outline-green-600" required />
+                    <div id="contactNoError" class="error-message"></div>
+                    @error('ContactNo') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
 
-                <input type="text" name="Address" placeholder="Address" class="block w-full p-2 border rounded-lg focus:outline-green-600" required />
-                @error('Address') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                <div>
+                    <input type="text" name="Address" placeholder="Address" class="block w-full p-2 border rounded-lg focus:outline-green-600" required />
+                    @error('Address') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
 
-                <input type="email" name="Email" placeholder="Email" class="block w-full p-2 border rounded-lg focus:outline-green-600" required />
-                @error('Email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                <div>
+                    <input type="email" name="Email" id="email" placeholder="Email" class="block w-full p-2 border rounded-lg focus:outline-green-600" required />
+                    <div id="emailError" class="error-message"></div>
+                    @error('Email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
 
                 <!-- Password Input with Toggle -->
-                <div class="relative">
-                    <input type="password" name="password" id="password" placeholder="Password" class="block w-full p-2 border rounded-lg focus:outline-green-600" required />
-                    <span class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" onclick="togglePasswordVisibility()">
-                        <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                    </span>
+                <div>
+                    <div class="relative">
+                        <input type="password" name="password" id="password" placeholder="Password" class="block w-full p-2 border rounded-lg focus:outline-green-600" required />
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" onclick="togglePasswordVisibility()">
+                            <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                        </span>
+                    </div>
+                    <div id="passwordError" class="error-message"></div>
+                    @error('password') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
-                @error('password') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
 
                 <div class="text-center px-10">
-                    <button type="submit" class="w-full bg-green-700 text-white py-3 mt-4 rounded-lg hover:bg-green-800 transition">Register </button>
+                    <button type="submit" class="w-full bg-green-700 text-white py-3 mt-4 rounded-lg hover:bg-green-800 transition">Register</button>
                 </div>
             </form>
             <p class="text-sm text-center mt-5">Already have an account? <a href="{{ url('buyer/login') }}" class="text-green-700 font-bold hover:text-green-800">Sign In</a></p>
@@ -81,6 +102,126 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
             }
         }
+
+        // Validate NIC 
+        function validateNIC(nic) {
+            // Old NIC format (9 digits + V or X at the end)
+            const oldNicPattern = /^[0-9]{9}[vVxX]$/;
+            
+            // New NIC format (12 digits)
+            const newNicPattern = /^[0-9]{12}$/;
+            
+            return oldNicPattern.test(nic) || newNicPattern.test(nic);
+        }
+
+        // Validate Contact Number (Sri Lanka)
+        function validateContactNo(contactNo) {
+            const cleaned = contactNo.replace(/[+\s-]/g, '');
+            
+            const mobilePattern = /^(?:\+94|0|94)?(7[0-9])([0-9]{7})$/;
+            
+            return mobilePattern.test(cleaned);
+        }
+
+        // Validate Email
+        function validateEmail(email) {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailPattern.test(email);
+        }
+
+        // Validate Password
+        function validatePassword(password) {
+            const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/;
+            return passwordPattern.test(password);
+        }
+
+        // Form validation
+        function validateForm() {
+            let isValid = true;
+            
+            // NIC validation
+            const nic = document.getElementById('nic').value.trim();
+            const nicError = document.getElementById('nicError');
+            if (!validateNIC(nic)) {
+                nicError.textContent = 'Please enter a valid NIC (e.g., 123456789V or 200012345678)';
+                isValid = false;
+            } else {
+                nicError.textContent = '';
+            }
+            
+            // Contact number validation
+            const contactNo = document.getElementById('contactNo').value.trim();
+            const contactNoError = document.getElementById('contactNoError');
+            if (!validateContactNo(contactNo)) {
+                contactNoError.textContent = 'Please enter a valid contact number';
+                isValid = false;
+            } else {
+                contactNoError.textContent = '';
+            }
+            
+            // Email validation
+            const email = document.getElementById('email').value.trim();
+            const emailError = document.getElementById('emailError');
+            if (!validateEmail(email)) {
+                emailError.textContent = 'Please enter a valid email address';
+                isValid = false;
+            } else {
+                emailError.textContent = '';
+            }
+            
+            // Password validation
+            const password = document.getElementById('password').value;
+            const passwordError = document.getElementById('passwordError');
+            if (!validatePassword(password)) {
+                passwordError.textContent = 'Password must be at least 8 characters with at least one letter and one number';
+                isValid = false;
+            } else {
+                passwordError.textContent = '';
+            }
+            
+            return isValid;
+        }
+
+        // Add event listeners for real-time validation
+        document.getElementById('nic').addEventListener('blur', function() {
+            const nic = this.value.trim();
+            const nicError = document.getElementById('nicError');
+            if (!validateNIC(nic)) {
+                nicError.textContent = 'Please enter a valid NIC (e.g., 123456789V or 200012345678)';
+            } else {
+                nicError.textContent = '';
+            }
+        });
+
+        document.getElementById('contactNo').addEventListener('blur', function() {
+            const contactNo = this.value.trim();
+            const contactNoError = document.getElementById('contactNoError');
+            if (!validateContactNo(contactNo)) {
+                contactNoError.textContent = 'Please enter a valid contact number';
+            } else {
+                contactNoError.textContent = '';
+            }
+        });
+
+        document.getElementById('email').addEventListener('blur', function() {
+            const email = this.value.trim();
+            const emailError = document.getElementById('emailError');
+            if (!validateEmail(email)) {
+                emailError.textContent = 'Please enter a valid email address';
+            } else {
+                emailError.textContent = '';
+            }
+        });
+
+        document.getElementById('password').addEventListener('blur', function() {
+            const password = this.value;
+            const passwordError = document.getElementById('passwordError');
+            if (!validatePassword(password)) {
+                passwordError.textContent = 'Password must be at least 8 characters with at least one letter and one number';
+            } else {
+                passwordError.textContent = '';
+            }
+        });
     </script>
 </body>
 </html>
