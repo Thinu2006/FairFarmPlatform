@@ -31,6 +31,16 @@ class FarmerController extends Controller
         return view('farmer.dashboard', compact('paddyTypes', 'sellingPaddyTypes'));
     }
 
+    public function destroyFarmer($id)
+    {
+        $farmer = Farmer::findOrFail($id);
+        $farmer->delete();
+        return redirect()->route('admin.farmer.index')->with('success', 'Farmer deleted successfully.');
+
+    }
+
+
+
     /**
      * Display the form for listing a new paddy type.
      */

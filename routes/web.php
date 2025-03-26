@@ -40,7 +40,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Farmer management routes
         Route::get('farmer', [FarmerController::class, 'index'])->name('farmer.index');
-        Route::delete('farmer/{id}', [FarmerController::class, 'destroy'])->name('farmer.destroy');
+        Route::delete('farmer/{id}', [FarmerController::class, 'destroyFarmer'])->name('farmer.destroy');
 
         // Buyer management routes
         Route::get('buyer', [BuyerController::class, 'index'])->name('buyer.index');

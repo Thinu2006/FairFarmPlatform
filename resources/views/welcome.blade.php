@@ -118,7 +118,7 @@
             <source src="{{ asset('videos/BGVideo.mp4') }}" type="video/mp4">
             Your browser does not support the video tag.
         </video>
-        <div class="absolute inset-0 bg-gradient-to-br from-primary-900/80 to-earth-900/90"></div>
+        <!-- <div class="absolute inset-0 bg-gradient-to-br from-primary-900/80 to-earth-900/90"></div> -->
     </div>
 
     <!-- Main Content Card -->
