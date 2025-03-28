@@ -5,7 +5,7 @@
 @section('content')
 <!-- Main Content -->
 <main class="bg-gray-50 min-h-screen">
-    <div class="max-w-7xl mx-auto ">
+    <div class="max-w-7xl mx-auto">
         <!-- Header Section -->
         <div class="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-6">
             <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
@@ -88,17 +88,12 @@
                                         <span>Edit</span>
                                     </a>
                                     
-                                    <form action="{{ route('farmer.paddy.listing.destroy', $paddy->id) }}" method="POST" 
-                                          onsubmit="return confirm('Are you sure you want to delete this listing?');"
-                                          class="flex-1">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" 
-                                                class="w-full flex items-center justify-center gap-2 px-3 py-2 sm:py-2.5 bg-green-50 hover:bg-green-100 text-green-800 rounded-lg transition-all text-sm sm:text-base font-medium">
-                                            <i class="fas fa-trash-alt"></i>
-                                            <span>Delete</span>
-                                        </button>
-                                    </form>
+                                    <button type="button" 
+                                            onclick="showDeleteModal('{{ $paddy->id }}', '{{ $paddy->paddyType->PaddyName }}')"
+                                            class="flex-1 flex items-center justify-center gap-2 px-3 py-2 sm:py-2.5 bg-red-50 hover:bg-red-100 text-red-800 rounded-lg transition-all text-sm sm:text-base font-medium">
+                                        <i class="fas fa-trash-alt"></i>
+                                        <span>Delete</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -107,5 +102,63 @@
             @endif
         </div>
     </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-900">Confirm Deletion</h3>
+                <button onclick="hideDeleteModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <p class="text-gray-700 mb-6" id="deleteModalText">Are you sure you want to delete this listing?</p>
+            <div class="flex justify-end gap-3">
+                <button onclick="hideDeleteModal()" 
+                        class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-all">
+                    Cancel
+                </button>
+                <form id="deleteForm" method="POST" class="inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" 
+                            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all">
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 </main>
+
+<script>
+    function showDeleteModal(id, paddyName) {
+        const modal = document.getElementById('deleteModal');
+        const form = document.getElementById('deleteForm');
+        const text = document.getElementById('deleteModalText');
+        
+        // Set the form action
+        form.action = `/farmer/paddy-listing/${id}`;
+        
+        // Update the modal text
+        text.textContent = `Are you sure you want to delete the "${paddyName}" listing? This action cannot be undone.`;
+        
+        // Show the modal
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function hideDeleteModal() {
+        const modal = document.getElementById('deleteModal');
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            hideDeleteModal();
+        }
+    });
+</script>
 @endsection

@@ -5,177 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Paddy Type</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <style>
         body {
             background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../../../app/Images/bg.jpg') no-repeat center center/cover;
             min-height: 100vh;
+            backdrop-filter: blur(8px);
+        }
+        .blur-background {
+            position: relative;
+        }
+        .blur-background::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            filter: blur(8px);
+            z-index: -1;
+        }
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(2px);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 5px;
         }
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            height: 18px;
-            width: 18px;
-            background: #16a34a;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #15803d;
             border-radius: 50%;
             cursor: pointer;
         }
-        .drop-zone {
-            transition: all 0.3s ease;
-            min-height: 150px;
+        .border-red-500 {
+            border-color: #ef4444;
         }
-        .drop-zone.active {
-            border-color: #16a34a;
-            background-color: rgba(22, 163, 74, 0.05);
+        #imageError {
+            min-height: 20px;
+            visibility: hidden;
         }
-        .image-container {
-            position: relative;
-            display: inline-block;
-        }
-        .remove-image {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: #ef4444;
-            color: white;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 12px;
+        #imageError:not(.hidden) {
+            visibility: visible;
         }
     </style>
-</head>
-<body class="flex items-center justify-center p-4 md:p-8">
-    <div class="w-full max-w-3xl bg-white bg-opacity-95 border border-gray-200 rounded-xl shadow-lg overflow-hidden">
-        <!-- Header Section -->
-        <div class="bg-green-700 px-6 py-4">
-            <h1 class="text-2xl md:text-3xl font-bold text-white text-center">
-                <i class="fas fa-edit mr-2"></i> Edit Paddy Type
-            </h1>
-        </div>
-
-        <!-- Form Section -->
-        <form action="{{ route('admin.paddy.update', $paddy->PaddyID) }}" method="post" enctype="multipart/form-data" class="p-6 space-y-6">
-            @csrf
-            @method('PUT')
-
-            <!-- Paddy Name -->
-            <div class="space-y-2">
-                <label class="block text-base font-medium text-gray-700">
-                    Paddy Name <span class="text-red-500">*</span>
-                </label>
-                <div class="relative rounded-md shadow-sm">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-seedling text-gray-400"></i>
-                    </div>
-                    <input type="text" name="PaddyName" 
-                           class="block w-full pl-10 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" 
-                           value="{{ old('PaddyName', $paddy->PaddyName) }}" 
-                           required
-                           placeholder="Enter paddy variety name">
-                </div>
-                @error('PaddyName')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <!-- Maximum Price -->
-            <div class="space-y-4">
-                <label class="block text-base font-medium text-gray-700">
-                    Maximum Price (per kg) <span class="text-red-500">*</span>
-                </label>
-                
-                <div class="flex justify-between text-xs text-gray-500 mb-1">
-                    <span>Rs. 0</span>
-                    <span>Rs. 1000</span>
-                </div>
-                
-                <input type="range" id="Price" name="MaxPricePerKg" 
-                       min="0" max="1000" step="1"
-                       value="{{ old('MaxPricePerKg', $paddy->MaxPricePerKg) }}" 
-                       oninput="updatePrice()" 
-                       class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                
-                <div class="text-center">
-                    <span id="priceDisplay" class="inline-block px-4 py-2 bg-green-100 text-green-800 rounded-full font-medium">
-                        Rs. {{ old('MaxPricePerKg', $paddy->MaxPricePerKg) }}
-                    </span>
-                </div>
-                @error('MaxPricePerKg')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <!-- Image Upload -->
-            <div class="space-y-4">
-                <label class="block text-base font-medium text-gray-700">
-                    Paddy Image
-                </label>
-                
-                <div class="flex flex-col items-center space-y-4">
-                    <div class="relative">
-                        @if ($paddy->Image)
-                            <div class="image-container">
-                                <img id="imagePreview" 
-                                     class="max-h-48 md:max-h-60 w-auto rounded-lg shadow border border-gray-200" 
-                                     src="{{ asset('storage/' . $paddy->Image) }}" 
-                                     alt="Current Paddy Image">
-                                <div class="remove-image" onclick="removeImage()">
-                                    <i class="fas fa-times"></i>
-                                </div>
-                            </div>
-                        @else
-                            <img id="imagePreview" 
-                                 class="hidden max-h-48 md:max-h-60 w-auto rounded-lg shadow border border-gray-200" 
-                                 src="#" 
-                                 alt="New Paddy Image">
-                        @endif
-                    </div>
-                    
-                    <div id="dropZone" class="drop-zone w-full border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:border-green-500 transition-colors"
-                         onclick="triggerFileInput()">
-                        <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-3"></i>
-                        <p class="text-sm md:text-base text-gray-600 font-medium text-center">
-                            Click to upload or drag and drop your image here
-                        </p>
-                        <p class="text-xs text-gray-400 mt-2">
-                            Supports: JPG, PNG (Max 5MB)
-                        </p>
-                    </div>
-                </div>
-                
-                <input type="file" id="paddyImage" name="Image" 
-                       class="hidden" 
-                       accept="image/png, image/jpeg" 
-                       onchange="previewImage(event)">
-                <input type="hidden" id="removeImageFlag" name="remove_image" value="0">
-                @error('Image')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <!-- Form Actions -->
-            <div class="flex flex-col-reverse sm:flex-row justify-between gap-4 pt-4">
-                <button type="button" 
-                        onclick="window.history.back()" 
-                        class="flex items-center justify-center px-4 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
-                    <i class="fas fa-arrow-left mr-2"></i> Back
-                </button>
-                <button type="submit" 
-                        class="flex items-center justify-center px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-sm">
-                    <i class="fas fa-save mr-2"></i> Update Paddy
-                </button>
-            </div>
-        </form>
-    </div>
-
     <script>
-        // Price Range Update
         function updatePrice() {
-            const price = document.getElementById('Price').value;
+            const price = document.getElementById('MaxPricePerKg').value;
             const display = document.getElementById('priceDisplay');
             display.textContent = `Rs. ${price}`;
             
@@ -186,128 +68,254 @@
             }, 200);
         }
 
-        // Image Upload Handling
         function triggerFileInput() {
             document.getElementById('paddyImage').click();
         }
 
         function previewImage(event) {
             const image = document.getElementById('imagePreview');
-            if (event.target.files && event.target.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    image.src = e.target.result;
-                    image.classList.remove('hidden');
-                    
-                    // Add remove button if not existing
-                    if (!image.parentElement.querySelector('.remove-image')) {
-                        const removeBtn = document.createElement('div');
-                        removeBtn.className = 'remove-image';
-                        removeBtn.innerHTML = '<i class="fas fa-times"></i>';
-                        removeBtn.onclick = removeImage;
-                        image.parentElement.appendChild(removeBtn);
-                    }
-                    
-                    // Reset remove image flag
-                    document.getElementById('removeImageFlag').value = '0';
-                };
-                reader.readAsDataURL(event.target.files[0]);
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = event.target;
+            const file = fileInput.files[0];
+            
+            if (file) {
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                if (!validTypes.includes(file.type)) {
+                    showImageError('Please upload a valid image (JPEG, PNG, JPG)');
+                    fileInput.value = '';
+                    return;
+                }
+                
+                // Validate file size (2MB max)
+                if (file.size > 2 * 1024 * 1024) {
+                    showImageError('Image size must be less than 2MB');
+                    fileInput.value = '';
+                    return;
+                }
+                
+                clearImageError();
+                image.src = URL.createObjectURL(file);
+                document.getElementById('imagePreviewContainer').classList.remove('hidden');
+                uploadArea.classList.add('hidden');
             }
         }
 
         function removeImage() {
             const image = document.getElementById('imagePreview');
-            image.src = '#';
+            const uploadArea = document.getElementById('uploadArea');
             image.classList.add('hidden');
-            
-            // Remove the file from input
+            uploadArea.classList.remove('hidden');
             document.getElementById('paddyImage').value = '';
-            
-            // Remove the remove button
-            const removeBtn = image.parentElement.querySelector('.remove-image');
-            if (removeBtn) {
-                removeBtn.remove();
-            }
-            
-            // Set flag to remove existing image
-            document.getElementById('removeImageFlag').value = '1';
+            document.getElementById('imagePreviewContainer').classList.add('hidden');
+            clearImageError();
         }
 
-        // Drag and Drop Functionality
-        document.addEventListener('DOMContentLoaded', () => {
-            const dropZone = document.getElementById('dropZone');
+        function showImageError(message) {
+            const uploadArea = document.getElementById('uploadArea');
+            const errorElement = document.getElementById('imageError');
+            
+            // Show error message and style upload area
+            errorElement.textContent = message;
+            errorElement.classList.remove('hidden');
+            uploadArea.classList.add('border-red-500', 'bg-red-50');
+            uploadArea.classList.remove('border-gray-300', 'hover:bg-gray-50');
+        }
+
+        function clearImageError() {
+            const uploadArea = document.getElementById('uploadArea');
+            const errorElement = document.getElementById('imageError');
+            
+            // Hide error message and reset upload area style
+            errorElement.classList.add('hidden');
+            uploadArea.classList.remove('border-red-500', 'bg-red-50');
+            uploadArea.classList.add('border-gray-300', 'hover:bg-gray-50');
+        }
+
+        function validateForm(event) {
+            let isValid = true;
+            
+            // Validate Paddy Name
+            const paddyName = document.getElementById('PaddyName').value.trim();
+            if (!paddyName) {
+                showError('PaddyName', 'Paddy type name is required');
+                isValid = false;
+            } else if (paddyName.length > 100) {
+                showError('PaddyName', 'Name must be less than 100 characters');
+                isValid = false;
+            } else {
+                clearError('PaddyName');
+            }
+            
+            // Validate Price
+            const price = document.getElementById('MaxPricePerKg').value;
+            if (!price || price <= 0) {
+                showError('MaxPricePerKg', 'Price must be greater than 0');
+                isValid = false;
+            } else if (price > 1000) {
+                showError('MaxPricePerKg', 'Price must be less than Rs. 1000');
+                isValid = false;
+            } else {
+                clearError('MaxPricePerKg');
+            }
+            
+            // Validate Image
             const fileInput = document.getElementById('paddyImage');
-
-            // Prevent default drag behaviors
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                dropZone.addEventListener(eventName, preventDefaults, false);
-                document.body.addEventListener(eventName, preventDefaults, false);
-            });
-
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
+            if (!fileInput || (fileInput.files.length === 0 && !document.getElementById('imagePreview').src.includes('storage/'))) {
+                showImageError('Please select an image to upload');
+                isValid = false;
+            } else {
+                clearImageError();
             }
-
-            // Highlight drop zone when item is dragged over it
-            ['dragenter', 'dragover'].forEach(eventName => {
-                dropZone.addEventListener(eventName, highlight, false);
-            });
-
-            ['dragleave', 'drop'].forEach(eventName => {
-                dropZone.addEventListener(eventName, unhighlight, false);
-            });
-
-            function highlight() {
-                dropZone.classList.add('active');
-                dropZone.innerHTML = `
-                    <i class="fas fa-file-upload text-3xl text-green-500 mb-3"></i>
-                    <p class="text-sm md:text-base text-gray-600 font-medium text-center">
-                        Drop your image here to upload
-                    </p>
-                `;
-            }
-
-            function unhighlight() {
-                dropZone.classList.remove('active');
-                dropZone.innerHTML = `
-                    <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-3"></i>
-                    <p class="text-sm md:text-base text-gray-600 font-medium text-center">
-                        Click to upload or drag and drop your image here
-                    </p>
-                    <p class="text-xs text-gray-400 mt-2">
-                        Supports: JPG, PNG (Max 5MB)
-                    </p>
-                `;
-            }
-
-            // Handle dropped files
-            dropZone.addEventListener('drop', handleDrop, false);
-
-            function handleDrop(e) {
-                const dt = e.dataTransfer;
-                const files = dt.files;
-                
-                if (files.length) {
-                    // Validate file type
-                    const validTypes = ['image/jpeg', 'image/png'];
-                    if (!validTypes.includes(files[0].type)) {
-                        alert('Please upload only JPG or PNG images');
-                        return;
-                    }
-                    
-                    // Validate file size (5MB)
-                    if (files[0].size > 5 * 1024 * 1024) {
-                        alert('File size should not exceed 5MB');
-                        return;
-                    }
-                    
-                    fileInput.files = files;
-                    const event = new Event('change');
-                    fileInput.dispatchEvent(event);
+            
+            if (!isValid) {
+                event.preventDefault();
+                // Scroll to the first error
+                const firstError = document.querySelector('.text-red-600:not(.hidden)');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }
+            
+            return isValid;
+        }
+
+        function showError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(`${fieldId}-error`);
+            
+            if (errorElement) {
+                errorElement.textContent = message;
+            } else {
+                const div = document.createElement('div');
+                div.id = `${fieldId}-error`;
+                div.className = 'mt-1 text-sm text-red-600';
+                div.textContent = message;
+                field.parentNode.appendChild(div);
+            }
+            
+            field.classList.add('border-red-500');
+            field.classList.remove('border-gray-300');
+        }
+
+        function clearError(fieldId) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(`${fieldId}-error`);
+            
+            if (errorElement) {
+                errorElement.remove();
+            }
+            
+            field.classList.remove('border-red-500');
+            field.classList.add('border-gray-300');
+        }
+
+        // Initialize form validation on load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add validation on blur for text input
+            document.getElementById('PaddyName').addEventListener('blur', function() {
+                const value = this.value.trim();
+                if (!value) {
+                    showError('PaddyName', 'Paddy type name is required');
+                } else if (value.length > 100) {
+                    showError('PaddyName', 'Name must be less than 100 characters');
+                } else {
+                    clearError('PaddyName');
+                }
+            });
+            
+            // Clear image error when clicking upload area
+            document.getElementById('uploadArea').addEventListener('click', function() {
+                clearImageError();
+            });
+            
+            // Initialize price display
+            updatePrice();
         });
     </script>
+</head>
+<body class="blur-background flex items-center justify-center min-h-screen p-4 md:p-8">
+    <div class="form-container w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden">
+        <!-- Header Section -->
+        <div class="bg-green-700 px-6 py-4">
+            <h1 class="text-2xl font-bold text-white text-center">
+                Edit Paddy Type
+            </h1>
+        </div>
+        
+        <!-- Form Section -->
+        <div class="p-6">
+            <form action="{{ route('admin.paddy.update', $paddy->PaddyID) }}" method="post" enctype="multipart/form-data" class="space-y-6" onsubmit="return validateForm(event)">
+                @csrf
+                @method('PUT')
+
+                <!-- Paddy Name -->
+                <div class="space-y-2">
+                    <label for="PaddyName" class="block text-base font-medium text-gray-700">Paddy Type Name <span class="text-red-500">*</span></label>
+                    <input type="text" name="PaddyName" id="PaddyName" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                           value="{{ old('PaddyName', $paddy->PaddyName) }}" 
+                           placeholder="Enter paddy variety name" required
+                           maxlength="100">
+                </div>
+
+                <!-- Price Range -->
+                <div class="space-y-4">
+                    <label class="block text-base font-medium text-gray-700">Maximum Price (per kg) <span class="text-red-500">*</span></label>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm text-gray-500">Rs. 0</span>
+                        <span id="priceDisplay" class="text-sm font-semibold">Rs. {{ old('MaxPricePerKg', $paddy->MaxPricePerKg) }}</span>
+                        <span class="text-sm text-gray-500">Rs. 1000</span>
+                    </div>
+                    <input type="range" id="MaxPricePerKg" name="MaxPricePerKg" 
+                           min="1" max="1000" value="{{ old('MaxPricePerKg', $paddy->MaxPricePerKg) }}" step="5" 
+                           oninput="updatePrice()" 
+                           class="w-full">
+                </div>
+
+                <!-- Image Upload -->
+                <div class="space-y-2">
+                    <label class="block text-base font-medium text-gray-700">Paddy Image <span class="text-red-500">*</span></label>
+                    <!-- Image Preview -->
+                    <div id="imagePreviewContainer" class="{{ $paddy->Image ? '' : 'hidden' }} relative mt-2">
+                        <img id="imagePreview" class="w-full h-40 object-cover rounded-lg border border-gray-200" 
+                             src="{{ $paddy->Image ? asset('storage/' . $paddy->Image) : '#' }}">
+                        <button type="button" onclick="removeImage()" 
+                                class="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                    </div>
+
+                    <div id="uploadArea" onclick="triggerFileInput()" 
+                         class="border-2 border-dashed border-gray-300 rounded-lg p- flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition">
+                        <i class="fas fa-cloud-upload-alt text-xl text-gray-400 mb-2"></i>
+                        <p class="text-sm text-gray-500 text-center">
+                            <span class="font-medium text-green-600">Click to upload</span> or drag and drop<br>
+                            <span class="text-xs">PNG, JPG, JPEG (Max 2MB)</span>
+                        </p>
+                    </div>
+                    <!-- Error message container -->
+                    <div id="imageError" class="hidden mt-1 text-sm text-red-600"></div>
+                    
+                    <input type="file" id="paddyImage" name="Image" class="hidden" accept="image/jpeg, image/png, image/jpg" onchange="previewImage(event)">
+                    <input type="hidden" id="removeImageFlag" name="remove_image" value="0">
+                    
+                    
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex justify-between pt-4">
+                    <button type="button" onclick="window.history.back()" 
+                            class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition flex items-center">
+                        <i class="fas fa-arrow-left mr-2"></i> Back
+                    </button>
+                    <button type="submit" 
+                            class="px-6 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 transition flex items-center">
+                        <i class="fas fa-save mr-2"></i> Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

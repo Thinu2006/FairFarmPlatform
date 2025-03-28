@@ -16,7 +16,7 @@ Route::get('/', function () {
 
 // Admin Routes
 Route::prefix('admin')->name('admin.')->group(function () {
-    // Admin authentication routes
+    // Admin authentication routesN
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
     Route::post('login', [AdminAuthController::class, 'login']);
     Route::get('otp-verify', [AdminAuthController::class, 'showOTPVerificationForm'])->name('otp.verify');

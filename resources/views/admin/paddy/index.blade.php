@@ -3,14 +3,35 @@
 @section('title', 'Paddy List')
 
 @section('content')
-<div class="rounded-2xl bg-gray-50 font-sans">
+<div class="rounded-2xl bg-gray-50 font-sans md:p-4 p-1">
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-gray-800 font-merriweather">Confirm Deletion</h3>
+            </div>
+            <p class="text-gray-600 mb-6 font-open-sans">Are you sure you want to delete this paddy type? This action cannot be undone.</p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition font-open-sans">
+                    Cancel
+                </button>
+                <form id="deleteForm" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition font-open-sans">
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Header Section -->
-    <header class="bg-white shadow overflow-hidden sm:rounded-2xl mb-6">
+    <header class="bg-white shadow overflow-hidden rounded-xl md:text-left text-center">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row items-center md:justify-between ">
                 <div class="flex-1 min-w-0">
                     <h1 class="text-2xl font-bold text-gray-900 font-merriweather">Paddy Types Management</h1>
-                    <p class="mt-1 text-sm text-gray-500 font-open-sans">View and manage all available paddy varieties</p>
                 </div>
                 <div class="mt-4 md:mt-0">
                     <a href="{{ route('admin.paddy.create') }}" class="inline-flex items-center px-4 py-2 bg-green-700 border border-transparent rounded-md font-semibold text-white hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all font-open-sans">
@@ -22,7 +43,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 font-open-sans">
+    <main class="mt-8 md:mt-12">
         @if ($paddytypes->isNotEmpty())
         <!-- Paddy Cards Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
@@ -36,7 +57,6 @@
                     @else
                         <div class="h-full flex flex-col items-center justify-center text-gray-400">
                             <i class="fas fa-seedling text-5xl mb-2"></i>
-                            <span class="text-sm">No image available</span>
                         </div>
                     @endif
                     
@@ -47,36 +67,23 @@
                            title="Edit">
                             <i class="fas fa-pencil-alt text-sm"></i>
                         </a>
-                        <form action="{{ route('admin.paddy.destroy', $paddy->PaddyID) }}" method="POST"
-                              onsubmit="return confirm('Delete this paddy type?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" 
-                                    class="p-2 bg-white rounded-full shadow-md text-red-600 hover:bg-red-50 transition-colors"
-                                    title="Delete">
-                                <i class="fas fa-trash text-sm"></i>
-                            </button>
-                        </form>
+                        <button onclick="showDeleteModal('{{ route('admin.paddy.destroy', $paddy->PaddyID) }}')"
+                                class="p-2 bg-white rounded-full shadow-md text-red-600 hover:bg-red-50 transition-colors"
+                                title="Delete">
+                            <i class="fas fa-trash text-sm"></i>
+                        </button>
                     </div>
                 </div>
                 
                 <!-- Card content -->
-                <div class="p-4">
+                <div class="p-4 mb-4">
                     <div class="flex justify-between items-start">
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-800 font-merriweather">{{ $paddy->PaddyName }}</h3>
-                            <p class="text-xs text-gray-500 mt-1 font-open-sans">ID: {{ $paddy->PaddyID }}</p>
+                            <h3 class="text-lg font-bold text-gray-800 ">{{ $paddy->PaddyName }}</h3>
+                            <p class="text-xs text-gray-500 mt-1">ID: {{ $paddy->PaddyID }}</p>
                         </div>
-                        <span class="inline-flex items-center px-2.5 py-[4px] rounded-full text-xs font-medium bg-green-100 text-green-800 font-open-sans">
+                        <span class="inline-flex items-center px-2.5 py-[4px] rounded-full text-xs font-medium bg-green-100 text-green-800">
                             Rs. {{ number_format($paddy->MaxPricePerKg, 2) }}/kg
-                        </span>
-                    </div>
-                    
-                    <!-- Additional details -->
-                    <div class="mt-3 pt-3 border-t border-gray-100 flex justify-end text-xs text-gray-500 font-open-sans">
-                        <span>
-                            <i class="fas fa-calendar-alt mr-1"></i>
-                            {{ $paddy->created_at->format('M d, Y') }}
                         </span>
                     </div>
                 </div>
@@ -100,4 +107,32 @@
         @endif
     </main>
 </div>
+
+<script>
+    function showDeleteModal(url) {
+        const modal = document.getElementById('deleteModal');
+        const form = document.getElementById('deleteForm');
+        form.action = url;
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('deleteModal');
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+</script>
 @endsection

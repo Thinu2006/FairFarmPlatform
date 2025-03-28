@@ -33,7 +33,7 @@
                 max-height: 0;
                 overflow: hidden;
                 transition: max-height 0.3s ease-out;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0);
             }
             
             #mobile-nav.open {
@@ -44,7 +44,6 @@
         /* Active link styling */
         .active-nav-link {
             background-color: rgba(255, 255, 255, 0.1);
-            border-left: 4px solid #fff;
         }
         
         /* Sidebar animation */
@@ -116,7 +115,7 @@
                 <i class="fas fa-home text-white w-5"></i>
                 <span>Dashboard</span>
             </a>
-            <a href="{{ route('admin.farmer.index') }}" class="nav-item flex items-center space-x-3 p-3 rounded-lg transition-colors @if(request()->routeIs('admin.farmer.index')) active-nav-link @endif">
+            <a href="{{ route('admin.farmer.index') }}" class="nav-item flex items-center space-x-3 p-3 rounded-lg  @if(request()->routeIs('admin.farmer.index')) active-nav-link @endif">
                 <i class="fas fa-tractor text-white w-5"></i>
                 <span>Farmers</span>
             </a>
