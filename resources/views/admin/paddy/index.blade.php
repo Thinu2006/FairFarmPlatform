@@ -33,11 +33,13 @@
                 <div class="flex-1 min-w-0">
                     <h1 class="text-2xl font-bold text-gray-900 font-merriweather">Paddy Types Management</h1>
                 </div>
+                @if ($paddytypes->isNotEmpty())
                 <div class="mt-4 md:mt-0">
                     <a href="{{ route('admin.paddy.create') }}" class="inline-flex items-center px-4 py-2 bg-green-700 border border-transparent rounded-md font-semibold text-white hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all font-open-sans">
                         <i class="fas fa-plus mr-2"></i> Add New Type
                     </a>
                 </div>
+                @endif
             </div>
         </div>
     </header>
@@ -96,7 +98,7 @@
             <div class="mx-auto h-20 w-20 rounded-full bg-green-50 flex items-center justify-center text-green-600 mb-4">
                 <i class="fas fa-seedling text-3xl"></i>
             </div>
-            <h3 class="text-lg font-medium text-gray-900 font-merriweather">No paddy types found</h3>
+            <h3 class="text-base font-bold text-gray-900 font-merriweather">No Paddy Types Found</h3>
             <p class="mt-2 text-sm text-gray-500 font-open-sans">Start by adding your first paddy variety to the system.</p>
             <div class="mt-6">
                 <a href="{{ route('admin.paddy.create') }}" class="inline-flex items-center px-4 py-2 bg-green-700 border border-transparent rounded-md font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all font-open-sans">

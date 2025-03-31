@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Paddy Record</title>
+    <link rel="icon" type="image/png" href="../../Images/Logo.png">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,8 +33,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('{{ asset('images/FarmerLoginBG.jpg') }}') no-repeat center center/cover;
-            filter: blur(8px);
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6)), url('{{ asset('images/FarmerLoginBG.jpg') }}') no-repeat center center/cover;
             z-index: -1;
         }
         .form-container {
@@ -99,6 +99,10 @@
                 background-attachment: scroll;
             }
         }
+        .price-error-container {
+            min-height: 20px;
+            margin-top: 4px;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -112,7 +116,7 @@
                 </div>
 
                 <!-- Form Section -->
-                <form action="{{ route('farmer.paddy.listing.update', $paddyListing->id) }}" method="POST" enctype="multipart/form-data" class="p-6 sm:p-4 space-y-2">
+                <form action="{{ route('farmer.paddy.listing.update', $paddyListing->id) }}" method="POST" enctype="multipart/form-data" class="p-6 sm:p-4 space-y-2" onsubmit="return validateForm()">
                     @csrf
                     @method('PUT')
 
@@ -135,7 +139,7 @@
                     <!-- Price Slider Section -->
                     <div class="info-card p-4 sm:p-5 rounded-lg space-y-4">
                         <div>
-                            <label class="block text-sm sm:text-base font-semibold text-green-700 mb-1">Price Per Kilogram</label>
+                            <label class="block text-sm sm:text-base font-semibold text-green-700 mb-1">Price Per Kilogram <span class="text-red-500">*</span></label>
                         </div>
                         
                         <!-- Max Price Indicator -->
@@ -150,6 +154,7 @@
                                    min="0" max="{{ $paddyListing->paddyType->MaxPricePerKg }}" 
                                    value="{{ $paddyListing->PriceSelected }}" 
                                    class="w-full h-2 sm:h-2.5">
+                            <div id="priceError" class="error-message price-error-container"></div>
                         </div>
                         
                         <!-- Selected Price Display -->
@@ -161,14 +166,14 @@
 
                     <!-- Quantity Input -->
                     <div class="info-card p-4 sm:p-5 rounded-lg space-y-3">
-                        <label for="Quantity" class="block text-sm sm:text-base font-semibold text-green-700">Available Quantity (kg)</label>
+                        <label for="Quantity" class="block text-sm sm:text-base font-semibold text-green-700">Available Quantity (kg) <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <input type="number" name="Quantity" id="Quantity" 
                                    value="{{ $paddyListing->Quantity }}" min="1" 
                                    class="w-full px-4 py-2 sm:py-3 border border-green-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-700">
                             <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">kg</span>
                         </div>
-                        <p class="text-xs text-green-600">Enter the total kilograms available for sale</p>
+                        <div id="quantityError" class="error-message"></div>
                     </div>
 
                     <!-- Form Actions -->
@@ -192,7 +197,12 @@
         function updatePriceDisplay() {
             const priceSlider = document.getElementById('PriceSelected');
             const dynamicPriceDisplay = document.getElementById('dynamicPriceDisplay');
+            const priceError = document.getElementById('priceError');
+            
             dynamicPriceDisplay.textContent = priceSlider.value;
+            
+            // Validate price when slider moves
+            validatePrice();
             
             // Add visual feedback when changing price
             dynamicPriceDisplay.classList.add('text-green-600', 'scale-105');
@@ -201,13 +211,82 @@
             }, 200);
         }
 
+        // Validate price input
+        function validatePrice() {
+            const priceSlider = document.getElementById('PriceSelected');
+            const priceError = document.getElementById('priceError');
+            const price = parseFloat(priceSlider.value);
+            
+            if (price <= 0) {
+                priceError.textContent = 'Price must be greater than 0';
+                priceSlider.classList.add('border-error');
+                return false;
+            }
+            
+            priceError.textContent = '';
+            priceSlider.classList.remove('border-error');
+            return true;
+        }
+
+        // Validate quantity input
+        function validateQuantity() {
+            const quantityInput = document.getElementById('Quantity');
+            const quantityError = document.getElementById('quantityError');
+            const quantity = parseFloat(quantityInput.value);
+            
+            if (isNaN(quantity) || quantity <= 0) {
+                quantityError.textContent = 'Quantity must be at least 1 kg';
+                quantityInput.classList.add('border-error');
+                return false;
+            }
+            
+            if (!Number.isInteger(quantity)) {
+                quantityError.textContent = 'Quantity must be a whole number';
+                quantityInput.classList.add('border-error');
+                return false;
+            }
+            
+            quantityError.textContent = '';
+            quantityInput.classList.remove('border-error');
+            return true;
+        }
+
+        // Validate form before submission
+        function validateForm() {
+            let isValid = true;
+            
+            // Validate price
+            if (!validatePrice()) {
+                isValid = false;
+            }
+            
+            // Validate quantity
+            if (!validateQuantity()) {
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                // Scroll to the first error
+                const firstError = document.querySelector('.error-message:not(:empty)');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+            
+            return isValid;
+        }
+
         // Initialize price display on page load
         document.addEventListener('DOMContentLoaded', function () {
-            updatePriceDisplay();
+            // Set up event listeners
+            const priceSlider = document.getElementById('PriceSelected');
+            const quantityInput = document.getElementById('Quantity');
             
             // Update price display when slider moves
-            const priceSlider = document.getElementById('PriceSelected');
             priceSlider.addEventListener('input', updatePriceDisplay);
+            
+            // Validate quantity when input changes
+            quantityInput.addEventListener('input', validateQuantity);
             
             // Add touch support for mobile devices
             priceSlider.addEventListener('touchstart', function() {
@@ -216,6 +295,10 @@
             priceSlider.addEventListener('touchend', function() {
                 this.classList.remove('active');
             });
+
+            // Validate fields on initial load
+            validatePrice();
+            validateQuantity();
         });
 
         // Add animation to quantity input when focused

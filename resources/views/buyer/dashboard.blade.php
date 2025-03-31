@@ -1,42 +1,248 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- Hero Section with Animation -->
-    <!-- <section class="relative w-full min-h-[60vh] md:min-h-screen bg-cover bg-center flex items-center justify-center overflow-hidden" style="background-image: url('{{ asset('images/HomepgBG.jpg') }}');">
-        <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-black/40 flex items-center justify-center px-6 sm:px-8 lg:px-16 text-center">
-            <h2 class="text-white text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold px-4 leading-tight sm:leading-snug animate-fadeInUp">
-                Sri Lanka Has A Long History Of Agriculture
-            </h2>
-        </div>
-    </section> -->
-
-    <!-- Hero Section -->
-    <section class="relative w-full min-h-[50vh] md:min-h-screen bg-cover bg-center flex items-center justify-center" style="background-image: url('{{ asset('images/HomepgBG.jpg') }}');">
-        <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-black/40 flex items-center justify-center px-6 sm:px-8 md:px-12 text-center">
-            <h2 class="text-white text-2xl sm:text-4xl md:text-6xl font-bold hero-text">Sri Lanka Has A Long History Of Agriculture</h2>
-        </div>
-    </section>
-
-
-    <!-- About Section with Animation -->
-    <section class="py-16 md:py-20 px-6 sm:px-8 lg:px-12 xl:px-16 max-w-7xl mx-auto overflow-hidden">
-        <div class="flex flex-col lg:flex-row items-center gap-8 xl:gap-12">
-            <div class="w-full lg:w-2/5 animate-fadeInUp">
-                <img src="{{ asset('images/IMG4.jpg') }}" alt="Paddy" 
-                     class="w-full h-auto rounded-xl shadow-lg object-cover hover:scale-105 transition-transform duration-500">
-            </div>
-            <div class="w-full lg:w-3/5 animate-fadeInUp ">
-                <h3 class="text-[#1F4529] text-3xl md:text-4xl font-bold mb-6">Paddy Of Sri Lanka</h3>
-                <div class="space-y-4 text-gray-800 text-base md:text-lg leading-relaxed">
-                    <p class="animate-fadeInUp ">Sri Lanka has a deep-rooted history in agriculture, particularly in paddy cultivation. The country's fertile lands and traditional farming techniques have resulted in some of the finest rice varieties in the world.</p>
-                    <p class="animate-fadeInUp">Farmers across the island dedicate their lives to producing high-quality rice that meets both local and international demands.</p>
+    <section class="relative w-full min-h-[50vh] md:min-h-[90vh] overflow-hidden">
+        <!-- Slideshow Container -->
+        <div class="slideshow-container w-full h-full relative">
+            <!-- Slide 1 - Marketplace Focus -->
+            <div class="slide fade w-full h-full flex items-center justify-center" style="opacity: 1;">
+                <div class="absolute inset-0 bg-cover bg-center blur-sm" style="background-image: url('{{ asset('images/farmers-market.jpg') }}');"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-black/40 flex items-center justify-center px-4 sm:px-8 md:px-12 text-center">
+                    <h2 class="text-white text-xl sm:text-3xl md:text-5xl lg:text-6xl font-bold hero-text">Direct From Farm To Your Table</h2>
                 </div>
-                <button class="mt-8 bg-[#1F4529] hover:bg-green-800 text-white font-medium py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 animate-fadeInUp ">
-                    Read More
-                </button>
+            </div>
+            
+            <!-- Slide 2 - Quality Focus -->
+            <div class="slide fade w-full h-full flex items-center justify-center">
+                <div class="absolute inset-0 bg-cover bg-center blur-sm" style="background-image: url('{{ asset('images/premium-rice.png') }}');"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-black/40 flex items-center justify-center px-4 sm:px-8 md:px-12 text-center">
+                    <h2 class="text-white text-xl sm:text-3xl md:text-5xl lg:text-6xl font-bold hero-text">Premium Quality Rice At Fair Prices</h2>
+                </div>
+            </div>
+            
+            <!-- Slide 3 - Farmer Focus -->
+            <div class="slide fade w-full h-full flex items-center justify-center">
+                <div class="absolute inset-0 bg-cover bg-center blur-sm" style="background-image: url('{{ asset('images/happy-farmer.jpg') }}');"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-black/40 flex items-center justify-center px-4 sm:px-8 md:px-12 text-center">
+                    <h2 class="text-white text-xl sm:text-3xl md:text-5xl lg:text-6xl font-bold hero-text">Supporting Local Farmers Directly</h2>
+                </div>
+            </div>
+            
+            <!-- Slide 4 - Variety Focus -->
+            <div class="slide fade w-full h-full flex items-center justify-center">
+                <div class="absolute inset-0 bg-cover bg-center blur-sm" style="background-image: url('{{ asset('images/rice-varieties.png') }}');"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-black/40 flex items-center justify-center px-4 sm:px-8 md:px-12 text-center">
+                    <h2 class="text-white text-xl sm:text-3xl md:text-5xl lg:text-6xl font-bold hero-text">Discover Sri Lanka's Finest Rice Varieties</h2>
+                </div>
             </div>
         </div>
+        
+        <!-- Slideshow Controls -->
+        <a class="prev absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 text-white text-2xl md:text-4xl cursor-pointer z-10 hover:text-green-300 transition">❮</a>
+        <a class="next absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 text-white text-2xl md:text-4xl cursor-pointer z-10 hover:text-green-300 transition">❯</a>
+        
+        <!-- Slideshow Dots -->
+        <div class="dots-container absolute bottom-2 md:bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
+            <span class="dot w-2 h-2 md:w-3 md:h-3 rounded-full bg-green-300 cursor-pointer hover:bg-green-400 transition" onclick="currentSlide(1)"></span>
+            <span class="dot w-2 h-2 md:w-3 md:h-3 rounded-full bg-white cursor-pointer hover:bg-green-300 transition" onclick="currentSlide(2)"></span>
+            <span class="dot w-2 h-2 md:w-3 md:h-3 rounded-full bg-white cursor-pointer hover:bg-green-300 transition" onclick="currentSlide(3)"></span>
+            <span class="dot w-2 h-2 md:w-3 md:h-3 rounded-full bg-white cursor-pointer hover:bg-green-300 transition" onclick="currentSlide(4)"></span>
+        </div>
     </section>
+
+    <style>
+        .slideshow-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: inherit;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            overflow: hidden;
+        }
+        .slide > div:first-child {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(1px);
+            transform: scale(1.05);
+            transition: filter 0.3s ease; /* Smooth blur transition */
+        }
+        
+        .slide.fade {
+            opacity: 1;
+        }
+        
+        /* Responsive Controls */
+        .prev, .next {
+            user-select: none;
+            z-index: 10;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+            padding: 8px;
+            background-color: rgba(0,0,0,0.3);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Mobile-specific styles */
+        @media (max-width: 640px) {
+            .slide > div:first-child {
+                filter: blur(2px);
+                transform: scale(1.02);
+            }
+            .prev, .next {
+                width: 30px;
+                height: 30px;
+                font-size: 1.5rem;
+            }
+            
+            .hero-text {
+                font-size: 1.5rem;
+                padding: 0 1rem;
+            }
+            
+            .slide {
+                background-position: center center;
+            }
+        }
+        
+        /* Hero Text Animation */
+        .hero-text {
+            animation: fadeIn 1s ease-in-out;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Ensure dots are visible on all devices */
+        .dots-container {
+            z-index: 10;
+            padding: 4px 8px;
+            background-color: rgba(0,0,0,0.3);
+            border-radius: 20px;
+        }
+    </style>
+
+    <script>
+        // Improved Responsive Slideshow Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            let slideIndex = 1;
+            let slideInterval;
+            const slides = document.getElementsByClassName("slide");
+            const dots = document.getElementsByClassName("dot");
+            
+            // Initialize the slider
+            showSlides(slideIndex);
+            
+            // Start auto-advance
+            startSlideInterval();
+            
+            // Next/previous controls
+            function plusSlides(n) {
+                showSlides(slideIndex += n);
+                resetSlideInterval();
+            }
+            
+            // Thumbnail image controls
+            function currentSlide(n) {
+                showSlides(slideIndex = n);
+                resetSlideInterval();
+            }
+            
+            function showSlides(n) {
+                if (n > slides.length) {slideIndex = 1}
+                if (n < 1) {slideIndex = slides.length}
+                
+                for (let i = 0; i < slides.length; i++) {
+                    slides[i].style.opacity = "0";
+                }
+                
+                for (let i = 0; i < dots.length; i++) {
+                    dots[i].className = dots[i].className.replace(" bg-green-300", " bg-white");
+                }
+                
+                if (slides.length > 0) {
+                    slides[slideIndex-1].style.opacity = "1";
+                    dots[slideIndex-1].className = dots[slideIndex-1].className.replace(" bg-white", "");
+                    dots[slideIndex-1].className += " bg-green-300";
+                }
+            }
+            
+            function startSlideInterval() {
+                slideInterval = setInterval(() => {
+                    plusSlides(1);
+                }, 5000);
+            }
+            
+            function resetSlideInterval() {
+                clearInterval(slideInterval);
+                startSlideInterval();
+            }
+            
+            // Pause on hover (desktop only)
+            const slider = document.querySelector('.slideshow-container');
+            if (window.matchMedia("(min-width: 640px)").matches) {
+                slider.addEventListener('mouseenter', () => clearInterval(slideInterval));
+                slider.addEventListener('mouseleave', resetSlideInterval);
+            }
+            
+            // Touch events for mobile
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            slider.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+                clearInterval(slideInterval);
+            }, {passive: true});
+            
+            slider.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+                resetSlideInterval();
+            }, {passive: true});
+            
+            function handleSwipe() {
+                const threshold = 50; // Minimum swipe distance
+                if (touchEndX < touchStartX - threshold) {
+                    plusSlides(1); // Swipe left - next slide
+                } else if (touchEndX > touchStartX + threshold) {
+                    plusSlides(-1); // Swipe right - previous slide
+                }
+            }
+            
+            // Event listeners for controls
+            document.querySelector('.prev').addEventListener('click', () => plusSlides(-1));
+            document.querySelector('.next').addEventListener('click', () => plusSlides(1));
+            
+            // Dot controls
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                dot.addEventListener('click', () => currentSlide(index + 1));
+            });
+            
+            // Window resize handler
+            window.addEventListener('resize', function() {
+                // Adjust any responsive elements if needed
+            });
+        });
+    </script>
 
     <!-- Products Section with Animation -->
     <section class="py-16 md:py-20 bg-gray-50 overflow-hidden">
@@ -91,7 +297,7 @@
         </div>
     </section>
 
-    <!-- Quality and Pricing Section - Now Fully Responsive -->
+    <!-- Quality and Pricing Section -->
     <section class="relative w-full h-auto min-h-[400px] md:min-h-[500px] lg:min-h-[100px] bg-cover bg-center bg-no-repeat overflow-hidden" style="background-image: url('{{ asset('images/paddy4.jpg') }}');">
         <div class="bg-black/50 h-full flex items-center py-12 md:py-16">
             <div class="max-w-7xl mx-auto w-full px-6 sm:px-8 lg:px-12 xl:px-16">
@@ -172,7 +378,7 @@
 
     <!-- Animation Styles -->
     <style>
-        /* Keyframe Animations */
+        /* Animation Styles */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -231,10 +437,6 @@
         /* Delayed Animations */
         .delay-100 {
             animation-delay: 100ms;
-        }
-        
-        .delay-200 {
-            animation-delay: 200ms;
         }
         
         .delay-300 {

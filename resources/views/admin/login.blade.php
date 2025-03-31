@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login</title>
+    <link rel="icon" type="image/png" href="../../Images/Logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <style>
@@ -78,7 +79,7 @@
                     </div>
 
                     <!-- Remember Me Checkbox -->
-                    <div class="flex items-center justify-end">
+                    <!-- <div class="flex items-center justify-end">
                         <input 
                             type="checkbox" 
                             name="remember" 
@@ -88,7 +89,7 @@
                         <label for="remember" class="ml-2 block md:text-base text-gray-900">
                             Remember me
                         </label>
-                    </div>
+                    </div> -->
                 </form>
                 
                 <!-- Error Message Display -->

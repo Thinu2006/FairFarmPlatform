@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Paddy Record</title>
+    <link rel="icon" type="image/png" href="../../Images/Logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
 <body>
@@ -18,8 +19,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('{{ asset('images/FarmerLoginBG.jpg') }}') no-repeat center center/cover;
-        filter: blur(8px);
+        background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6)), url('{{ asset('images/FarmerLoginBG.jpg') }}') no-repeat center center/cover;
         z-index: -1;
     }
     .form-container {
@@ -30,7 +30,7 @@
         -webkit-appearance: none;
         height: 8px;
         border-radius: 5px;
-        background: #e5e7eb;
+        background: white;
     }
     input[type="range"]::-webkit-slider-thumb {
         -webkit-appearance: none;
@@ -61,6 +61,12 @@
         
         <!-- Form Section -->
         <div class="p-6 md:p-8">
+            @if(session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6 flex items-center justify-center" role="alert">
+                    <span class="text-center">{{ session('error') }}</span>
+                </div>
+            @endif
+            
             <form action="{{ route('farmer.selling.paddy.store') }}" method="POST" id="sellingForm" class="space-y-6" onsubmit="return validateForm()">
                 @csrf
                 <input type="hidden" name="FarmerID" value="{{ auth()->id() }}">

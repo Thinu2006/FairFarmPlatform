@@ -11,6 +11,7 @@ use App\Mail\SendOTP;
 
 class AdminAuthController extends Controller
 {
+    
     // Show the admin login form
     public function showLoginForm()
     {

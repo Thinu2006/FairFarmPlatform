@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Farmer Dashboard')</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../../Images/Logo.png">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,7 +46,6 @@
         /* Active link styling */
         .active-nav-link {
             background-color: rgba(255, 255, 255, 0.1);
-            border-left: 4px solid #fff;
         }
         
         /* Sidebar animation */
@@ -54,6 +55,33 @@
         
         .nav-item:hover {
             transform: translateX(4px);
+        }
+
+        /* Modal styles */
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .modal-visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content-hidden {
+            transform: translateY(-20px);
+        }
+        
+        .modal-content-visible {
+            transform: translateY(0);
         }
     </style>
 </head>
@@ -84,13 +112,10 @@
                 <i class="fas fa-truck text-white w-5 text-center"></i>
                 <span>Orders</span>
             </a>
-            <form action="{{ route('farmer.logout') }}" method="POST" class="pt-2 border-t border-green-700 mt-2">
-                @csrf
-                <button type="submit" class="flex items-center space-x-3 p-3 rounded-lg w-full transition-colors hover:bg-green-800">
-                    <i class="fas fa-sign-out-alt text-white w-5 text-center"></i>
-                    <span>Logout</span>
-                </button>
-            </form>
+            <button onclick="showLogoutModal()" class="flex items-center space-x-3 p-3 rounded-lg w-full transition-colors hover:bg-green-800">
+                <i class="fas fa-sign-out-alt text-white w-5 text-center"></i>
+                <span>Logout</span>
+            </button>
         </div>
     </nav>
 
@@ -112,13 +137,10 @@
                 <i class="fas fa-truck text-white w-5"></i>
                 <span>Orders</span>
             </a>
-            <form action="{{ route('farmer.logout') }}" method="POST" class="pt-4 mt-4 border-t border-green-700">
-                @csrf
-                <button type="submit" class="nav-item flex items-center space-x-3 p-3 rounded-lg w-full transition-colors hover:bg-green-800">
-                    <i class="fas fa-sign-out-alt text-white w-5"></i>
-                    <span>Logout</span>
-                </button>
-            </form>
+            <button onclick="showLogoutModal()" class="nav-item flex items-center space-x-3 p-3 rounded-lg w-full transition-colors hover:bg-green-800">
+                <i class="fas fa-sign-out-alt text-white w-5"></i>
+                <span>Logout</span>
+            </button>
         </nav>
     </aside>
 
@@ -128,6 +150,31 @@
             @yield('content')
         </div>
     </main>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="modal fixed inset-0 flex items-center justify-center z-50 modal-hidden">
+        <div class="modal-overlay absolute inset-0 bg-black opacity-50"></div>
+        
+        <div class="modal-content bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative z-10 modal-content-hidden">
+            <div class="text-center">
+                <i class="fas fa-sign-out-alt text-4xl text-red-500 mb-4"></i>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Confirm Logout</h3>
+                <p class="text-gray-600 mb-6">Are you sure you want to logout from your account?</p>
+                
+                <div class="flex justify-center space-x-4">
+                    <button onclick="hideLogoutModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition-colors">
+                        Cancel
+                    </button>
+                    <form action="{{ route('farmer.logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Mobile menu toggle with animation
@@ -141,6 +188,44 @@
             const icon = this.querySelector('i');
             icon.classList.toggle('fa-bars');
             icon.classList.toggle('fa-times');
+        });
+
+        // Logout Modal Functions
+        function showLogoutModal() {
+            const modal = document.getElementById('logoutModal');
+            const modalContent = modal.querySelector('.modal-content');
+            
+            modal.classList.remove('modal-hidden');
+            modal.classList.add('modal-visible');
+            
+            setTimeout(() => {
+                modalContent.classList.remove('modal-content-hidden');
+                modalContent.classList.add('modal-content-visible');
+            }, 10);
+        }
+        
+        function hideLogoutModal() {
+            const modal = document.getElementById('logoutModal');
+            const modalContent = modal.querySelector('.modal-content');
+            
+            modalContent.classList.remove('modal-content-visible');
+            modalContent.classList.add('modal-content-hidden');
+            
+            setTimeout(() => {
+                modal.classList.remove('modal-visible');
+                modal.classList.add('modal-hidden');
+            }, 300);
+        }
+        
+        // Close modal when clicking outside
+        document.querySelector('.modal-overlay').addEventListener('click', hideLogoutModal);
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            const modal = document.getElementById('logoutModal');
+            if (event.key === 'Escape' && modal.classList.contains('modal-visible')) {
+                hideLogoutModal();
+            }
         });
     </script>
 </body>

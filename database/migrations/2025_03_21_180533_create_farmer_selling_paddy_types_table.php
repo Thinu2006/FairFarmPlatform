@@ -12,16 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('farmer_selling_paddy_types', function (Blueprint $table) {
-            $table->id(); // Primary key
-            $table->unsignedBigInteger('FarmerID'); // Foreign key to the farmers table
-            $table->unsignedBigInteger('PaddyID'); // Foreign key to the paddy_types table
-            $table->decimal('PriceSelected', 8, 2); // Price selected by the farmer (per kg)
-            $table->integer('Quantity'); // Quantity of paddy (in kg)
-            $table->timestamps(); // Created at and updated at timestamps
-        
-            // Foreign key constraints
+            $table->id();
+            $table->unsignedBigInteger('FarmerID');
+            $table->unsignedBigInteger('PaddyID');
+            $table->decimal('PriceSelected', 8, 2);
+            $table->integer('Quantity');
+            $table->timestamps();
+            
             $table->foreign('FarmerID')->references('FarmerID')->on('farmers')->onDelete('cascade');
             $table->foreign('PaddyID')->references('PaddyID')->on('paddy_types')->onDelete('cascade');
+            
+            // Add unique constraint
+            $table->unique(['FarmerID', 'PaddyID']);
         });
     }
 

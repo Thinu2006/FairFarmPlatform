@@ -9,6 +9,7 @@ use App\Http\Controllers\BuyerDashboardController;
 use App\Http\Controllers\PaddyTypeController;
 use App\Http\Controllers\FarmerSellingPaddyTypesController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
@@ -16,14 +17,26 @@ Route::get('/', function () {
 
 // Admin Routes
 Route::prefix('admin')->name('admin.')->group(function () {
-    // Admin authentication routesN
-    Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
-    Route::post('login', [AdminAuthController::class, 'login']);
-    Route::get('otp-verify', [AdminAuthController::class, 'showOTPVerificationForm'])->name('otp.verify');
-    Route::post('otp-verify', [AdminAuthController::class, 'verifyOTP'])->name('otp.verify.submit');
-    Route::post('logout', [AdminAuthController::class, 'logout'])->name('logout');
+    // Public authentication routes
+    Route::get('login', [AdminAuthController::class, 'showLoginForm'])
+        ->name('login')
+        ->middleware('guest:admin'); // Prevent logged-in admins from accessing login
+    
+    Route::post('login', [AdminAuthController::class, 'login'])
+        ->middleware('guest:admin');
+        
+    Route::get('otp-verify', [AdminAuthController::class, 'showOTPVerificationForm'])
+        ->name('otp.verify')
+        ->middleware('guest:admin');
+        
+    Route::post('otp-verify', [AdminAuthController::class, 'verifyOTP'])
+        ->name('otp.verify.submit')
+        ->middleware('guest:admin');
+        
+    Route::post('logout', [AdminAuthController::class, 'logout'])
+        ->name('logout');
 
-    // Admin protected routes (requires admin authentication)
+    // Protected admin routes
     Route::middleware(['auth:admin'])->group(function () {
         // Dashboard
         Route::get('dashboard', function () {
@@ -31,25 +44,35 @@ Route::prefix('admin')->name('admin.')->group(function () {
         })->name('dashboard');
 
         // Paddy management routes
-        Route::get('paddy', [PaddyTypeController::class, 'index'])->name('paddy.index');
-        Route::get('paddy/create', [PaddyTypeController::class, 'create'])->name('paddy.create');
-        Route::post('paddy', [PaddyTypeController::class, 'store'])->name('paddy.store');
-        Route::get('paddy/{id}/edit', [PaddyTypeController::class, 'edit'])->name('paddy.edit');
-        Route::put('paddy/{id}', [PaddyTypeController::class, 'update'])->name('paddy.update');
-        Route::delete('paddy/{id}', [PaddyTypeController::class, 'destroy'])->name('paddy.destroy');
+        Route::resource('paddy', PaddyTypeController::class)
+            ->except(['show'])
+            ->names([
+                'index' => 'paddy.index',
+                'create' => 'paddy.create',
+                'store' => 'paddy.store',
+                'edit' => 'paddy.edit',
+                'update' => 'paddy.update',
+                'destroy' => 'paddy.destroy'
+            ]);
 
-        // Farmer management routes
+        // Farmer management
         Route::get('farmer', [FarmerController::class, 'index'])->name('farmer.index');
-        Route::delete('farmer/{id}', [FarmerController::class, 'destroyFarmer'])->name('farmer.destroy');
+        Route::delete('farmer/{id}', [FarmerController::class, 'destroyFarmer'])
+            ->name('farmer.destroy');
 
-        // Buyer management routes
+        // Buyer management
         Route::get('buyer', [BuyerController::class, 'index'])->name('buyer.index');
-        Route::delete('buyer/{id}', [BuyerController::class, 'destroy'])->name('buyer.destroy');
+        Route::delete('buyer/{id}', [BuyerController::class, 'destroy'])
+            ->name('buyer.destroy');
 
         // Farmer Paddy Selections
-        Route::get('farmer-paddy-selections', [FarmerSellingPaddyTypesController::class, 'farmerSelections'])->name('farmer.paddy.selections');
-    
-        Route::delete('farmer-paddy-selections/{id}', [FarmerSellingPaddyTypesController::class, 'destroyFarmerSelectedPaddyType'])->name('farmer.paddy.delete');
+        Route::get('farmer-paddy-selections', 
+            [FarmerSellingPaddyTypesController::class, 'farmerSelections'])
+            ->name('farmer.paddy.selections');
+        
+        Route::delete('farmer-paddy-selections/{id}', 
+            [FarmerSellingPaddyTypesController::class, 'destroyFarmerSelectedPaddyType'])
+            ->name('farmer.paddy.delete');
     });
 });
 

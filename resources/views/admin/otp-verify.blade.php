@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OTP Verification | Fair Farm</title>
+    <link rel="icon" type="image/png" href="../../Images/Logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Roboto+Slab:wght@400;600&display=swap');
         
@@ -13,6 +15,17 @@
         }
         h1, h2 {
             font-family: "Playfair Display", serif;
+        }
+        .otp-input-container {
+            position: relative;
+        }
+        .toggle-otp-visibility {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6b7280;
         }
     </style>
 </head>
@@ -32,8 +45,9 @@
                 <h2 class="text-3xl font-bold mb-12 text-gray-700 text-center">OTP Verification</h2>
                 <form method="POST" action="{{ route('admin.otp.verify.submit') }}" class="space-y-8">
                     @csrf
-                    <div>
-                        <input type="text" name="otp" placeholder="Enter OTP" class="block w-full p-3 border-2 rounded-lg focus:outline-gray-600" required>
+                    <div class="otp-input-container">
+                        <input type="password" name="otp" id="otp" placeholder="Enter OTP" class="block w-full p-3 border-2 rounded-lg focus:outline-gray-600 pr-10" required>
+                        <i class="toggle-otp-visibility fas fa-eye" id="toggleOtpVisibility"></i>
                     </div>
                     <div class="pt-4 px-12">
                         <button type="submit" class="w-full bg-gray-700 text-white py-3 rounded-lg hover:bg-gray-800 transition">Verify OTP</button>
@@ -47,5 +61,24 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleOtpVisibility = document.getElementById('toggleOtpVisibility');
+            const otpInput = document.getElementById('otp');
+            
+            toggleOtpVisibility.addEventListener('click', function() {
+                if (otpInput.type === 'password') {
+                    otpInput.type = 'text';
+                    toggleOtpVisibility.classList.remove('fa-eye');
+                    toggleOtpVisibility.classList.add('fa-eye-slash');
+                } else {
+                    otpInput.type = 'password';
+                    toggleOtpVisibility.classList.remove('fa-eye-slash');
+                    toggleOtpVisibility.classList.add('fa-eye');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

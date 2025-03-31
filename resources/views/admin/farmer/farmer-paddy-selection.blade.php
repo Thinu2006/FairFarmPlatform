@@ -3,7 +3,34 @@
 @section('title', 'Farmer Paddy Selections')
 
 @section('content')
-<div class="rounded-2xl bg-gray-50">
+<div class="rounded-2xl bg-gray-50 md:p-4 p-1">
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-gray-800">Confirm Deletion</h3>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <p class="text-gray-600 mb-6">Are you sure you want to delete this paddy selection? This action cannot be undone.</p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition">
+                    Cancel
+                </button>
+                <form id="deleteForm" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition">
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Header Section -->
     <header class="bg-white shadow overflow-hidden rounded-xl md:text-left text-center">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
@@ -17,62 +44,25 @@
 
     <!-- Main Content -->
     <main class="mt-8 md:mt-12">
-        <!-- Delete Confirmation Modal -->
-        <div id="deleteModal" class="fixed z-50 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                                <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                </svg>
-                            </div>
-                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Delete Listing</h3>
-                                <div class="mt-2">
-                                    <p class="text-sm text-gray-500">Are you sure you want to delete this listing? This action cannot be undone.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                        <form id="deleteForm" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                                Delete
-                            </button>
-                        </form>
-                        <button type="button" onclick="closeModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Farmer Selections Table -->
         <div class="bg-white shadow overflow-hidden sm:rounded-lg">
             <div class="responsive-table">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="px-3 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-4 py-3 text-left text-sm font-bold text-gray-800 uppercase">
                                 Farmer
                             </th>
-                            <th scope="col" class="px-3 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-4 py-3 text-left text-sm font-bold text-gray-800 uppercase">
                                 Paddy Type
                             </th>
-                            <th scope="col" class="px-3 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-4 py-3 text-left text-sm font-bold text-gray-800 uppercase">
                                 Qty (kg)
                             </th>
-                            <th scope="col" class="px-3 py-2 md:px-6 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Price (Rs/1kg)
+                            <th scope="col" class="px-4 py-3 text-left text-sm font-bold text-gray-800 uppercase">
+                                Price (Rs/kg)
                             </th>
-                            <th scope="col" class="px-3 py-2 md:px-6 md:py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-4 py-3 text-center text-sm font-bold text-gray-800 uppercase">
                                 Actions
                             </th>
                         </tr>
@@ -80,45 +70,44 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($selections as $selection)
                         <tr class="hover:bg-gray-50">
-                            <td data-label="Farmer" class="px-3 py-3 md:px-6 md:py-4 whitespace-normal">
+                            <td data-label="Farmer" class="px-4 py-4 whitespace-normal">
                                 <div class="flex items-center">
-                                    <div class="hidden md:flex flex-shrink-0 h-8 w-8 md:h-9 md:w-9 rounded-full bg-green-100 items-center justify-center">
-                                        <span class="text-green-600 font-medium text-sm md:text-base">{{ substr($selection->farmer->FullName, 0, 1) }}</span>
+                                    <div class="flex-shrink-0 h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                                        <span class="text-green-600 font-medium text-sm">{{ substr($selection->farmer->FullName, 0, 1) }}</span>
                                     </div>
-                                    <div class="ml-0 md:ml-3">
-                                        <div class="text-[15px] md:text-sm font-medium text-gray-900">{{ $selection->farmer->FullName }}</div>
-                                        <div class="text-sm md:text-xs text-gray-500">ID: {{ $selection->FarmerID }}</div>
+                                    <div class="ml-3">
+                                        <div class="text-sm font-medium text-gray-900">{{ $selection->farmer->FullName }}</div>
+                                        <div class="text-xs text-gray-500">ID: {{ $selection->FarmerID }}</div>
                                     </div>
                                 </div>
                             </td>
-                            <td data-label="Paddy Type" class="px-3 py-3 md:px-6 md:py-4 whitespace-normal">
+                            <td data-label="Paddy Type" class="px-4 py-4 whitespace-normal">
                                 <div class="flex items-center">
                                     @if($selection->paddyType->Image)
-                                        <img class="hidden md:block h-6 w-6 md:h-8 md:w-8 rounded-md object-cover mr-1 md:mr-2" 
+                                        <img class="h-8 w-8 rounded-md object-cover mr-2" 
                                             src="{{ asset('storage/' . $selection->paddyType->Image) }}" 
                                             alt="{{ $selection->paddyType->PaddyName }}">
                                     @endif
                                     <div>
-                                        <div class="text-[15px] md:text-sm font-medium text-gray-900">{{ $selection->paddyType->PaddyName }}</div>
-                                        <div class="text-sm md:text-xs text-gray-500">ID: {{ $selection->paddyType->PaddyID }}</div>
+                                        <div class="text-sm font-medium text-gray-900">{{ $selection->paddyType->PaddyName }}</div>
+                                        <div class="text-xs text-gray-500">ID: {{ $selection->paddyType->PaddyID }}</div>
                                     </div>
                                 </div>
                             </td>
-                            <td data-label="Qty (kg)" class="px-3 py-3 md:px-6 md:py-4 whitespace-normal">
-                                <div class="text-[15px] md:text-sm text-gray-900">{{ number_format($selection->Quantity) }}</div>
+                            <td data-label="Qty (kg)" class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {{ number_format($selection->Quantity) }}
                                 <div class="text-xs text-gray-400 hidden md:block">{{ $selection->created_at->format('M d, Y') }}</div>
                             </td>
-                            <td data-label="Price (Rs/kg)" class="px-3 py-3 md:px-6 md:py-4 whitespace-normal">
-                                <div class="text-[15px] md:text-sm font-medium text-green-600">Rs. {{ number_format($selection->PriceSelected, 2) }}</div>
-                                <div class="text-sm md:text-xs font-meduim text-gray-400">Max: Rs. {{ number_format($selection->paddyType->MaxPricePerKg, 2) }}</div>
+                            <td data-label="Price (Rs/kg)" class="px-4 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-green-600">Rs. {{ number_format($selection->PriceSelected, 2) }}</div>
+                                <div class="text-xs text-gray-400">Max: Rs. {{ number_format($selection->paddyType->MaxPricePerKg, 2) }}</div>
                             </td>
-                            <td data-label="Actions" class="px-3 py-3 md:px-6 md:py-4 whitespace-normal">
-                                <div class="flex justify-end md:justify-center">
-                                    <button type="button" 
-                                            onclick="confirmDelete('{{ route('admin.farmer.paddy.delete', $selection->id) }}')"
-                                            class="text-red-600 hover:text-red-900 transition-colors duration-200 p-1 md:p-2"
-                                            title="Delete Listing">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <td data-label="Actions" class="px-4 py-4 whitespace-nowrap text-sm text-center">
+                                <div class="flex justify-center">
+                                    <button onclick="showDeleteModal('{{ route('admin.farmer.paddy.delete', $selection->id) }}')"
+                                        class="text-red-600 hover:text-red-900 transition-colors duration-200 p-1"
+                                        title="Delete Listing">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                         </svg>
                                     </button>
@@ -126,14 +115,14 @@
                             </td>
                         </tr>
                         @empty
-                        <tr>
-                            <td colspan="5" class="px-4 py-8 text-center">
-                                <div class="flex flex-col items-center justify-center">
+                        <tr class="empty-state-row">
+                            <td colspan="5" class="px-6 py-8 text-center w-full">
+                                <div class="flex flex-col items-center justify-center w-full">
                                     <svg class="h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
-                                    <h3 class="mt-3 text-sm font-medium text-gray-900">No paddy listings</h3>
-                                    <p class="mt-1 text-sm text-gray-500">Farmers haven't submitted any paddy selections yet.</p>
+                                    <h3 class="text-base font-bold text-gray-900 font-merriweather">No Paddy Listings</h3>
+                                    <p class="mt-2 text-sm text-gray-500 font-open-sans">Farmers haven't submitted any paddy selections yet.</p>
                                 </div>
                             </td>
                         </tr>
@@ -150,24 +139,6 @@
         </div>
     </main>
 </div>
-
-<script>
-    function confirmDelete(url) {
-        const modal = document.getElementById('deleteModal');
-        const form = document.getElementById('deleteForm');
-        
-        form.action = url;
-        modal.classList.remove('hidden');
-        document.body.classList.add('overflow-hidden');
-    }
-
-    function closeModal() {
-        const modal = document.getElementById('deleteModal');
-        modal.classList.add('hidden');
-        document.body.classList.remove('overflow-hidden');
-    }
-</script>
-
 
 <style>
     /* Responsive table styles */
@@ -263,4 +234,32 @@
         }
     }
 </style>
+
+<script>
+    function showDeleteModal(url) {
+        const modal = document.getElementById('deleteModal');
+        const form = document.getElementById('deleteForm');
+        form.action = url;
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('deleteModal');
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+</script>
 @endsection

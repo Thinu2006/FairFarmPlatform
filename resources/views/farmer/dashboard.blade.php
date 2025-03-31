@@ -69,13 +69,13 @@
             <div class="p-6 border-b border-gray-100">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                     <h3 class="text-lg font-semibold text-gray-800">Sales Performance</h3>
-                    <div class="mt-2 md:mt-0">
+                    <!-- <div class="mt-2 md:mt-0">
                         <select class="bg-gray-50 border border-gray-300 text-gray-700 py-1 px-3 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
                             <option>Last 7 Days</option>
                             <option selected>Last Month</option>
                             <option>Last Year</option>
                         </select>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div class="p-6">
@@ -91,12 +91,11 @@
         </div>
 
         <!-- Recent Activity Section -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <!-- <div class="bg-white rounded-xl shadow-md overflow-hidden">
             <div class="p-6 border-b border-gray-100">
                 <h3 class="text-lg font-semibold text-gray-800">Recent Activity</h3>
             </div>
             <div class="divide-y divide-gray-100">
-                <!-- Activity Item 1 -->
                 <div class="p-4 hover:bg-gray-50 transition-colors">
                     <div class="flex items-start">
                         <div class="bg-green-100 p-2 rounded-full mr-4">
@@ -110,8 +109,6 @@
                         <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Approve</span>
                     </div>
                 </div>
-                
-                <!-- Activity Item 2 -->
                 <div class="p-4 hover:bg-gray-50 transition-colors">
                     <div class="flex items-start">
                         <div class="bg-blue-100 p-2 rounded-full mr-4">
@@ -125,8 +122,6 @@
                         <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Shipped</span>
                     </div>
                 </div>
-                
-                <!-- Activity Item 3 -->
                 <div class="p-4 hover:bg-gray-50 transition-colors">
                     <div class="flex items-start">
                         <div class="bg-yellow-100 p-2 rounded-full mr-4">
@@ -144,7 +139,7 @@
             <div class="p-4 text-center border-t border-gray-100">
                 <a href="#" class="text-green-600 hover:text-green-800 text-sm font-medium">View all activity →</a>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 @endsection

@@ -26,6 +26,17 @@ class FarmerSellingPaddyTypesController extends Controller
      */
     public function store(Request $request)
     {
+        // Check if farmer already has this paddy type listed
+        $existingListing = FarmerSellingPaddyType::where('FarmerID', $request->FarmerID)
+            ->where('PaddyID', $request->PaddyID)
+            ->first();
+    
+        if ($existingListing) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'You already have a listing for this paddy type.');
+        }
+    
         // Validate the form data
         $request->validate([
             'FarmerID' => 'required|exists:farmers,FarmerID',
@@ -33,7 +44,7 @@ class FarmerSellingPaddyTypesController extends Controller
             'PriceSelected' => 'required|numeric|min:0',
             'Quantity' => 'required|numeric|min:1',
         ]);
-
+    
         // Save the data to the database
         FarmerSellingPaddyType::create([
             'FarmerID' => $request->FarmerID,
@@ -41,7 +52,7 @@ class FarmerSellingPaddyTypesController extends Controller
             'PriceSelected' => $request->PriceSelected,
             'Quantity' => $request->Quantity,
         ]);
-
+    
         // Redirect to the paddy listing page with a success message
         return redirect()->route('farmer.paddy.listing')->with('success', 'Paddy listed successfully!');
     }

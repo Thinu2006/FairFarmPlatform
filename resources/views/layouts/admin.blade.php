@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin Dashboard')</title>
+    <link rel="icon" type="image/png" href="../../Images/Logo.png">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,6 +55,11 @@
         .nav-item:hover {
             transform: translateX(4px);
         }
+
+        /* Modal transition */
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
     </style>
 </head>
 
@@ -95,13 +101,10 @@
                 <i class="fas fa-box text-white w-5 text-center"></i>
                 <span>Orders</span>
             </a>
-            <form action="{{ route('admin.logout') }}" method="POST" class="pt-2 border-t border-green-700 mt-2">
-                @csrf
-                <button type="submit" class="flex items-center space-x-3 p-3 rounded-lg w-full transition-colors hover:bg-green-800">
-                    <i class="fas fa-sign-out-alt text-white w-5 text-center"></i>
-                    <span>Logout</span>
-                </button>
-            </form>
+            <button onclick="showLogoutModal()" class="w-full flex items-center space-x-3 p-3 rounded-lg transition-colors hover:bg-green-800 pt-2 border-t border-green-700 mt-2">
+                <i class="fas fa-sign-out-alt text-white w-5 text-center"></i>
+                <span>Logout</span>
+            </button>
         </div>
     </nav>
 
@@ -135,13 +138,10 @@
                 <i class="fas fa-box text-white w-5"></i>
                 <span>Orders</span>
             </a>
-            <form action="{{ route('admin.logout') }}" method="POST" class="pt-4 mt-4 border-t border-green-700">
-                @csrf
-                <button type="submit" class="nav-item flex items-center space-x-3 p-3 rounded-lg w-full transition-colors hover:bg-green-800">
-                    <i class="fas fa-sign-out-alt text-white w-5"></i>
-                    <span>Logout</span>
-                </button>
-            </form>
+            <button onclick="showLogoutModal()" class="nav-item w-full flex items-center space-x-3 p-3 rounded-lg transition-colors hover:bg-green-800 pt-4 mt-4 border-t border-green-700">
+                <i class="fas fa-sign-out-alt text-white w-5"></i>
+                <span>Logout</span>
+            </button>
         </nav>
     </aside>
 
@@ -151,6 +151,30 @@
             @yield('content')
         </div>
     </main>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 opacity-0 invisible transition-all duration-300">
+        <div class="bg-white rounded-xl shadow-2xl overflow-hidden w-full max-w-md transform transition-all scale-95">
+            <div class="p-6 text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Confirm Logout</h3>
+                <p class="text-gray-500 mb-6">Are you sure you want to logout from the admin panel?</p>
+                <div class="flex justify-center space-x-4">
+                    <button type="button" onclick="hideLogoutModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                        Cancel
+                    </button>
+                    <form id="logoutForm" action="{{ route('admin.logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Mobile menu toggle with animation
@@ -164,6 +188,26 @@
             const icon = this.querySelector('i');
             icon.classList.toggle('fa-bars');
             icon.classList.toggle('fa-times');
+        });
+
+        // Logout modal functions
+        function showLogoutModal() {
+            const modal = document.getElementById('logoutModal');
+            modal.classList.remove('opacity-0', 'invisible', 'scale-95');
+            modal.classList.add('opacity-100', 'visible', 'scale-100');
+        }
+
+        function hideLogoutModal() {
+            const modal = document.getElementById('logoutModal');
+            modal.classList.remove('opacity-100', 'visible', 'scale-100');
+            modal.classList.add('opacity-0', 'invisible', 'scale-95');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('logoutModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideLogoutModal();
+            }
         });
     </script>
 </body>
