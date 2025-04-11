@@ -79,6 +79,7 @@
                         <option value="" disabled selected>Choose paddy variety</option>
                         @foreach($paddyTypes as $type)
                             <option value="{{ $type->PaddyID }}" 
+                                    data-min-price="{{ $type->MinPricePerKg }}"
                                     data-max-price="{{ $type->MaxPricePerKg }}" 
                                     data-image="{{ $type->Image ? asset('storage/'.$type->Image) : '' }}" 
                                     data-name="{{ $type->PaddyName }}">
@@ -93,7 +94,7 @@
                 <div class="space-y-4">
                     <label class="block text-base font-medium text-gray-700">Price Per Kg (Rs.) <span class="text-red-500">*</span></label>
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm text-gray-500">Minimum</span>
+                        <span id="minPriceLabel" class="text-sm text-gray-500">Minimum: Rs. 0</span>
                         <span id="selectedPrice" class="text-sm font-semibold">Select type first</span>
                         <span id="maxPriceLabel" class="text-sm text-gray-500">Maximum: Rs. 0</span>
                     </div>
@@ -141,6 +142,7 @@
         const paddyTypeDropdown = document.getElementById('PaddyType');
         const priceSlider = document.getElementById('PriceSelected');
         const selectedPriceDisplay = document.getElementById('selectedPrice');
+        const minPriceLabel = document.getElementById('minPriceLabel');
         const maxPriceLabel = document.getElementById('maxPriceLabel');
         const paddyImage = document.getElementById('paddyImage');
         const imagePreviewContainer = document.getElementById('imagePreviewContainer');
@@ -151,22 +153,23 @@
 
         paddyTypeDropdown.addEventListener('change', function() {
             const selectedOption = this.options[this.selectedIndex];
+            const minPrice = selectedOption.getAttribute('data-min-price');
             const maxPrice = selectedOption.getAttribute('data-max-price');
             const imageUrl = selectedOption.getAttribute('data-image');
             const name = selectedOption.getAttribute('data-name');
 
-            if (!maxPrice || isNaN(maxPrice)) {
+            if (!minPrice || !maxPrice || isNaN(minPrice) || isNaN(maxPrice)) {
                 showError('priceError', 'Invalid paddy type selected');
                 return;
             }
 
             // Update price slider
-            const minPrice = Math.max(0, maxPrice * 0);
             priceSlider.min = minPrice;
             priceSlider.max = maxPrice;
             priceSlider.value = maxPrice;
             selectedPriceDisplay.textContent = `Rs. ${maxPrice}`;
             selectedPriceDisplay.classList.add('text-green-600', 'font-bold');
+            minPriceLabel.textContent = `Minimum: Rs. ${minPrice}`;
             maxPriceLabel.textContent = `Maximum: Rs. ${maxPrice}`;
             clearError('priceError');
 
@@ -237,10 +240,16 @@
         const priceSlider = document.getElementById('PriceSelected');
         const errorElement = document.getElementById('priceError');
         const price = parseFloat(priceSlider.value);
+        const minPrice = parseFloat(priceSlider.min);
         const maxPrice = parseFloat(priceSlider.max);
         
         if (isNaN(price) || price <= 0) {
             showError('priceError', 'Please set a valid price');
+            return false;
+        }
+        
+        if (price < minPrice) {
+            showError('priceError', `Price cannot be less than Rs. ${minPrice}`);
             return false;
         }
         

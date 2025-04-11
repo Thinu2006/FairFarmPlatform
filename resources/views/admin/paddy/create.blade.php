@@ -57,10 +57,30 @@
         }
     </style>
     <script>
-        function updatePrice() {
+        function updateMinPrice() {
+            const min = document.getElementById('MinPricePerKg').value;
+            document.getElementById('minPriceDisplay').textContent = `Rs. ${min}`;
+            document.getElementById('minPriceDisplay').classList.add('text-blue-600', 'font-bold');
+            
+            // Ensure max is always greater than min
+            const maxInput = document.getElementById('MaxPricePerKg');
+            if (parseFloat(maxInput.value) <= parseFloat(min)) {
+                maxInput.value = parseFloat(min) + 5;
+                updateMaxPrice();
+            }
+        }
+
+        function updateMaxPrice() {
             const max = document.getElementById('MaxPricePerKg').value;
-            document.getElementById('priceDisplay').textContent = `Rs. ${max}`;
-            document.getElementById('priceDisplay').classList.add('text-green-600', 'font-bold');
+            document.getElementById('maxPriceDisplay').textContent = `Rs. ${max}`;
+            document.getElementById('maxPriceDisplay').classList.add('text-green-600', 'font-bold');
+            
+            // Ensure min is always less than max
+            const minInput = document.getElementById('MinPricePerKg');
+            if (parseFloat(minInput.value) >= parseFloat(max)) {
+                minInput.value = parseFloat(max) - 5;
+                updateMinPrice();
+            }
         }
 
         function triggerFileInput() {
@@ -142,13 +162,28 @@
                 clearError('PaddyName');
             }
             
-            // Validate Price
-            const price = document.getElementById('MaxPricePerKg').value;
-            if (!price || price <= 0) {
-                showError('MaxPricePerKg', 'Price must be greater than 0');
+            // Validate Min Price
+            const minPrice = document.getElementById('MinPricePerKg').value;
+            if (!minPrice || minPrice <= 0) {
+                showError('MinPricePerKg', 'Minimum price must be greater than 0');
                 isValid = false;
-            } else if (price > 1000) {
-                showError('MaxPricePerKg', 'Price must be less than Rs. 1000');
+            } else if (minPrice > 1000) {
+                showError('MinPricePerKg', 'Minimum price must be less than Rs. 1000');
+                isValid = false;
+            } else {
+                clearError('MinPricePerKg');
+            }
+            
+            // Validate Max Price
+            const maxPrice = document.getElementById('MaxPricePerKg').value;
+            if (!maxPrice || maxPrice <= 0) {
+                showError('MaxPricePerKg', 'Maximum price must be greater than 0');
+                isValid = false;
+            } else if (maxPrice > 1000) {
+                showError('MaxPricePerKg', 'Maximum price must be less than Rs. 1000');
+                isValid = false;
+            } else if (parseFloat(maxPrice) <= parseFloat(minPrice)) {
+                showError('MaxPricePerKg', 'Maximum price must be greater than minimum price');
                 isValid = false;
             } else {
                 clearError('MaxPricePerKg');
@@ -248,18 +283,37 @@
                            maxlength="100">
                 </div>
 
-                <!-- Price Range -->
-                <div class="space-y-4">
-                    <label class="block text-base font-medium text-gray-700">Maximum Price (per kg) <span class="text-red-500">*</span></label>
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm text-gray-500">Rs. 0</span>
-                        <span id="priceDisplay" class="text-sm font-semibold">Rs. 0</span>
-                        <span class="text-sm text-gray-500">Rs. 1000</span>
+                <!-- Price Range Section -->
+                <div class="space-y-6">
+                    <h3 class="text-base font-medium text-gray-700">Price Range (per kg) <span class="text-red-500">*</span></h3>
+                    
+                    <!-- Minimum Price -->
+                    <div class="space-y-4">
+                        <label class="block text-sm font-medium text-gray-700">Minimum Price</label>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm text-gray-500">Rs. 0</span>
+                            <span id="minPriceDisplay" class="text-sm font-semibold">Rs. 0</span>
+                            <span class="text-sm text-gray-500">Rs. 1000</span>
+                        </div>
+                        <input type="range" id="MinPricePerKg" name="MinPricePerKg" 
+                               min="1" max="1000" value="0" step="5" 
+                               oninput="updateMinPrice()" 
+                               class="w-full">
                     </div>
-                    <input type="range" id="MaxPricePerKg" name="MaxPricePerKg" 
-                           min="1" max="1000" value="0" step="5" 
-                           oninput="updatePrice()" 
-                           class="w-full">
+                    
+                    <!-- Maximum Price -->
+                    <div class="space-y-4">
+                        <label class="block text-sm font-medium text-gray-700">Maximum Price</label>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm text-gray-500">Rs. 0</span>
+                            <span id="maxPriceDisplay" class="text-sm font-semibold">Rs. 0</span>
+                            <span class="text-sm text-gray-500">Rs. 1000</span>
+                        </div>
+                        <input type="range" id="MaxPricePerKg" name="MaxPricePerKg" 
+                               min="1" max="1000" value="5" step="5" 
+                               oninput="updateMaxPrice()" 
+                               class="w-full">
+                    </div>
                 </div>
 
                 <!-- Image Upload -->

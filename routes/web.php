@@ -10,6 +10,7 @@ use App\Http\Controllers\PaddyTypeController;
 use App\Http\Controllers\FarmerSellingPaddyTypesController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\BotManController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -130,5 +131,16 @@ Route::prefix('buyer')->name('buyer.')->group(function () {
     Route::middleware(['auth:buyer'])->group(function () {
         Route::get('dashboard', [BuyerDashboardController::class, 'index'])->name('dashboard');
         Route::get('products', [FarmerSellingPaddyTypesController::class, 'products'])->name('products');
+        Route::get('products/{id}', [OrderController::class, 'show'])->name('products.show');
+        // Order routes
+        // Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+        // Route::get('orders/{id}', [OrderController::class, 'showOrder'])->name('orders.show');
+        // Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
     });
+
 });
+Route::match(['get', 'post'], '/botman', [BotManController::class, 'handle']);
+
+
+
+// Route::match(['get', 'post'], '/botman', [BotManController::class, 'handle']);

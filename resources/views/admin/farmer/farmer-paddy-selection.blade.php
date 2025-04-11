@@ -72,10 +72,7 @@
                         <tr class="hover:bg-gray-50">
                             <td data-label="Farmer" class="px-4 py-4 whitespace-normal">
                                 <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
-                                        <span class="text-green-600 font-medium text-sm">{{ substr($selection->farmer->FullName, 0, 1) }}</span>
-                                    </div>
-                                    <div class="ml-3">
+                                    <div>
                                         <div class="text-sm font-medium text-gray-900">{{ $selection->farmer->FullName }}</div>
                                         <div class="text-xs text-gray-500">ID: {{ $selection->FarmerID }}</div>
                                     </div>
@@ -84,10 +81,10 @@
                             <td data-label="Paddy Type" class="px-4 py-4 whitespace-normal">
                                 <div class="flex items-center">
                                     @if($selection->paddyType->Image)
-                                        <img class="h-8 w-8 rounded-md object-cover mr-2" 
+                                        <img class="h-16 w-16 rounded-md object-cover mr-2" 
                                             src="{{ asset('storage/' . $selection->paddyType->Image) }}" 
                                             alt="{{ $selection->paddyType->PaddyName }}">
-                                    @endif
+                                    @endif 
                                     <div>
                                         <div class="text-sm font-medium text-gray-900">{{ $selection->paddyType->PaddyName }}</div>
                                         <div class="text-xs text-gray-500">ID: {{ $selection->paddyType->PaddyID }}</div>

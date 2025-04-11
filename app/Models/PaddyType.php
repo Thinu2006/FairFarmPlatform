@@ -13,6 +13,7 @@ class PaddyType extends Model
 
     protected $fillable = [
         'PaddyName', 
+        'MinPricePerKg',
         'MaxPricePerKg', 
         'Image'
     ];
@@ -27,6 +28,6 @@ class PaddyType extends Model
     //One paddy type has many orders
     public function orders()
     {
-        return $this->hasMany(Order::class, 'PaddyID');
+        return $this->hasMany(Order::class, 'paddy_type_id', 'PaddyID');
     }
 }

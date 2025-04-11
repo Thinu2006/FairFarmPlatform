@@ -142,16 +142,23 @@
                             <label class="block text-sm sm:text-base font-semibold text-green-700 mb-1">Price Per Kilogram <span class="text-red-500">*</span></label>
                         </div>
                         
-                        <!-- Max Price Indicator -->
-                        <div class="flex justify-between items-center bg-green-50 px-3 py-2 rounded">
-                            <span class="text-sm font-medium text-green-700">Maximum Price:</span>
-                            <span class="text-sm font-bold text-green-800">Rs. <span id="maxPriceDisplay">{{ $paddyListing->paddyType->MaxPricePerKg }}</span></span>
+                        <!-- Price Range Indicators -->
+                        <div class="flex justify-between items-center space-x-4">
+                            <div class="flex-1 bg-green-50 px-3 py-2 rounded">
+                                <span class="text-sm font-medium text-green-700">Minimum Price:</span>
+                                <span class="text-sm font-bold text-green-800">Rs. <span id="minPriceDisplay">{{ $paddyListing->paddyType->MinPricePerKg }}</span></span>
+                            </div>
+                            <div class="flex-1 bg-green-50 px-3 py-2 rounded">
+                                <span class="text-sm font-medium text-green-700">Maximum Price:</span>
+                                <span class="text-sm font-bold text-green-800">Rs. <span id="maxPriceDisplay">{{ $paddyListing->paddyType->MaxPricePerKg }}</span></span>
+                            </div>
                         </div>
                         
                         <!-- Price Slider -->
                         <div class="px-2 sm:px-4">
                             <input type="range" name="PriceSelected" id="PriceSelected" 
-                                   min="0" max="{{ $paddyListing->paddyType->MaxPricePerKg }}" 
+                                   min="{{ $paddyListing->paddyType->MinPricePerKg }}" 
+                                   max="{{ $paddyListing->paddyType->MaxPricePerKg }}" 
                                    value="{{ $paddyListing->PriceSelected }}" 
                                    class="w-full h-2 sm:h-2.5">
                             <div id="priceError" class="error-message price-error-container"></div>
@@ -216,9 +223,17 @@
             const priceSlider = document.getElementById('PriceSelected');
             const priceError = document.getElementById('priceError');
             const price = parseFloat(priceSlider.value);
+            const minPrice = parseFloat(priceSlider.min);
+            const maxPrice = parseFloat(priceSlider.max);
             
-            if (price <= 0) {
-                priceError.textContent = 'Price must be greater than 0';
+            if (price < minPrice) {
+                priceError.textContent = `Price cannot be less than Rs. ${minPrice}`;
+                priceSlider.classList.add('border-error');
+                return false;
+            }
+            
+            if (price > maxPrice) {
+                priceError.textContent = `Price cannot exceed Rs. ${maxPrice}`;
                 priceSlider.classList.add('border-error');
                 return false;
             }

@@ -57,16 +57,40 @@
         }
     </style>
     <script>
-        function updatePrice() {
-            const price = document.getElementById('MaxPricePerKg').value;
-            const display = document.getElementById('priceDisplay');
-            display.textContent = `Rs. ${price}`;
+        function updateMinPrice() {
+            const min = document.getElementById('MinPricePerKg').value;
+            document.getElementById('minPriceDisplay').textContent = `Rs. ${min}`;
             
             // Add animation
-            display.classList.add('scale-110', 'transition-transform', 'duration-200');
+            document.getElementById('minPriceDisplay').classList.add('scale-110', 'transition-transform', 'duration-200');
             setTimeout(() => {
-                display.classList.remove('scale-110');
+                document.getElementById('minPriceDisplay').classList.remove('scale-110');
             }, 200);
+            
+            // Ensure max is always greater than min
+            const maxInput = document.getElementById('MaxPricePerKg');
+            if (parseFloat(maxInput.value) <= parseFloat(min)) {
+                maxInput.value = parseFloat(min) + 5;
+                updateMaxPrice();
+            }
+        }
+
+        function updateMaxPrice() {
+            const max = document.getElementById('MaxPricePerKg').value;
+            document.getElementById('maxPriceDisplay').textContent = `Rs. ${max}`;
+            
+            // Add animation
+            document.getElementById('maxPriceDisplay').classList.add('scale-110', 'transition-transform', 'duration-200');
+            setTimeout(() => {
+                document.getElementById('maxPriceDisplay').classList.remove('scale-110');
+            }, 200);
+            
+            // Ensure min is always less than max
+            const minInput = document.getElementById('MinPricePerKg');
+            if (parseFloat(minInput.value) >= parseFloat(max)) {
+                minInput.value = parseFloat(max) - 5;
+                updateMinPrice();
+            }
         }
 
         function triggerFileInput() {
@@ -148,13 +172,28 @@
                 clearError('PaddyName');
             }
             
-            // Validate Price
-            const price = document.getElementById('MaxPricePerKg').value;
-            if (!price || price <= 0) {
-                showError('MaxPricePerKg', 'Price must be greater than 0');
+            // Validate Min Price
+            const minPrice = document.getElementById('MinPricePerKg').value;
+            if (!minPrice || minPrice <= 0) {
+                showError('MinPricePerKg', 'Minimum price must be greater than 0');
                 isValid = false;
-            } else if (price > 1000) {
-                showError('MaxPricePerKg', 'Price must be less than Rs. 1000');
+            } else if (minPrice > 1000) {
+                showError('MinPricePerKg', 'Minimum price must be less than Rs. 1000');
+                isValid = false;
+            } else {
+                clearError('MinPricePerKg');
+            }
+            
+            // Validate Max Price
+            const maxPrice = document.getElementById('MaxPricePerKg').value;
+            if (!maxPrice || maxPrice <= 0) {
+                showError('MaxPricePerKg', 'Maximum price must be greater than 0');
+                isValid = false;
+            } else if (maxPrice > 1000) {
+                showError('MaxPricePerKg', 'Maximum price must be less than Rs. 1000');
+                isValid = false;
+            } else if (parseFloat(maxPrice) <= parseFloat(minPrice)) {
+                showError('MaxPricePerKg', 'Maximum price must be greater than minimum price');
                 isValid = false;
             } else {
                 clearError('MaxPricePerKg');
@@ -230,8 +269,9 @@
                 clearImageError();
             });
             
-            // Initialize price display
-            updatePrice();
+            // Initialize price displays
+            updateMinPrice();
+            updateMaxPrice();
         });
     </script>
 </head>
@@ -260,18 +300,37 @@
                            maxlength="100">
                 </div>
 
-                <!-- Price Range -->
-                <div class="space-y-4">
-                    <label class="block text-base font-medium text-gray-700">Maximum Price (per kg) <span class="text-red-500">*</span></label>
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm text-gray-500">Rs. 0</span>
-                        <span id="priceDisplay" class="text-sm font-semibold">Rs. {{ old('MaxPricePerKg', $paddy->MaxPricePerKg) }}</span>
-                        <span class="text-sm text-gray-500">Rs. 1000</span>
+                <!-- Price Range Section -->
+                <div class="space-y-6">
+                    <h3 class="text-base font-medium text-gray-700">Price Range (per kg) <span class="text-red-500">*</span></h3>
+                    
+                    <!-- Minimum Price -->
+                    <div class="space-y-4">
+                        <label class="block text-sm font-medium text-gray-700">Minimum Price</label>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm text-gray-500">Rs. 0</span>
+                            <span id="minPriceDisplay" class="text-sm font-semibold">Rs. {{ old('MinPricePerKg', $paddy->MinPricePerKg) }}</span>
+                            <span class="text-sm text-gray-500">Rs. 1000</span>
+                        </div>
+                        <input type="range" id="MinPricePerKg" name="MinPricePerKg" 
+                               min="1" max="1000" value="{{ old('MinPricePerKg', $paddy->MinPricePerKg) }}" step="5" 
+                               oninput="updateMinPrice()" 
+                               class="w-full">
                     </div>
-                    <input type="range" id="MaxPricePerKg" name="MaxPricePerKg" 
-                           min="1" max="1000" value="{{ old('MaxPricePerKg', $paddy->MaxPricePerKg) }}" step="5" 
-                           oninput="updatePrice()" 
-                           class="w-full">
+                    
+                    <!-- Maximum Price -->
+                    <div class="space-y-4">
+                        <label class="block text-sm font-medium text-gray-700">Maximum Price</label>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm text-gray-500">Rs. 0</span>
+                            <span id="maxPriceDisplay" class="text-sm font-semibold">Rs. {{ old('MaxPricePerKg', $paddy->MaxPricePerKg) }}</span>
+                            <span class="text-sm text-gray-500">Rs. 1000</span>
+                        </div>
+                        <input type="range" id="MaxPricePerKg" name="MaxPricePerKg" 
+                               min="1" max="1000" value="{{ old('MaxPricePerKg', $paddy->MaxPricePerKg) }}" step="5" 
+                               oninput="updateMaxPrice()" 
+                               class="w-full">
+                    </div>
                 </div>
 
                 <!-- Image Upload -->
@@ -288,8 +347,8 @@
                     </div>
 
                     <div id="uploadArea" onclick="triggerFileInput()" 
-                         class="border-2 border-dashed border-gray-300 rounded-lg p- flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition">
-                        <i class="fas fa-cloud-upload-alt text-xl text-gray-400 mb-2"></i>
+                         class="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition">
+                        <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
                         <p class="text-sm text-gray-500 text-center">
                             <span class="font-medium text-green-600">Click to upload</span> or drag and drop<br>
                             <span class="text-xs">PNG, JPG, JPEG (Max 2MB)</span>
@@ -300,8 +359,6 @@
                     
                     <input type="file" id="paddyImage" name="Image" class="hidden" accept="image/jpeg, image/png, image/jpg" onchange="previewImage(event)">
                     <input type="hidden" id="removeImageFlag" name="remove_image" value="0">
-                    
-                    
                 </div>
 
                 <!-- Form Actions -->

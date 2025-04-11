@@ -146,12 +146,18 @@ class FarmerSellingPaddyTypesController extends Controller
     /**
      * Display the products page with farmer's selling paddy types.
      */
-    public function products()
+    public function products(Request $request)
     {
-        // Fetch all farmer selling paddy types with related farmer and paddy type details
-        $sellingPaddyTypes = FarmerSellingPaddyType::with(['farmer', 'paddyType'])->get();
+        $query = $request->input('query');
+        
+        $sellingPaddyTypes = FarmerSellingPaddyType::with(['farmer', 'paddyType'])
+            ->when($query, function ($q) use ($query) {
+                return $q->whereHas('paddyType', function ($q) use ($query) {
+                    $q->where('PaddyName', 'like', '%' . $query . '%');
+                });
+            })
+            ->get();
 
-        // Pass the data to the products view
         return view('buyer.products', compact('sellingPaddyTypes'));
     }
 

@@ -84,9 +84,16 @@
                             <h3 class="text-lg font-bold text-gray-800 ">{{ $paddy->PaddyName }}</h3>
                             <p class="text-xs text-gray-500 mt-1">ID: {{ $paddy->PaddyID }}</p>
                         </div>
-                        <span class="inline-flex items-center px-2.5 py-[4px] rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            Rs. {{ number_format($paddy->MaxPricePerKg, 2) }}/kg
-                        </span>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-500">Min Price:</span>
+                            <span class="text-sm font-medium text-blue-600">Rs. {{ number_format($paddy->MinPricePerKg, 2) }}/kg</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-1">
+                            <span class="text-sm font-medium text-gray-500">Max Price:</span>
+                            <span class="text-sm font-medium text-green-600">Rs. {{ number_format($paddy->MaxPricePerKg, 2) }}/kg</span>
+                        </div>
                     </div>
                 </div>
             </div>

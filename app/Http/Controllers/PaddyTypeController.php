@@ -1,6 +1,5 @@
 <?php
 
-// PaddyTypeController.php
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -12,7 +11,6 @@ class PaddyTypeController extends Controller
     {
         $paddytypes = PaddyType::all();
         return view('admin.paddy.index', ['paddytypes' => $paddytypes]);
-
     }
 
     public function create()
@@ -24,14 +22,14 @@ class PaddyTypeController extends Controller
     {
         $request->validate([
             'PaddyName' => 'required|string|max:255',
-            'MaxPricePerKg' => 'required|numeric|min:0',
+            'MinPricePerKg' => 'required|numeric|min:0',
+            'MaxPricePerKg' => 'required|numeric|min:0|gt:MinPricePerKg',
             'Image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $paddy = new PaddyType($request->only(['PaddyName', 'MaxPricePerKg']));
+        $paddy = new PaddyType($request->only(['PaddyName', 'MinPricePerKg', 'MaxPricePerKg']));
 
         if ($request->hasFile('Image')) {
-            // Store the image in the 'public/paddy_images' directory
             $paddy->Image = $request->file('Image')->store('paddy_images', 'public');
         }
 
@@ -51,11 +49,12 @@ class PaddyTypeController extends Controller
 
         $request->validate([
             'PaddyName' => 'required|string|max:255',
-            'MaxPricePerKg' => 'required|numeric|min:0',
+            'MinPricePerKg' => 'required|numeric|min:0',
+            'MaxPricePerKg' => 'required|numeric|min:0|gt:MinPricePerKg',
             'Image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $paddy->update($request->only(['PaddyName', 'MaxPricePerKg']));
+        $paddy->update($request->only(['PaddyName', 'MinPricePerKg', 'MaxPricePerKg']));
 
         if ($request->hasFile('Image')) {
             $paddy->Image = $request->file('Image')->store('paddy_images', 'public');

@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // In the paddy_types migration file
         Schema::create('paddy_types', function (Blueprint $table) {
             $table->id('PaddyID');
             $table->string('PaddyName')->unique();
+            $table->decimal('MinPricePerKg', 8, 2);
             $table->decimal('MaxPricePerKg', 8, 2);
             $table->string('Image')->nullable();
             $table->timestamps();

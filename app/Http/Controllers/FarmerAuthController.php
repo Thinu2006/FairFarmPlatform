@@ -17,15 +17,20 @@ class FarmerAuthController extends Controller
 
     public function showFarmerLogin()
     {
+        \Log::info('Farmer login page accessed.');
         return view('farmer.login');
     }
 
     public function showRegisterForm()
     {
+        \Log::info('Farmer registration form accessed.');
         return view('auth.farmer_register');
     }
+
     public function register(Request $request)
     {
+        \Log::info('Farmer registration attempt.', $request->only('FullName', 'Email', 'NIC'));
+
         $request->validate([
             'FullName' => 'required|string|max:255',
             'NIC' => 'required|string|unique:farmers,NIC',
@@ -35,58 +40,49 @@ class FarmerAuthController extends Controller
             'password' => 'required|string|min:6',
         ]);
 
-        Farmer::create($request->all());
+        $farmer = Farmer::create($request->all());
+
+        \Log::info('Farmer registered successfully.', ['FarmerID' => $farmer->FarmerID, 'Email' => $farmer->Email]);
 
         return redirect()->route('farmer.login')->with('success', 'Farmer registered successfully!');
     }
 
-    // Handle the login request
     public function login(Request $request)
     {
-        // Validate the incoming request
+        \Log::info('Farmer login attempt.', ['Email' => $request->Email]);
+
         $request->validate([
             'Email' => 'required|string|email',
             'password' => 'required|string|min:8',
         ]);
 
-        // Get credentials
         $credentials = $request->only('Email', 'password');
-
-        // Find the farmer by username
         $farmer = Farmer::where('Email', $credentials['Email'])->first();
 
-        // Check if farmer exists and if the password is correct
         if ($farmer && Hash::check($credentials['password'], $farmer->password)) {
-            // Attempt to authenticate the farmer
             Auth::guard('farmer')->login($farmer);
-
-            // Redirect to the farmer dashboard
+            \Log::info('Farmer logged in successfully.', ['FarmerID' => $farmer->FarmerID, 'Email' => $farmer->Email]);
             return view('farmer.dashboard', ['name' => $farmer->FullName]);
         }
 
-        // If login fails, return an error message
+        \Log::warning('Farmer login failed.', ['Email' => $request->Email]);
         return back()->with('error', 'Invalid username or password');
     }
-    // Handle the logout request
+
     public function logout()
     {
-        // Log out the farmer
+        $farmer = Auth::guard('farmer')->user();
+        \Log::info('Farmer logged out.', ['FarmerID' => $farmer?->FarmerID, 'Email' => $farmer?->Email]);
         Auth::guard('farmer')->logout();
-
-        // Redirect to the farmer login page
         return redirect()->route('farmer.login');
     }
 
-
-
-
-    // Show Forgot Password Form
     public function showForgotPasswordForm()
     {
+        \Log::info('Farmer forgot password page accessed.');
         return view('farmer.forgot-password');
     }
 
-    // Send Password Reset Link
     public function sendResetLinkEmail(Request $request)
     {
         $request->validate(['Email' => 'required|email']);
@@ -94,10 +90,11 @@ class FarmerAuthController extends Controller
         $farmer = Farmer::where('Email', $email)->first();
 
         if (!$farmer) {
+            \Log::warning('Password reset attempt for non-existent email.', ['Email' => $email]);
             return back()->withErrors(['Email' => 'We can\'t find a user with that email address.']);
         }
 
-        $token = Str::random(60); // Now properly referenced
+        $token = Str::random(60);
         \DB::table('password_resets')->insert([
             'Email' => $email,
             'token' => Hash::make($token),
@@ -107,19 +104,20 @@ class FarmerAuthController extends Controller
         $resetLink = url('/farmer/reset-password/' . $token . '?Email=' . urlencode($email));
         Mail::to($email)->send(new \App\Mail\PasswordResetLink($resetLink));
 
+        \Log::info('Password reset link sent.', ['Email' => $email]);
+
         return back()->with('status', 'Password reset link sent to your email.');
     }
 
-    // Show Reset Password Form
     public function showResetPasswordForm(Request $request, $token)
     {
+        \Log::info('Farmer reset password form accessed.', ['Email' => $request->Email]);
         return view('farmer.reset-password', [
             'token' => $token,
             'Email' => $request->Email,
         ]);
     }
 
-    // Reset Password
     public function resetPassword(Request $request)
     {
         $request->validate([
@@ -128,57 +126,42 @@ class FarmerAuthController extends Controller
             'password' => 'required|min:8|confirmed',
         ]);
 
-        // Decode the email address from the URL
         $email = urldecode($request->Email);
-
-        // Find the password reset record
-        $resetRecord = \DB::table('password_resets')
-            ->where('Email', $email)
-            ->first();
+        $resetRecord = \DB::table('password_resets')->where('Email', $email)->first();
 
         if (!$resetRecord) {
+            \Log::warning('No reset record found.', ['Email' => $email]);
             return back()->withErrors(['Email' => 'No password reset request found for this email address.']);
         }
 
-        // Check if the token matches
         if (!Hash::check($request->token, $resetRecord->token)) {
+            \Log::warning('Invalid password reset token.', ['Email' => $email]);
             return back()->withErrors(['Email' => 'Invalid token or email address.']);
         }
 
-        // Check if the token has expired (e.g., tokens expire after 60 minutes)
         $tokenCreatedAt = \Carbon\Carbon::parse($resetRecord->created_at);
-        $tokenExpired = $tokenCreatedAt->diffInMinutes(now()) > 60;
-
-        if ($tokenExpired) {
+        if ($tokenCreatedAt->diffInMinutes(now()) > 60) {
+            \Log::warning('Expired reset token.', ['Email' => $email]);
             return back()->withErrors(['Email' => 'The password reset link has expired.']);
         }
 
-        // Update the farmer's password - DON'T use Hash::make() since the mutator will handle it
         $farmer = Farmer::where('Email', $email)->first();
         
-        \Log::info('Farmer before password update:', [
+        \Log::info('Farmer before password update.', [
             'FarmerID' => $farmer->FarmerID,
             'Email' => $farmer->Email,
-            'Current Password Hash' => $farmer->password,
         ]);
 
-        // Set the plain text password - the mutator will hash it automatically
         $farmer->password = $request->password;
         $farmer->save();
 
-        \Log::info('Farmer after password update:', [
+        \Log::info('Farmer password updated successfully.', [
             'FarmerID' => $farmer->FarmerID,
             'Email' => $farmer->Email,
-            'New Password Hash' => $farmer->password,
         ]);
 
-        // Delete the password reset record
         \DB::table('password_resets')->where('Email', $email)->delete();
 
         return redirect()->route('farmer.login')->with('status', 'Password reset successfully!');
     }
 }
-
-
-
-
