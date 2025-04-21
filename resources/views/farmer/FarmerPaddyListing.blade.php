@@ -5,7 +5,7 @@
 @section('content')
 <!-- Main Content -->
 <main class="bg-gray-50 min-h-screen">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+    <div class="max-w-7xl mx-auto px-1 sm:px-6 py-4 sm:py-6">
         <!-- Delete Confirmation Modal -->
         <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
             <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
@@ -101,10 +101,20 @@
                                         <span class="text-gray-600 text-sm sm:text-base">
                                             Available:
                                         </span>
-                                        <span class="text-sm sm:text-base font-bold text-green-700">
+                                        <span class="text-sm sm:text-base font-bold {{ $paddy->Quantity <= 0 ? 'text-red-600' : 'text-green-700' }}">
                                             {{ number_format($paddy->Quantity) }} kg
+                                            @if($paddy->Quantity <= 0 && isset($paddy->has_pending_orders) && $paddy->has_pending_orders)
+                                                <span class="ml-1 text-xs bg-yellow-100 text-yellow-700 px-1 py-0.5 rounded">
+                                                    {{ $paddy->pending_orders_count }} pending orders
+                                                </span>
+                                            @endif
                                         </span>
                                     </div>
+                                    @if($paddy->Quantity <= 0 && isset($paddy->has_pending_orders) && $paddy->has_pending_orders)
+                                        <div class="mt-2 bg-yellow-50 border-l-4 border-yellow-400 p-2 text-xs text-yellow-800">
+                                            <p>You have pending orders but zero quantity available. Please update your quantity to fulfill these orders.</p>
+                                        </div>
+                                    @endif
                                 </div>
 
                                 <!-- Action Buttons -->

@@ -11,6 +11,8 @@ use App\Http\Controllers\FarmerSellingPaddyTypesController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\BotManController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\AdminOrderController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -74,6 +76,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('farmer-paddy-selections/{id}', 
             [FarmerSellingPaddyTypesController::class, 'destroyFarmerSelectedPaddyType'])
             ->name('farmer.paddy.delete');
+
+        // Order management
+        Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
+        // Replace the update status route with one that prevents status updates
+        Route::put('orders/{id}/status', [AdminOrderController::class, 'preventStatusUpdate'])->name('orders.update.status');
+        // Add a replacement route that doesn't delete but prevents the RouteNotFoundException
+        Route::delete('orders/{id}', [AdminOrderController::class, 'preventDestroy'])->name('orders.destroy');
     });
 });
 
@@ -106,6 +116,10 @@ Route::prefix('farmer')->name('farmer.')->group(function () {
         Route::put('paddy-listing/{id}', [FarmerSellingPaddyTypesController::class, 'update'])->name('paddy.listing.update');
         Route::delete('paddy-listing/{id}', [FarmerSellingPaddyTypesController::class, 'destroy'])->name('paddy.listing.destroy');
         Route::get('paddy-listing', [FarmerSellingPaddyTypesController::class, 'index'])->name('paddy.listing');
+
+        // Farmer Orders Routes
+        Route::get('orders', [OrderController::class, 'farmerOrders'])->name('orders.index');
+        Route::post('orders/{id}/update-status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
     });
 });
 
@@ -132,15 +146,19 @@ Route::prefix('buyer')->name('buyer.')->group(function () {
         Route::get('dashboard', [BuyerDashboardController::class, 'index'])->name('dashboard');
         Route::get('products', [FarmerSellingPaddyTypesController::class, 'products'])->name('products');
         Route::get('products/{id}', [OrderController::class, 'show'])->name('products.show');
-        // Order routes
-        // Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
-        // Route::get('orders/{id}', [OrderController::class, 'showOrder'])->name('orders.show');
-        // Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
+        
+        // Product details and ordering
+        Route::get('/product/{id}', [OrderController::class, 'showProductDetails'])->name('product.details');
+        Route::post('/place-order', [OrderController::class, 'placeOrder'])->name('place.order');
+        
+        // Order history and details
+        Route::get('/orders', [OrderController::class, 'listOrders'])->name('orders');
+        Route::get('/order/{id}', [OrderController::class, 'showOrderDetails'])->name('order.details');
     });
 
 });
 Route::match(['get', 'post'], '/botman', [BotManController::class, 'handle']);
 
-
+Route::post('orders/{id}/update-status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
 
 // Route::match(['get', 'post'], '/botman', [BotManController::class, 'handle']);

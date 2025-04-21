@@ -6,6 +6,7 @@ use App\Models\FarmerSellingPaddyType;
 use App\Models\PaddyType;
 use Illuminate\Http\Request;
 use App\Models\Farmer;
+use App\Models\Order;
 
 class FarmerSellingPaddyTypesController extends Controller
 {
@@ -134,14 +135,25 @@ class FarmerSellingPaddyTypesController extends Controller
     public function index()
     {
         // Fetch all paddy listings for the authenticated farmer
+        // Including those with zero quantity
         $sellingPaddyTypes = FarmerSellingPaddyType::where('FarmerID', auth()->id())
-            ->with('paddyType')
+            ->with(['paddyType'])
             ->get();
+        
+        // For each listing, check if there are pending orders
+        foreach ($sellingPaddyTypes as $listing) {
+            $pendingOrdersCount = Order::where('farmer_id', auth()->id())
+                ->where('paddy_type_id', $listing->PaddyID)
+                ->where('status', 'pending')
+                ->count();
+            
+            $listing->has_pending_orders = ($pendingOrdersCount > 0);
+            $listing->pending_orders_count = $pendingOrdersCount;
+        }
 
         // Pass the data to the view
         return view('farmer.FarmerPaddyListing', compact('sellingPaddyTypes'));
     }
-
 
     /**
      * Display the products page with farmer's selling paddy types.
@@ -151,6 +163,7 @@ class FarmerSellingPaddyTypesController extends Controller
         $query = $request->input('query');
         
         $sellingPaddyTypes = FarmerSellingPaddyType::with(['farmer', 'paddyType'])
+            ->where('Quantity', '>', 0) // Only show listings with quantity greater than 0
             ->when($query, function ($q) use ($query) {
                 return $q->whereHas('paddyType', function ($q) use ($query) {
                     $q->where('PaddyName', 'like', '%' . $query . '%');
@@ -160,7 +173,6 @@ class FarmerSellingPaddyTypesController extends Controller
 
         return view('buyer.products', compact('sellingPaddyTypes'));
     }
-
 
     /**
      * Display the farmer selections page.

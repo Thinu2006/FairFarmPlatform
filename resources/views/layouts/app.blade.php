@@ -31,12 +31,12 @@
         }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 flex flex-col min-h-screen">
     <!-- Header -->
     @include('layouts.header')
 
     <!-- Content Section -->
-    <main>
+    <main class="flex-grow">
         @yield('content')
     </main>
 

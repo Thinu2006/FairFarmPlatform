@@ -108,8 +108,8 @@
                 <i class="fas fa-seedling text-white w-5 text-center"></i>
                 <span>Paddy Listing</span>
             </a>
-            <a href="{{ url('admin/customers') }}" class="flex items-center space-x-3 p-3 rounded-lg transition-colors @if(request()->is('admin/customers')) active-nav-link @endif">
-                <i class="fas fa-truck text-white w-5 text-center"></i>
+            <a href="{{ route('farmer.orders.index') }}" class="flex items-center space-x-3 p-3 rounded-lg transition-colors @if(request()->routeIs('farmer.orders.index')) active-nav-link @endif">
+                <i class="fas fa-box text-white w-5 text-center"></i>
                 <span>Orders</span>
             </a>
             <button onclick="showLogoutModal()" class="flex items-center space-x-3 p-3 rounded-lg w-full transition-colors hover:bg-green-800">
@@ -133,8 +133,8 @@
                 <i class="fas fa-seedling text-white w-5"></i>
                 <span>Paddy Listing</span>
             </a>
-            <a href="{{ url('admin/customers') }}" class="nav-item flex items-center space-x-3 p-3 rounded-lg transition-colors @if(request()->is('admin/customers')) active-nav-link @endif">
-                <i class="fas fa-truck text-white w-5"></i>
+            <a href="{{ route('farmer.orders.index') }}" class="nav-item flex items-center space-x-3 p-3 rounded-lg transition-colors @if(request()->routeIs('farmer.orders.index')) active-nav-link @endif">
+                <i class="fas fa-box text-white w-5"></i>
                 <span>Orders</span>
             </a>
             <button onclick="showLogoutModal()" class="nav-item flex items-center space-x-3 p-3 rounded-lg w-full transition-colors hover:bg-green-800">

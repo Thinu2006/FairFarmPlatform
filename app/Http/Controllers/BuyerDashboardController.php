@@ -14,6 +14,7 @@ class BuyerDashboardController extends Controller
     {
         // Fetch the first 3 paddy types with related farmer and paddy type details
         $sellingPaddyTypes = FarmerSellingPaddyType::with(['farmer', 'paddyType'])
+            ->where('Quantity', '>', 0) // Only show listings with quantity greater than 0
             ->limit(3) // Limit to 3 items
             ->get();
 

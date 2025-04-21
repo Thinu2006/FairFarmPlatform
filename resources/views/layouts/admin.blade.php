@@ -20,8 +20,11 @@
             font-family: 'Open Sans', sans-serif;
         }
         
-        h1 {
+        h1,h3, h2, h5 {
             font-family: 'Merriweather', serif;
+        }
+        p {
+            font-family: 'Roboto Slab', serif;
         }
         
         /* Mobile navigation */
@@ -101,7 +104,7 @@
                 <i class="fas fa-box text-white w-5 text-center"></i>
                 <span>Orders</span>
             </a>
-            <button onclick="showLogoutModal()" class="w-full flex items-center space-x-3 p-3 rounded-lg transition-colors hover:bg-green-800 pt-2 border-t border-green-700 mt-2">
+            <button onclick="showLogoutModal()" class="flex items-center space-x-3 p-3 rounded-lg w-full transition-colors hover:bg-green-800">
                 <i class="fas fa-sign-out-alt text-white w-5 text-center"></i>
                 <span>Logout</span>
             </button>
@@ -138,7 +141,7 @@
                 <i class="fas fa-box text-white w-5"></i>
                 <span>Orders</span>
             </a>
-            <button onclick="showLogoutModal()" class="nav-item w-full flex items-center space-x-3 p-3 rounded-lg transition-colors hover:bg-green-800 pt-4 mt-4 border-t border-green-700">
+            <button onclick="showLogoutModal()" class="nav-item flex items-center space-x-3 p-3 rounded-lg w-full transition-colors hover:bg-green-800">
                 <i class="fas fa-sign-out-alt text-white w-5"></i>
                 <span>Logout</span>
             </button>

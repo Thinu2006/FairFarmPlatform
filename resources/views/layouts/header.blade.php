@@ -22,7 +22,7 @@
                 </a>
             </li>
             <li>
-                <a href="" class="text-gray-700 hover:text-[#2f613c] font-medium transition-colors duration-300 relative py-2">
+                <a href="{{ route('buyer.orders') }}" class="text-gray-700 hover:text-[#2f613c] font-medium transition-colors duration-300 relative py-2">
                     My Orders
                     <span class="absolute bottom-0 left-0 w-0 h-px bg-[#1F4529] transition-all duration-300 group-hover:w-full"></span>
                 </a>
