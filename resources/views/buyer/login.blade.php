@@ -24,7 +24,7 @@
 </head>
 
 <body class="bg-cover bg-center min-h-screen flex justify-center items-center px-4" style="background-image: url('{{ asset('images/BuyerLoginBG.jpg') }}');">
-    <div class="bg-white shadow-lg rounded-2xl flex w-full max-w-4xl h-[430px] overflow-hidden">
+    <div class="bg-white shadow-lg rounded-2xl flex w-full max-w-4xl h-[460px] overflow-hidden">
         <!-- Left Section (Hidden on small screens) -->
         <div class="w-1/2 p-10 flex flex-col justify-center items-center text-white text-center bg-gradient-to-r from-green-900 to-green-700 hidden md:flex">
             <h1 class="text-4xl font-bold">Welcome to Fair Farm</h1>

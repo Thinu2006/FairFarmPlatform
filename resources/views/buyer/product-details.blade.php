@@ -73,7 +73,7 @@
                         </div>
 
                         <!-- Order Form Section -->
-                        <form action="{{ route('buyer.place.order') }}" method="POST">
+                        <form action="{{ route('buyer.place.order') }}" method="POST" id="orderForm">
                             @csrf
                             <input type="hidden" name="listing_id" value="{{ $paddyListing->id }}">
                             
@@ -100,9 +100,10 @@
                                            name="quantity" 
                                            min="1" 
                                            max="{{ $paddyListing->Quantity }}"
-                                           value="1"
-                                           class="block w-full px-4 sm:px-5 py-2 sm:py-3 text-base sm:text-lg border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#1F4529] focus:border-[#1F4529]"
-                                           required>
+                                           value="{{ old('quantity', 1) }}"
+                                           class="block w-full px-4 sm:px-5 py-2 sm:py-3 text-base sm:text-lg border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#1F4529] focus:border-[#1F4529] @error('quantity') border-red-500 @enderror"
+                                           required
+                                           step="0.1">
                                     <div class="absolute inset-y-0 right-0 flex items-center pr-3 sm:pr-5 pointer-events-none">
                                         <span class="text-gray-500 text-sm sm:text-base">kg</span>
                                     </div>
@@ -113,6 +114,7 @@
                                 @error('quantity')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
+                                <p id="quantity-error" class="text-red-500 text-sm mt-1 hidden">Please enter a valid quantity between 1 and {{ $paddyListing->Quantity }} kg</p>
                             </div>
                             
                             <!-- Order Summary -->
@@ -125,7 +127,7 @@
                                     </div>
                                     <div class="flex justify-between">
                                         <span class="text-sm sm:text-base text-gray-600">Quantity</span>
-                                        <span class="text-sm sm:text-base font-medium"><span id="quantity-preview">1</span> kg</span>
+                                        <span class="text-sm sm:text-base font-medium"><span id="quantity-preview">{{ old('quantity', 1) }}</span> kg</span>
                                     </div>
                                     <div class="flex justify-between">
                                         <span class="text-sm sm:text-base text-gray-600">Delivery fee (5%)</span>
@@ -141,6 +143,7 @@
 
                             <!-- Order Button -->
                             <button type="submit" 
+                                    id="submitBtn"
                                     class="w-full flex justify-center items-center py-3 sm:py-3 px-4 sm:px-3 border border-transparent rounded-lg sm:rounded-xl shadow-sm text-base sm:text-lg font-bold text-white bg-[#1F4529] hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1F4529] transition duration-150 ease-in-out transform hover:scale-[1.01]">
                                 <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
@@ -154,33 +157,70 @@
         </div>
     </section>
 
-    <!-- JavaScript for dynamic price calculation -->
+    <!-- JavaScript for dynamic price calculation and validation -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const quantityInput = document.getElementById('quantity');
             const quantityPreview = document.getElementById('quantity-preview');
             const shippingPreview = document.getElementById('shipping-preview');
             const totalPreview = document.getElementById('total-preview');
+            const quantityError = document.getElementById('quantity-error');
+            const orderForm = document.getElementById('orderForm');
+            const submitBtn = document.getElementById('submitBtn');
             const pricePerKg = {{ $paddyListing->PriceSelected }};
+            const maxQuantity = {{ $paddyListing->Quantity }};
 
+            // Real-time validation for quantity input
             quantityInput.addEventListener('input', function() {
                 const quantity = parseFloat(this.value) || 0;
-                const maxQuantity = {{ $paddyListing->Quantity }};
                 
-                // Ensure quantity doesn't exceed available stock
-                if (quantity > maxQuantity) {
-                    this.value = maxQuantity;
-                    return;
+                // Validate quantity
+                if (quantity <= 0 || quantity > maxQuantity || isNaN(quantity)) {
+                    quantityError.classList.remove('hidden');
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    quantityError.classList.add('hidden');
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
                 }
                 
+                // Calculate prices
                 const subtotal = pricePerKg * quantity;
                 const shippingFee = subtotal * 0.05;
                 const grandTotal = subtotal + shippingFee;
                 
-                quantityPreview.textContent = quantity;
+                quantityPreview.textContent = quantity.toFixed(1);
                 shippingPreview.textContent = shippingFee.toFixed(2);
                 totalPreview.textContent = grandTotal.toFixed(2);
             });
+
+            // Form submission validation
+            orderForm.addEventListener('submit', function(e) {
+                const quantity = parseFloat(quantityInput.value) || 0;
+                const termsChecked = document.getElementById('terms').checked;
+                
+                if (quantity <= 0 || quantity > maxQuantity || isNaN(quantity)) {
+                    e.preventDefault();
+                    quantityError.classList.remove('hidden');
+                    quantityInput.focus();
+                }
+                
+                if (!termsChecked) {
+                    e.preventDefault();
+                    alert('Please agree to the terms and conditions');
+                    document.getElementById('terms').focus();
+                }
+            });
+
+            // Initialize with correct values if there's old input
+            @if(old('quantity'))
+                const oldQuantity = parseFloat({{ old('quantity') }});
+                if (!isNaN(oldQuantity)) {
+                    quantityInput.value = oldQuantity;
+                    quantityInput.dispatchEvent(new Event('input'));
+                }
+            @endif
         });
     </script>
 
