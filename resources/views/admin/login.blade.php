@@ -34,6 +34,13 @@
     </style>
 </head>
 <body class="flex items-center justify-center p-4 sm:p-6">
+    <!-- Back Button (Top Left) -->
+    <a href="{{ url('/') }}" class="absolute top-4 left-4 bg-white/80 hover:bg-white text-black font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Welcome
+    </a>
     <!-- Login Container -->
     <div class="bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row w-full max-w-4xl overflow-hidden min-h-[380px] md:min-h-[300px]"> 
         <!-- Left Section (Image or Branding) - Hidden on small screens -->

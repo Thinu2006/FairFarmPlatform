@@ -223,35 +223,36 @@
             @endif
         });
     </script>
-
-    <!-- BotMan Chatbot Integration -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/assets/css/chat.min.css">
-    <style>
-        .botmanWidgetBtn {
-            background-color: #1F4529 !important;
-        }
-        .botmanWidgetContainer {
-            z-index: 10000;
-        }
-    </style>
-    <script>
-        var botmanWidget = {
-            aboutText: 'Need help? Start with "Hi"',
-            introMessage: "WELCOME TO FAIRFARM !",
-            bubbleAvatarUrl: '',
-            mainColor: '#1F4529',
-            bubbleBackground: '#1F4529',
-            desktopHeight: 500,
-            desktopWidth: 400,
-            chatServer: '/botman',
-            title: 'Paddy Assistant',
-            widgetHeight: '500px',
-            widgetWidth: '350px',
-            headerTextColor: 'white',
-            headerBackgroundColor: '#1F4529',
-            bodyBackgroundColor: 'white',
-            bodyTextColor: '#333333'
-        };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js"></script>
+    <!-- Isolated BotMan Integration -->
+    <div id="botman-isolation-wrapper">
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/assets/css/chat.min.css">
+        <style>
+            #botman-isolation-wrapper .botmanWidgetBtn {
+                background-color: #1F4529 !important;
+            }
+            #botman-isolation-wrapper .botmanWidgetContainer {
+                z-index: 10000;
+            }
+        </style>
+        <script>
+            var botmanWidget = {
+                aboutText: 'Need help? Start with "Hi"',
+                introMessage: "WELCOME TO FAIRFARM! HOW CAN I HELP YOU?",
+                bubbleAvatarUrl: '',
+                mainColor: '#1F4529',
+                bubbleBackground: '#1F4529',
+                desktopHeight: 500,
+                desktopWidth: 400,
+                chatServer: '/botman',
+                title: 'Order Assistant',
+                widgetHeight: '500px',
+                widgetWidth: '350px',
+                headerTextColor: 'white',
+                headerBackgroundColor: '#1F4529',
+                bodyBackgroundColor: 'white',
+                bodyTextColor: '#333333'
+            };
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js"></script>
+    </div>
 @endsection

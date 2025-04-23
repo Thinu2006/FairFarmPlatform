@@ -1,4 +1,4 @@
-<nav class="bg-white border-b border-gray-100 py-3 px-6 md:px-10 flex items-center justify-between sticky top-0 z-50">
+<nav class="bg-white border-b border-gray-100 py-3 px-6 md:px-10 flex items-center justify-between sticky top-0 z-50 font-slab text-lg font-bold">
     <!-- Logo -->
     <div class="flex items-center">
         <a href="{{ route('buyer.dashboard') }}" class="flex items-center group">
@@ -34,12 +34,9 @@
                 Contact
             </a>
             @auth('buyer')
-            <form action="{{ route('buyer.logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="text-gray-700 hover:text-red-600 transition-colors duration-300 px-4 py-2 font-medium">
-                    Logout
-                </button>
-            </form>
+            <button onclick="showLogoutConfirmation()" class="text-gray-700 hover:text-red-600 transition-colors duration-300 px-4 py-2 font-medium">
+                Logout
+            </button>
             @endauth
         </div>
     </div>
@@ -76,17 +73,33 @@
             </li>
             @auth('buyer')
             <li>
-                <form action="{{ route('buyer.logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="block py-2 text-gray-700 hover:text-red-600 transition-colors duration-300 font-medium w-full text-left">
-                        Logout
-                    </button>
-                </form>
+                <button onclick="showLogoutConfirmation()" class="block py-2 text-gray-700 hover:text-red-600 transition-colors duration-300 font-medium w-full text-left">
+                    Logout
+                </button>
             </li>
             @endauth
         </ul>
     </div>
 </nav>
+
+<!-- Logout Confirmation Modal -->
+<div id="logoutModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Confirm Logout</h3>
+        <p class="text-gray-600 mb-6">Are you sure you want to log out of your account?</p>
+        <div class="flex justify-end space-x-4">
+            <button onclick="hideLogoutConfirmation()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition">
+                Cancel
+            </button>
+            <form id="logoutForm" action="{{ route('buyer.logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition">
+                    Logout
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 
 <script>
     // Mobile menu toggle
@@ -102,4 +115,36 @@
             icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>';
         }
     });
+
+    // Logout confirmation functions
+    function showLogoutConfirmation() {
+        document.getElementById('logoutModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+    }
+
+    function hideLogoutConfirmation() {
+        document.getElementById('logoutModal').classList.add('hidden');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('logoutModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            hideLogoutConfirmation();
+        }
+    });
 </script>
+
+<style>
+    /* Modal animation */
+    #logoutModal {
+        transition: opacity 0.3s ease;
+    }
+    #logoutModal > div {
+        transform: translateY(-20px);
+        transition: transform 0.3s ease;
+    }
+    #logoutModal:not(.hidden) > div {
+        transform: translateY(0);
+    }
+</style>

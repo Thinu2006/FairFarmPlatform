@@ -246,7 +246,7 @@
 
     <!-- Products Section with Animation -->
     <section class="py-16 md:py-20 bg-gray-50 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 xl:px-16">
+        <div class="max-w-9xl mx-auto px-6 sm:px-40">
             <h3 class="text-center text-3xl md:text-4xl font-bold text-[#1F4529] mb-12 animate-fadeInUp">Our Products</h3>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 xl:gap-16">
@@ -260,10 +260,10 @@
 
                     <div class="p-6">
                         <h4 class="text-xl md:text-2xl font-semibold text-gray-900 mb-2">{{ $paddy->paddyType->PaddyName }}</h4>
-                        <p class="text-lg font-bold text-gray-800 mb-4">Rs{{ $paddy->PriceSelected }} <span class="text-sm font-normal">per 1Kg</span></p>
+                        <p class="text-lg font-bold text-gray-800 mb-4">Rs{{ $paddy->PriceSelected }} <span class="text-base font-normal">per 1Kg</span></p>
                         
                         <div class="border-t border-gray-200 pt-4">
-                            <h5 class="text-sm font-medium text-gray-600 mb-2">Farmer details:</h5>
+                            <h5 class="text-lg font-medium text-gray-600 mb-2">Farmer details:</h5>
                             <ul class="text-gray-600 space-y-1">
                                 <li class="flex items-start">
                                     <svg class="h-5 w-5 text-green-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -281,16 +281,16 @@
                             </ul>
                         </div>
 
-                        <button class="mt-6 w-full bg-[#1F4529] hover:bg-green-800 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-[1.02]">
+                        <a href="{{ route('buyer.product.details', $paddy->id) }}" class="mt-4 w-full bg-[#1F4529] text-white text-lg px-4 py-2 rounded-md hover:bg-green-800 transition duration-300 block text-center">
                             View Details
-                        </button>
+                        </a>
                     </div>
                 </div>
                 @endforeach
             </div>
 
             <div class="mt-12 text-center animate-fadeInUp delay-500">
-                <a href="{{ route('buyer.products') }}" class="inline-block bg-[#1F4529] hover:bg-green-800 text-white font-medium py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105">
+                <a href="{{ route('buyer.products') }}" class="inline-block bg-[#1F4529] hover:bg-green-800 text-white text-lg font-medium py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105">
                     Browse All Products
                 </a>
             </div>
@@ -326,9 +326,9 @@
 
     <!-- Testimonials Section with Animation -->
     <section class="py-16 md:py-20 bg-gray-50 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 xl:px-16">
+        <div class="max-w-9xl mx-auto px-6 sm:px-40">
             <h3 class="text-center text-3xl md:text-4xl font-bold text-[#1F4529] mb-4 animate-fadeInUp">What Our Buyers Say</h3>
-            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-12 animate-fadeInUp delay-100">Hear from our satisfied customers about their experiences with our products</p>
+            <p class="text-center text-gray-600 text-xl max-w-3xl mx-auto mb-12 animate-fadeInUp delay-100">Hear from our satisfied customers about their experiences with our products</p>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
                 <!-- Testimonial 1 with Animation -->
@@ -375,6 +375,7 @@
             </div>
         </div>
     </section>
+    
 
     <!-- Animation Styles -->
     <style>
@@ -490,4 +491,45 @@
             observer.observe(el);
         });
     </script>
+<!-- BotMan Chat Widget -->
+<div id="botman-isolation-container" style="all:initial">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/assets/css/chat.min.css">
+    <style>
+        /* Reset all styles within the container */
+        #botman-isolation-container * {
+            all: revert;
+        }
+        /* Specific BotMan styles */
+        #botman-isolation-container .botmanWidgetBtn {
+            background-color: #1F4529 !important;
+            font-family: 'Roboto Slab', serif !important;
+        }
+        #botman-isolation-container .botmanWidgetContainer {
+            z-index: 10000;
+            font-family: 'Roboto Slab', serif !important;
+        }
+    </style>
+    <script>
+        var botmanWidget = {
+            aboutText: 'Need help? Start with "Hi"',
+            introMessage: "WELCOME TO FAIRFARM!",
+            bubbleAvatarUrl: '',
+            mainColor: '#1F4529',
+            bubbleBackground: '#1F4529',
+            desktopHeight: 500,
+            desktopWidth: 400,
+            chatServer: '/botman',
+            title: 'Paddy Assistant',
+            widgetHeight: '500px',
+            widgetWidth: '350px',
+            headerTextColor: 'white',
+            headerBackgroundColor: '#1F4529',
+            bodyBackgroundColor: 'white',
+            bodyTextColor: '#333333',
+            messageFontFamily: "'Roboto Slab', serif",
+            inputFontFamily: "'Roboto Slab', serif"
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js"></script>
+</div>
 @endsection

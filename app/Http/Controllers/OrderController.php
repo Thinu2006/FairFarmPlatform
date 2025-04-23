@@ -154,7 +154,7 @@ class OrderController extends Controller
     {
         foreach ($orders as $order) {
             if ($order->status === 'pending') {
-                $listing = FarmerSellingPaddyType::where('FarmerID', $order->farmer_id)>where('PaddyID', $order->paddy_type_id)->first();
+                $listing = FarmerSellingPaddyType::where('FarmerID', $order->farmer_id)->where('PaddyID', $order->paddy_type_id)->first();
                 $order->has_sufficient_quantity = $listing ? ($listing->Quantity >= $order->quantity) : false;
                 $order->available_quantity = $listing ? $listing->Quantity : 0;
             }
