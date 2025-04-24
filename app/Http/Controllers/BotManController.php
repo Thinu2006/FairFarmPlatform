@@ -4,6 +4,7 @@ use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
+use Illuminate\Support\Facades\Auth;
 
 class BotManController extends Controller
 {
@@ -94,7 +95,14 @@ class BotManController extends Controller
      */
     public function handleGreeting($botman)
     {
-        $botman->reply('👋 Hello! I can help answer your questions about our paddy products.');
+        $buyer = Auth::guard('buyer')->user();
+        $buyerName = $buyer ? $buyer->FullName : '';
+        $reply = "Thank you for using our website";
+        if ($buyerName) {
+            $reply .= " {$buyerName}";
+        }
+        $reply .= ". I can help answer your questions about our paddy products.";
+        $botman->reply("👋 {$reply}");
         $this->showCategoriesList($botman);
     }
     /**
