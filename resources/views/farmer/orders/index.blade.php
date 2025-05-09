@@ -1,5 +1,7 @@
 @extends('layouts.farmer')
 
+@section('title', 'My Orders')
+
 @section('content')
 <section class="py-1 sm:py-8 px-0 sm:px-6 bg-gray-50">
     <div class="max-w-7xl mx-auto ">

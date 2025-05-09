@@ -16,8 +16,17 @@ class Order extends Model
         'price_per_kg',
         'quantity',
         'total_amount',
-        'status'
+        'status',
+        'delivered_at',  // Add this
+        'completed_at' // pending, accepted, delivery_started, delivered, completed, cancelled
     ];
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'delivered_at' => 'datetime',
+        'completed_at' => 'datetime'
+    ];
+ 
 
     public function buyer()
     {
@@ -32,5 +41,9 @@ class Order extends Model
     public function paddyType()
     {
         return $this->belongsTo(PaddyType::class, 'paddy_type_id', 'PaddyID');
+    }
+    public function farmerSellingPaddyType()
+    {
+        return $this->belongsTo(FarmerSellingPaddyType::class, 'paddy_type_id', 'PaddyID');
     }
 }

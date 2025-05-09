@@ -36,4 +36,10 @@ class Buyer extends Authenticatable implements CanResetPassword
     {
         $this->attributes['password'] = bcrypt($value);
     }
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'buyer_id', 'BuyerID');
+    }
+    
+    
 }

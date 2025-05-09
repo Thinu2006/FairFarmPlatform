@@ -4,15 +4,15 @@
     <section class="relative w-full h-64 bg-cover bg-center flex items-center justify-center" style="background-image: url('./../../Images/BuyerLoginBG.jpg');">
         <div class="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center px-6 text-center">
             <h2 class="text-white text-3xl md:text-4xl font-bold">All Paddy Products</h2>
-            <form action="{{ route('buyer.products') }}" method="GET" class="mt-4 flex items-center justify-center">
-                <input type="text" name="query" placeholder="Search paddy..." 
-                       class="px-4 py-2 rounded-l-md text-gray-900 w-64 focus:outline-none focus:ring-2 focus:ring-[#1F4529]" 
+            <form action="{{ route('buyer.products') }}" method="GET" class="mt-6 flex text-lg items-center justify-center">
+                <input type="text" name="query" placeholder="Search Paddy" 
+                       class="px-4 py-2 rounded-l-md text-gray-900 sm:w-[300px] w-64 focus:outline-none focus:ring-2 focus:ring-[#1F4529]" 
                        value="{{ request('query') }}">
                 <button type="submit" class="bg-[#1F4529] text-white px-4 py-2 rounded-r-md hover:bg-green-800 transition">
                     <i class="fas fa-search"></i>
                 </button>
                 @if(request('query'))
-                    <a href="{{ route('buyer.products') }}" class="ml-2 text-white hover:underline bg-gray-600 px-3 py-2 rounded-md">
+                    <a href="{{ route('buyer.products') }}" class="ml-2 sm:ml-4 text-white hover:underline bg-gray-600 px-3 py-2 rounded-md">
                         Clear
                     </a>
                 @endif
@@ -20,11 +20,11 @@
         </div>
     </section>
     
-    <section class="py-16 px-6 bg-gray-50">
-        <div class="max-w-7xl mx-auto">
+    <section class="py-16 px-6 sm:px-36 bg-gray-50 mb-6 sm:mb-24">
+        <div class="max-w-9xl mx-auto">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-3xl font-semibold text-[#1F4529]">Our Products</h3>
-                <a href="{{ route('buyer.orders') }}" class="bg-[#1F4529] text-white px-4 py-2 rounded-md hover:bg-green-800 transition">
+                <a href="{{ route('buyer.orders') }}" class="bg-[#1F4529] text-white text-lg px-4 py-2 rounded-md hover:bg-green-800 transition">
                     View My Orders
                 </a>
             </div>
@@ -37,7 +37,7 @@
             @endif
             
             @if($sellingPaddyTypes->isEmpty())
-                <div class="text-center mt-12">
+                <div class="text-center mt-20">
                     <p class="text-gray-600 text-lg">No paddy products found matching your search.</p>
                     <a href="{{ route('buyer.products') }}" class="mt-4 inline-block bg-[#1F4529] text-white px-4 py-2 rounded-md hover:bg-green-800 transition">
                         View All Products
@@ -54,13 +54,13 @@
                             </div>
                             
                             <div class="mt-4">
-                                <h4 class="text-xl font-semibold text-gray-800">{{ $paddy->paddyType->PaddyName }}</h4>
-                                <p class="text-gray-800 font-bold mt-2">Rs {{ number_format($paddy->PriceSelected, 2) }} per Kg</p>
-                                <p class="text-gray-800 font-bold mt-2">Available Quantity: {{ $paddy->Quantity }} Kg</p>
+                                <h4 class="text-2xl font-bold text-gray-800">{{ $paddy->paddyType->PaddyName }}</h4>
+                                <p class="text-gray-800 font-bold mt-2 text-base">Rs {{ number_format($paddy->PriceSelected, 2) }} per Kg</p>
+                                <p class="text-gray-800 font-bold mt-2 text-base">Available Quantity: {{ $paddy->Quantity }} Kg</p>
                                 
-                                <div class="mt-3 border-t pt-3">
-                                    <p class="text-gray-600 font-medium">Farmer details</p>
-                                    <ul class="text-gray-600 text-sm mt-1 space-y-1">
+                                <div class="mt-3 border-t pt-3 text-base">
+                                    <p class="text-gray-600 font-bold">Farmer details</p>
+                                    <ul class="text-gray-600  mt-1 space-y-1">
                                         <li class="flex items-start">
                                             <span class="mr-1">•</span>
                                             <span>{{ $paddy->farmer->FullName }}</span>
@@ -72,7 +72,7 @@
                                     </ul>
                                 </div>
                                 
-                                <a href="{{ route('buyer.product.details', $paddy->id) }}" class="mt-4 w-full bg-[#1F4529] text-white px-4 py-2 rounded-md hover:bg-green-800 transition duration-300 block text-center">
+                                <a href="{{ route('buyer.product.details', $paddy->id) }}" class="mt-4 w-full bg-[#1F4529] text-white text-lg px-4 py-2 rounded-md hover:bg-green-800 transition duration-300 block text-center">
                                     View Details
                                 </a>
                             </div>
@@ -82,6 +82,35 @@
             @endif
         </div>
     </section>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/assets/css/chat.min.css">
+    <style>
+        .botmanWidgetBtn {
+            background-color: #1F4529 !important;
+        }
+        .botmanWidgetContainer {
+            z-index: 10000;
+        }
+    </style>
+    <script>
+        var botmanWidget = {
+            aboutText: 'Need help? Start with "Hi"',
+            introMessage: "WELCOME TO FAIRFARM !",
+            bubbleAvatarUrl: '',
+            mainColor: '#1F4529',
+            bubbleBackground: '#1F4529',
+            desktopHeight: 500,
+            desktopWidth: 400,
+            chatServer: '/botman',
+            title: 'Paddy Assistant',
+            widgetHeight: '500px',
+            widgetWidth: '350px',
+            headerTextColor: 'white',
+            headerBackgroundColor: '#1F4529',
+            bodyBackgroundColor: 'white',
+            bodyTextColor: '#333333'
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js"></script>
 
     <script>
         // Fix for the My Orders link in the header

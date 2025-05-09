@@ -50,21 +50,23 @@ class FarmerAuthController extends Controller
     public function login(Request $request)
     {
         \Log::info('Farmer login attempt.', ['Email' => $request->Email]);
-
+    
         $request->validate([
             'Email' => 'required|string|email',
             'password' => 'required|string|min:8',
         ]);
-
+    
         $credentials = $request->only('Email', 'password');
         $farmer = Farmer::where('Email', $credentials['Email'])->first();
-
+    
         if ($farmer && Hash::check($credentials['password'], $farmer->password)) {
             Auth::guard('farmer')->login($farmer);
             \Log::info('Farmer logged in successfully.', ['FarmerID' => $farmer->FarmerID, 'Email' => $farmer->Email]);
-            return view('farmer.dashboard', ['name' => $farmer->FullName]);
+            
+            // Redirect to the dashboard route instead of directly returning the view
+            return redirect()->route('farmer.dashboard');
         }
-
+    
         \Log::warning('Farmer login failed.', ['Email' => $request->Email]);
         return back()->with('error', 'Invalid username or password');
     }

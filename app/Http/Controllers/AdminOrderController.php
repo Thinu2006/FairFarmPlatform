@@ -55,6 +55,47 @@ class AdminOrderController extends Controller
     }
 
     /**
+     * Start delivery process
+     */
+    public function startDelivery($id)
+    {
+        $order = Order::findOrFail($id);
+        
+        if ($order->status != 'processing') {
+            return redirect()->back()->with('error', 'Order must be accepted by farmer before delivery can start');
+        }
+        
+        $order->update(['status' => 'delivery_started']);
+        
+        return redirect()->back()->with('success', 'Delivery process started successfully');
+    }
+
+    /**
+     * Complete delivery
+     */
+    public function completeDelivery($id)
+    {
+        $order = Order::findOrFail($id);
+        
+        if ($order->status != 'delivery_started') {
+            return redirect()->back()->with('error', 'Delivery must be started before it can be completed');
+        }
+        
+        $order->update([
+            'status' => 'delivered',
+            'delivered_at' => now()
+        ]);
+        
+        // Debugging - check if timestamp was set
+        \Log::info('Order delivered_at timestamp:', [
+            'order_id' => $order->id,
+            'delivered_at' => $order->delivered_at
+        ]);
+        
+        return redirect()->back()->with('success', 'Order marked as successfully delivered');
+    }
+
+    /**
      * Update order status.
      */
     public function updateStatus(Request $request, $id)

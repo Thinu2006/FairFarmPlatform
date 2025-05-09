@@ -154,7 +154,7 @@ class OrderController extends Controller
     {
         foreach ($orders as $order) {
             if ($order->status === 'pending') {
-                $listing = FarmerSellingPaddyType::where('FarmerID', $order->farmer_id)>where('PaddyID', $order->paddy_type_id)->first();
+                $listing = FarmerSellingPaddyType::where('FarmerID', $order->farmer_id)->where('PaddyID', $order->paddy_type_id)->first();
                 $order->has_sufficient_quantity = $listing ? ($listing->Quantity >= $order->quantity) : false;
                 $order->available_quantity = $listing ? $listing->Quantity : 0;
             }
@@ -204,4 +204,26 @@ class OrderController extends Controller
             $listing->save();
         }
     }
+    /**
+     * Confirm order receipt by buyer
+     */
+    public function receiveOrder($id)
+    {
+        $order = Order::findOrFail($id);
+        
+        $order->update([
+            'status' => 'completed',
+            'completed_at' => now()
+        ]);
+        
+        // Debugging
+        \Log::info('Order completed_at timestamp:', [
+            'order_id' => $order->id,
+            'completed_at' => $order->completed_at
+        ]);
+        
+        return redirect()->back()->with('success', 'Order marked as received');
+    }
+    
+
 }

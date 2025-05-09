@@ -37,4 +37,8 @@ class Farmer extends Authenticatable implements CanResetPassword
     {
         $this->attributes['password'] = bcrypt($value); 
     }
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'farmer_id', 'FarmerID');
+    }
 }

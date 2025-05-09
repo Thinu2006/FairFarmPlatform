@@ -15,14 +15,18 @@
           crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+
     <style>
         /* Custom styles */
         body {
             font-family: 'Open Sans', sans-serif;
         }
-        
-        h1 {
+        h1,h3, h2, h5 {
             font-family: 'Merriweather', serif;
+        }
+        p {
+            font-family: 'Roboto Slab', serif;
         }
         
         /* Mobile navigation */
@@ -112,6 +116,10 @@
                 <i class="fas fa-box text-white w-5 text-center"></i>
                 <span>Orders</span>
             </a>
+            <a href="{{ route('farmer.account') }}" class="flex items-center space-x-3 p-3 rounded-lg transition-colors @if(request()->routeIs('farmer.account')) active-nav-link @endif">
+                <i class="fas fa-user-cog text-white w-5 text-center"></i>
+                <span>Account Settings</span>
+            </a>
             <button onclick="showLogoutModal()" class="flex items-center space-x-3 p-3 rounded-lg w-full transition-colors hover:bg-green-800">
                 <i class="fas fa-sign-out-alt text-white w-5 text-center"></i>
                 <span>Logout</span>
@@ -136,6 +144,10 @@
             <a href="{{ route('farmer.orders.index') }}" class="nav-item flex items-center space-x-3 p-3 rounded-lg transition-colors @if(request()->routeIs('farmer.orders.index')) active-nav-link @endif">
                 <i class="fas fa-box text-white w-5"></i>
                 <span>Orders</span>
+            </a>
+            <a href="{{ route('farmer.account') }}" class="nav-item flex items-center space-x-3 p-3 rounded-lg transition-colors @if(request()->routeIs('farmer.account')) active-nav-link @endif">
+                <i class="fas fa-user-cog text-white w-5"></i>
+                <span>Account Settings</span>
             </a>
             <button onclick="showLogoutModal()" class="nav-item flex items-center space-x-3 p-3 rounded-lg w-full transition-colors hover:bg-green-800">
                 <i class="fas fa-sign-out-alt text-white w-5"></i>
@@ -217,14 +229,23 @@
             }, 300);
         }
         
-        // Close modal when clicking outside
-        document.querySelector('.modal-overlay').addEventListener('click', hideLogoutModal);
+        // Close modals when clicking outside
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function() {
+                if (this.parentElement.id === 'logoutModal') {
+                    hideLogoutModal();
+                }
+            });
+        });
         
-        // Close modal with Escape key
+        // Close modals with Escape key
         document.addEventListener('keydown', function(event) {
-            const modal = document.getElementById('logoutModal');
-            if (event.key === 'Escape' && modal.classList.contains('modal-visible')) {
-                hideLogoutModal();
+            if (event.key === 'Escape') {
+                const logoutModal = document.getElementById('logoutModal');
+                
+                if (logoutModal.classList.contains('modal-visible')) {
+                    hideLogoutModal();
+                }
             }
         });
     </script>

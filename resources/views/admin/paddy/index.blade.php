@@ -88,11 +88,11 @@
                     <div class="mt-4">
                         <div class="flex justify-between items-center">
                             <span class="text-sm font-medium text-gray-500">Min Price:</span>
-                            <span class="text-sm font-medium text-blue-600">Rs. {{ number_format($paddy->MinPricePerKg, 2) }}/kg</span>
+                            <span class="text-sm font-bold text-gray-800">Rs. {{ number_format($paddy->MinPricePerKg, 2) }}/kg</span>
                         </div>
                         <div class="flex justify-between items-center mt-1">
                             <span class="text-sm font-medium text-gray-500">Max Price:</span>
-                            <span class="text-sm font-medium text-green-600">Rs. {{ number_format($paddy->MaxPricePerKg, 2) }}/kg</span>
+                            <span class="text-sm font-bold text-gray-800">Rs. {{ number_format($paddy->MaxPricePerKg, 2) }}/kg</span>
                         </div>
                     </div>
                 </div>

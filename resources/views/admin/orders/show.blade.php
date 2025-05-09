@@ -20,6 +20,18 @@
         </div>
     </header>
     
+    <!-- Flash message -->
+    @if(session('success'))
+        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+            <p>{{ session('success') }}</p>
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+            <p>{{ session('error') }}</p>
+        </div>
+    @endif
+
     <!-- Order details card -->
     <div class="mt-6 bg-white rounded-md shadow-md overflow-hidden">
         <div class="p-6">
@@ -30,8 +42,16 @@
                         Pending
                     </span>
                 @elseif($order->status == 'processing')
-                    <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
+                    <span class="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
                         Accepted
+                    </span>
+                @elseif($order->status == 'delivery_started')
+                    <span class="px-3 py-1 text-sm font-semibold rounded-full bg-purple-100 text-purple-800">
+                        Delivery Started
+                    </span>
+                @elseif($order->status == 'delivered')
+                    <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
+                        Delivered
                     </span>
                 @elseif($order->status == 'completed')
                     <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
@@ -51,6 +71,7 @@
                         <p class="mb-2"><span class="font-bold">Name:</span> {{ $order->buyer->FullName }}</p>
                         <p class="mb-2"><span class="font-bold">Email:</span> {{ $order->buyer->Email }}</p>
                         <p class="mb-2"><span class="font-bold">Contact No:</span> {{ $order->buyer->ContactNo }}</p>
+                        <p class="mb-2"><span class="font-bold">Delivery Address:</span> {{ $order->buyer->Address }}</p>
                     </div>
                 </div>
                 
@@ -60,6 +81,7 @@
                         <p class="mb-2"><span class="font-bold">Name:</span> {{ $order->farmer->FullName }}</p>
                         <p class="mb-2"><span class="font-bold">Email:</span> {{ $order->farmer->Email }}</p>
                         <p class="mb-2"><span class="font-bold">Contact No:</span> {{ $order->farmer->ContactNo }}</p>
+                        <p class="mb-2"><span class="font-bold">Address:</span> {{ $order->farmer->Address }}</p>   
                     </div>
                 </div>
             </div>
@@ -95,6 +117,25 @@
                         <p class="text-xs text-gray-500 mt-2">* 5% shipping fee is charged to the buyer</p>
                     </div>
                 </div>
+            </div>
+
+            <!-- Delivery action buttons -->
+            <div class="mt-6 p-6 border-t border-gray-200">
+                @if($order->status == 'processing')
+                    <form action="{{ route('admin.orders.start-delivery', $order->id) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200">
+                            <i class="fas fa-truck mr-2"></i> Start Delivery Process
+                        </button>
+                    </form>
+                @elseif($order->status == 'delivery_started')
+                    <form action="{{ route('admin.orders.complete-delivery', $order->id) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200">
+                            <i class="fas fa-check-circle mr-2"></i> Mark as Successfully Delivered
+                        </button>
+                    </form>
+                @endif
             </div>
         </div>
     </div>

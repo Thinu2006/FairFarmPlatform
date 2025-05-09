@@ -18,7 +18,13 @@
     </style>
 </head>
 <body class="bg-cover bg-center min-h-screen flex justify-center items-center px-4" style="background-image: url('{{ asset('images/FarmerLoginBG.jpg') }}');">
-
+    <!-- Back Button (Top Left) -->
+    <a href="{{ url('/') }}" class="absolute top-4 left-4 bg-white/80 hover:bg-white text-green-700 font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Welcome
+    </a>
     <div class="bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row w-full max-w-4xl overflow-hidden min-h-[430px]"> 
     <!-- Left Section -->
         <div class=" hidden md:flex w-full md:w-1/2 p-10 flex-col justify-center items-center text-white text-center bg-gradient-to-r from-green-900 to-green-700 ">

@@ -17,6 +17,8 @@ return new class extends Migration
             $table->decimal('quantity', 10, 2);
             $table->decimal('total_amount', 12, 2);
             $table->string('status')->default('pending');
+            $table->timestamp('delivered_at')->nullable(); // When admin marks as delivered
+            $table->timestamp('completed_at')->nullable(); // When buyer confirms receipt
             $table->timestamps();
             
             $table->foreign('buyer_id')->references('BuyerID')->on('buyers')->onDelete('cascade');
