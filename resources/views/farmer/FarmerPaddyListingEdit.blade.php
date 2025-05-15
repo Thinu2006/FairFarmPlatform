@@ -139,7 +139,7 @@
                     <!-- Price Slider Section -->
                     <div class="info-card p-4 sm:p-5 rounded-lg space-y-4">
                         <div>
-                            <label class="block text-sm sm:text-base font-semibold text-green-700 mb-1">Price Per Kilogram <span class="text-red-500">*</span></label>
+                            <label class="block text-sm sm:text-base font-semibold text-green-700 mb-1">Price per bushel: <span class="text-red-500">*</span></label>
                         </div>
                         
                         <!-- Price Range Indicators -->
@@ -173,12 +173,12 @@
 
                     <!-- Quantity Input -->
                     <div class="info-card p-4 sm:p-5 rounded-lg space-y-3">
-                        <label for="Quantity" class="block text-sm sm:text-base font-semibold text-green-700">Available Quantity (kg) <span class="text-red-500">*</span></label>
+                        <label for="Quantity" class="block text-sm sm:text-base font-semibold text-green-700">Available Quantity (bu) <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <input type="number" name="Quantity" id="Quantity" 
                                    value="{{ $paddyListing->Quantity }}" min="1" 
                                    class="w-full px-4 py-2 sm:py-3 border border-green-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-700">
-                            <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">kg</span>
+                            <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">bu</span>
                         </div>
                         <div id="quantityError" class="error-message"></div>
                     </div>
@@ -250,7 +250,7 @@
             const quantity = parseFloat(quantityInput.value);
             
             if (isNaN(quantity) || quantity <= 0) {
-                quantityError.textContent = 'Quantity must be at least 1 kg';
+                quantityError.textContent = 'Quantity must be at least 1 bu';
                 quantityInput.classList.add('border-error');
                 return false;
             }

@@ -6,6 +6,7 @@
     <title>Farmer Signup</title>
     <link rel="icon" type="image/png" href="../../Images/Logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Roboto+Slab:wght@400;600&display=swap');
         
@@ -132,8 +133,41 @@
             return passwordPattern.test(password);
         }
 
+        // Check NIC uniqueness via AJAX
+        document.getElementById('nic').addEventListener('blur', function() {
+            const nic = this.value.trim();
+            const nicError = document.getElementById('nicError');
+            
+            // First validate NIC format
+            if (!validateNIC(nic)) {
+                nicError.textContent = 'Please enter a valid NIC';
+                return;
+            }
+            
+            // Then check for uniqueness via AJAX
+            fetch('/check-nic-unique', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({ nic: nic })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    nicError.textContent = 'This NIC is already registered';
+                } else {
+                    nicError.textContent = '';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
         // Form validation
-        function validateForm() {
+        async function validateForm() {
             let isValid = true;
             
             // NIC validation
@@ -143,7 +177,23 @@
                 nicError.textContent = 'Please enter a valid NIC';
                 isValid = false;
             } else {
-                nicError.textContent = '';
+                // Check uniqueness synchronously before form submission
+                const response = await fetch('/check-nic-unique', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({ nic: nic })
+                });
+                const data = await response.json();
+                
+                if (data.exists) {
+                    nicError.textContent = 'This NIC is already registered';
+                    isValid = false;
+                } else {
+                    nicError.textContent = '';
+                }
             }
             
             // Contact number validation

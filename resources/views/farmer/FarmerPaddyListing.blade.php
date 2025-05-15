@@ -39,7 +39,7 @@
                 <div class="w-full sm:w-auto">
                     <h1 class="text-xl sm:text-2xl font-bold text-gray-900 font-merriweather">My Paddy Listings</h1>
                 </div>
-                @if($sellingPaddyTypes->isNotEmpty())
+                @if($listings->isNotEmpty())
                 <div class="w-full sm:w-auto mt-2 sm:mt-0">
                     <a href="{{ route('farmer.paddy.listing.form') }}" 
                     class="inline-flex items-center justify-center px-3 py-2 sm:px-4 sm:py-3 bg-green-700 hover:bg-green-800 text-white rounded-lg shadow-sm transition-all duration-200 hover:shadow-md transform hover:-translate-y-0.5 text-sm sm:text-base font-medium">
@@ -53,7 +53,7 @@
 
         <!-- Paddy Cards Grid -->
         <div class="bg-white rounded-xl shadow-sm p-4 sm:p-6">
-            @if($sellingPaddyTypes->isEmpty())
+            @if($listings->isEmpty())
                 <div class="text-center py-12">
                     <div class="mx-auto h-24 w-24 bg-green-50 rounded-full flex items-center justify-center mb-4">
                         <i class="fas fa-seedling text-4xl text-green-600"></i>
@@ -68,7 +68,7 @@
                 </div>
             @else
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                    @foreach ($sellingPaddyTypes as $paddy)
+                    @foreach ($listings as $paddy)
                         <!-- Single Paddy Card -->
                         <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200">
                             <!-- Paddy Image with fallback -->
@@ -91,7 +91,7 @@
                                 <div class="space-y-3 mb-5">
                                     <div class="flex justify-between items-center">
                                         <span class="text-gray-600 text-sm sm:text-base">
-                                            Price per kg:
+                                            Price per bushel:
                                         </span>
                                         <span class="text-sm sm:text-base font-bold text-green-700">
                                             Rs. {{ number_format($paddy->PriceSelected, 2) }}
@@ -102,7 +102,7 @@
                                             Available:
                                         </span>
                                         <span class="text-sm sm:text-base font-bold {{ $paddy->Quantity <= 0 ? 'text-red-600' : 'text-green-700' }}">
-                                            {{ number_format($paddy->Quantity) }} kg
+                                            {{ number_format($paddy->Quantity) }} bu
                                             @if($paddy->Quantity <= 0 && isset($paddy->has_pending_orders) && $paddy->has_pending_orders)
                                                 <span class="ml-1 text-xs bg-yellow-100 text-yellow-700 px-1 py-0.5 rounded">
                                                     {{ $paddy->pending_orders_count }} pending orders

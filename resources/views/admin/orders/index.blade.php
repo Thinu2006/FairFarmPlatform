@@ -99,7 +99,7 @@
                             {{ $order->paddyType->PaddyName }}
                         </td>
                         <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {{ $order->quantity }} kg
+                            {{ $order->quantity }} bu
                         </td>
                         <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             Rs. {{ number_format($order->total_amount * 1.05, 2) }}
@@ -167,7 +167,7 @@
                         </div>
                         <div>
                             <span class="text-gray-500">Quantity: </span>
-                            <span class="text-gray-900">{{ $order->quantity }} kg</span>
+                            <span class="text-gray-900">{{ $order->quantity }} bu</span>
                         </div>
                         <div>
                             <span class="text-gray-500">Total: </span>

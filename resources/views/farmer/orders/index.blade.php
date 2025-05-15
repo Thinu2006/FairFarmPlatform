@@ -1,8 +1,67 @@
 @extends('layouts.farmer')
 
+@section('title', 'My Orders')
+
 @section('content')
 <section class="py-1 sm:py-8 px-0 sm:px-6 bg-gray-50">
-    <div class="max-w-7xl mx-auto ">
+    <!-- Success Notification (Fixed position) -->
+    @if(session('success'))
+    <div id="successNotification" class="fixed top-4 right-4 z-50">
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg transition-all duration-500 transform translate-y-0 opacity-100">
+            <div class="flex items-center">
+                <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <span class="font-medium">{{ session('success') }}</span>
+                <button onclick="hideNotification('successNotification')" class="ml-4 text-green-700 hover:text-green-900">
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Error Notification -->
+    @if(session('error'))
+    <div id="errorNotification" class="fixed top-4 right-4 z-50">
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg transition-all duration-500 transform translate-y-0 opacity-100">
+            <div class="flex items-center">
+                <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                <span class="font-medium">{!! nl2br(e(session('error'))) !!}</span>
+                <button onclick="hideNotification('errorNotification')" class="ml-4 text-red-700 hover:text-red-900">
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Info Notification -->
+    @if(session('info'))
+    <div id="infoNotification" class="fixed top-4 right-4 z-50">
+        <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded-lg shadow-lg transition-all duration-500 transform translate-y-0 opacity-100">
+            <div class="flex items-center">
+                <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clip-rule="evenodd" />
+                </svg>
+                <span class="font-medium">{{ session('info') }}</span>
+                <button onclick="hideNotification('infoNotification')" class="ml-4 text-blue-700 hover:text-blue-900">
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <div class="max-w-7xl mx-auto">
         <header class="bg-white shadow overflow-hidden rounded-xl md:text-left text-center">
             <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between justify-center">
@@ -41,24 +100,6 @@
                 </div>
             </form>
         </div>
-
-        @if(session('success'))
-            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
-                <p>{{ session('success') }}</p>
-            </div>
-        @endif
-        
-        @if(session('error'))
-            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
-                <p>{!! nl2br(e(session('error'))) !!}</p>
-            </div>
-        @endif
-
-        @if(session('info'))
-            <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6" role="alert">
-                <p>{{ session('info') }}</p>
-            </div>
-        @endif
 
         <!-- Rest of your content remains the same -->
         @if ($orders->isEmpty())
@@ -111,7 +152,7 @@
                                         {{ $order->paddyType->PaddyName }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ number_format($order->quantity, 0) }} kg
+                                        {{ number_format($order->quantity, 0) }} bu
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         Rs. {{ number_format($order->total_amount, 2) }}
@@ -136,8 +177,8 @@
                                             @if(isset($order->has_sufficient_quantity) && !$order->has_sufficient_quantity)
                                                 <span class="block mt-1 text-xs text-red-600">
                                                     Insufficient quantity<br>
-                                                    Need: {{ number_format($order->quantity) }}kg<br>
-                                                    Available: {{ number_format($order->available_quantity) }}kg
+                                                    Need: {{ number_format($order->quantity) }}bu<br>
+                                                    Available: {{ number_format($order->available_quantity) }}bu
                                                 </span>
                                             @endif
                                         @else
@@ -222,7 +263,7 @@
                                 <div>{{ $order->buyer->FullName }}</div>
                                 
                                 <div class="text-gray-500">Quantity:</div>
-                                <div>{{ number_format($order->quantity, 0) }} kg</div>
+                                <div>{{ number_format($order->quantity, 0) }} bu</div>
                                 
                                 <div class="text-gray-500">Total Amount:</div>
                                 <div>Rs. {{ number_format($order->total_amount, 2) }}</div>
@@ -235,8 +276,8 @@
                         @if(isset($order->has_sufficient_quantity) && !$order->has_sufficient_quantity && $order->status == 'pending')
                             <div class="mb-3 p-2 bg-red-50 text-red-600 text-xs rounded">
                                 <p>Insufficient quantity</p>
-                                <p>Need: {{ number_format($order->quantity) }}kg</p>
-                                <p>Available: {{ number_format($order->available_quantity) }}kg</p>
+                                <p>Need: {{ number_format($order->quantity) }}bu</p>
+                                <p>Available: {{ number_format($order->available_quantity) }}bu</p>
                             </div>
                         @endif
 
@@ -267,4 +308,37 @@
         @endif
     </div>
 </section>
+
+<script>
+    // Notification functions
+    function hideNotification(id) {
+        const notification = document.getElementById(id);
+        if (notification) {
+            notification.classList.add('animate__animated', 'animate__fadeOutRight');
+            setTimeout(() => {
+                notification.remove();
+            }, 500);
+        }
+    }
+
+    // Auto-hide notifications after 5 seconds
+    const successNotification = document.getElementById('successNotification');
+    if (successNotification) {
+        setTimeout(() => hideNotification('successNotification'), 5000);
+    }
+
+    const errorNotification = document.getElementById('errorNotification');
+    if (errorNotification) {
+        setTimeout(() => hideNotification('errorNotification'), 5000);
+    }
+
+    const infoNotification = document.getElementById('infoNotification');
+    if (infoNotification) {
+        setTimeout(() => hideNotification('infoNotification'), 5000);
+    }
+</script>
+
+<!-- Animate.css for notification animations -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 @endsection

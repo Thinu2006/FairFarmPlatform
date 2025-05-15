@@ -10,21 +10,22 @@
             <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
                 <div class="w-full sm:w-auto">
                     <h1 class="text-xl sm:text-2xl font-bold text-gray-900 font-merriweather">
-                        Welcome Back, <span class="text-gray-800">{{ Auth::guard('farmer')->user()->FullName }}</span>!
+                        Welcome <span class="text-gray-800">{{ Auth::guard('farmer')->user()->FullName }}</span>!
                     </h1>
                 </div>
             </div>
         </div>
 
         <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
-            <!-- Total Orders Card -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow">
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-6 sm:gap-20 mb-10">
+            <!-- Total Orders -->
+            <div class="w-full sm:w-1/3 bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow">
                 <div class="p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-500">Total Orders</p>
-                            <p class="text-xl md:text-2xl font-bold text-gray-800 mt-1">24</p>
+                            <p class="text-lg font-bold text-gray-500">Total Orders</p>
+                            <p class="text-xl md:text-2xl font-bold text-gray-800 mt-1">{{ $stats['order_stats']['total_orders'] }}</p>
+                            <p class="text-sm text-gray-500 mt-1">{{ $stats['order_stats']['pending_orders'] }} pending</p>
                         </div>
                         <div class="bg-black p-3 rounded-full w-12 h-12 flex items-center justify-center">
                             <i class="fas fa-box-open text-gray-100 text-lg"></i>
@@ -33,13 +34,14 @@
                 </div>
             </div>
 
-            <!-- Revenue Card -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow">
+            <!-- Revenue-->
+            <div class="w-full sm:w-1/3 bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow">
                 <div class="p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-500">Total Revenue</p>
-                            <p class="text-xl md:text-2xl font-bold text-gray-800 mt-1">Rs 1,24,500</p>
+                            <p class="text-lg font-bold text-gray-500">Total Revenue</p>
+                            <p class="text-xl md:text-2xl font-bold text-gray-800 mt-1">Rs {{ $stats['revenue_stats']['total_revenue'], 2 }}</p>
+                            <p class="text-sm text-gray-500 mt-1">Last 30 days: Rs {{ $stats['revenue_stats']['monthly_revenue'], 2 }}</p>
                         </div>
                         <div class="bg-black p-3 rounded-full w-12 h-12 flex items-center justify-center">
                             <i class="fas fa-rupee-sign text-gray-100 text-lg"></i>
@@ -48,13 +50,14 @@
                 </div>
             </div>
 
-            <!-- Active Products Card -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow">
+            <!-- Active Listings -->
+            <div class="w-full sm:w-1/3 bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow">
                 <div class="p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-500">Active Products</p>
-                            <p class="text-xl md:text-2xl font-bold text-gray-800 mt-1">8</p>
+                            <p class="text-lg font-bold text-gray-500">Active Paddy Listings</p>
+                            <p class="text-xl md:text-2xl font-bold text-gray-800 mt-1">{{ $stats['listing_stats']['active_listings'] }}</p>
+                            <p class="text-sm text-gray-500 mt-1">{{ $stats['listing_stats']['low_stock_listings'] }} low stock</p>
                         </div>
                         <div class="bg-black p-3 rounded-full w-12 h-12 flex items-center justify-center">
                             <i class="fas fa-seedling text-gray-100 text-lg"></i>
@@ -64,82 +67,278 @@
             </div>
         </div>
 
-        <!-- Sales Chart Section -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
-            <div class="p-6 border-b border-gray-100">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <h3 class="text-lg font-semibold text-gray-800">Sales Performance</h3>
-                    <!-- <div class="mt-2 md:mt-0">
-                        <select class="bg-gray-50 border border-gray-300 text-gray-700 py-1 px-3 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
-                            <option>Last 7 Days</option>
-                            <option selected>Last Month</option>
-                            <option>Last Year</option>
-                        </select>
-                    </div> -->
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+            <!-- Sales Chart -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="p-6 border-b border-gray-100">
+                    <h3 class="text-lg font-semibold text-gray-800">Monthly Sales</h3>
+                </div>
+                <div class="p-6 h-64">
+                    <canvas id="salesChart"></canvas>
                 </div>
             </div>
+
+            <!-- Paddy Sales Chart -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="p-6 border-b border-gray-100">
+                    <h3 class="text-lg font-semibold text-gray-800">Your Paddy Sales</h3>
+                </div>
+                <div class="p-6 h-64">
+                    <canvas id="paddySalesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Breakdown Section -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+            <div class="p-6 border-b border-gray-100">
+                <h3 class="text-lg font-semibold text-gray-800">Order Status Breakdown</h3>
+            </div>
             <div class="p-6">
-                <!-- Chart Placeholder with better styling -->
-                <div class="relative w-full h-64 md:h-80 bg-gray-50 rounded-lg flex items-center justify-center">
-                    <div class="text-center">
-                        <i class="fas fa-chart-line text-4xl text-gray-300 mb-3"></i>
-                        <p class="text-gray-500 font-medium">Sales data visualization</p>
-                        <p class="text-sm text-gray-400 mt-1">Chart will appear here when data is available</p>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <!-- Pie Chart -->
+                    <div class="w-full md:w-1/2 h-64">
+                        <canvas id="orderStatusChart"></canvas>
+                    </div>
+                    
+                    <!-- Status Legend -->
+                    <div class="w-full md:w-1/2">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            @foreach($stats['detailed_order_status_counts'] as $status => $count)
+                                @if($status !== 'buyer_cancelled' && $status !== 'farmer_cancelled')
+                                    @php 
+                                        $config = $stats['status_configs'][$status] ?? [
+                                            'text' => ucfirst($status),
+                                            'color' => 'gray',
+                                            'icon' => 'fa-circle-question',
+                                            'chart_color' => 'rgba(158, 158, 158, 0.6)'
+                                        ];
+                                    @endphp
+                                    <div class="flex items-center p-3 rounded-lg" style="background-color: {{ str_replace('0.6', '0.1', $config['chart_color']) }}">
+                                        <div class="p-2 rounded-full mr-3" style="background-color: {{ str_replace('0.6', '0.3', $config['chart_color']) }}">
+                                            <i class="fas {{ $config['icon'] }}" style="color: {{ str_replace('0.6', '1', $config['chart_color']) }}"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-800">{{ $config['text'] }}</p>
+                                            <p class="text-sm text-gray-600">{{ $count }} orders</p>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
+                            
+                            <!-- Separate entries for cancellation types -->
+                            @if(isset($stats['detailed_order_status_counts']['buyer_cancelled']))
+                                @php $config = $stats['status_configs']['buyer_cancelled']; @endphp
+                                <div class="flex items-center p-3 rounded-lg" style="background-color: {{ str_replace('0.6', '0.1', $config['chart_color']) }}">
+                                    <div class="p-2 rounded-full mr-3" style="background-color: {{ str_replace('0.6', '0.3', $config['chart_color']) }}">
+                                        <i class="fas {{ $config['icon'] }}" style="color: {{ str_replace('0.6', '1', $config['chart_color']) }}"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-800">{{ $config['text'] }}</p>
+                                        <p class="text-sm text-gray-600">{{ $stats['detailed_order_status_counts']['buyer_cancelled'] }} orders</p>
+                                    </div>
+                                </div>
+                            @endif
+                            
+                            @if(isset($stats['detailed_order_status_counts']['farmer_cancelled']))
+                                @php $config = $stats['status_configs']['farmer_cancelled']; @endphp
+                                <div class="flex items-center p-3 rounded-lg" style="background-color: {{ str_replace('0.6', '0.1', $config['chart_color']) }}">
+                                    <div class="p-2 rounded-full mr-3" style="background-color: {{ str_replace('0.6', '0.3', $config['chart_color']) }}">
+                                        <i class="fas {{ $config['icon'] }}" style="color: {{ str_replace('0.6', '1', $config['chart_color']) }}"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-800">{{ $config['text'] }}</p>
+                                        <p class="text-sm text-gray-600">{{ $stats['detailed_order_status_counts']['farmer_cancelled'] }} orders</p>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Recent Activity Section -->
-        <!-- <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <!-- Recent Orders Section -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
             <div class="p-6 border-b border-gray-100">
-                <h3 class="text-lg font-semibold text-gray-800">Recent Activity</h3>
+                <h3 class="text-lg font-semibold text-gray-800">Recent Orders</h3>
             </div>
             <div class="divide-y divide-gray-100">
+                @foreach($stats['recent_orders'] as $order)
                 <div class="p-4 hover:bg-gray-50 transition-colors">
                     <div class="flex items-start">
-                        <div class="bg-green-100 p-2 rounded-full mr-4">
-                            <i class="fas fa-check-circle text-green-600"></i>
+                        <div class="bg-{{ $order['status_color'] }}-100 p-2 rounded-full mr-4">
+                            <i class="fas fa-{{ $order['status_icon'] }} text-{{ $order['status_color'] }}-600"></i>
                         </div>
                         <div class="flex-1">
-                            <p class="font-medium text-gray-800">New order received</p>
-                            <p class="text-sm text-gray-500 mt-1">Order ID:123 for 50kg of Basmati </p>
-                            <p class="text-xs text-gray-400 mt-2">2 hours ago</p>
+                            <p class="font-medium text-gray-800">{{ $order['title'] }}</p>
+                            <p class="text-sm text-gray-500 mt-1">{{ $order['description'] }}</p>
+                            <p class="text-xs text-gray-400 mt-2">{{ $order['time'] }}</p>
                         </div>
-                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Approve</span>
+                        <span class="bg-{{ $order['status_color'] }}-100 text-{{ $order['status_color'] }}-800 text-xs px-2 py-1 rounded-full">{{ $order['status_text'] }}</span>
                     </div>
                 </div>
-                <div class="p-4 hover:bg-gray-50 transition-colors">
-                    <div class="flex items-start">
-                        <div class="bg-blue-100 p-2 rounded-full mr-4">
-                            <i class="fas fa-truck text-blue-600"></i>
-                        </div>
-                        <div class="flex-1">
-                            <p class="font-medium text-gray-800">Order shipped</p>
-                            <p class="text-sm text-gray-500 mt-1">Order ID:100 has been dispatched</p>
-                            <p class="text-xs text-gray-400 mt-2">Yesterday</p>
-                        </div>
-                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Shipped</span>
-                    </div>
-                </div>
-                <div class="p-4 hover:bg-gray-50 transition-colors">
-                    <div class="flex items-start">
-                        <div class="bg-yellow-100 p-2 rounded-full mr-4">
-                            <i class="fas fa-exclamation-circle text-yellow-600"></i>
-                        </div>
-                        <div class="flex-1">
-                            <p class="font-medium text-gray-800">Low stock alert</p>
-                            <p class="text-sm text-gray-500 mt-1">Nadu stock is below 100kg</p>
-                            <p class="text-xs text-gray-400 mt-2">2 days ago</p>
-                        </div>
-                        <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Attention</span>
-                    </div>
-                </div>
+                @endforeach
             </div>
             <div class="p-4 text-center border-t border-gray-100">
-                <a href="#" class="text-green-600 hover:text-green-800 text-sm font-medium">View all activity →</a>
+                <a href="{{ route('farmer.orders.index') }}" class="text-green-600 hover:text-green-800 text-sm font-medium">View all orders →</a>
             </div>
-        </div> -->
+        </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Sales Chart
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        const salesChart = new Chart(salesCtx, {
+            type: 'line',
+            data: {
+                labels: {!! json_encode($stats['sales_chart']['labels']) !!},
+                datasets: [{
+                    label: 'Sales (Rs)',
+                    data: {!! json_encode($stats['sales_chart']['data']) !!},
+                    backgroundColor: 'rgba(31, 69, 41, 0.1)',
+                    borderColor: 'rgba(31, 69, 41, 1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'Rs ' + value;
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Paddy Sales Chart
+        const paddySalesCtx = document.getElementById('paddySalesChart').getContext('2d');
+        const paddySalesChart = new Chart(paddySalesCtx, {
+            type: 'bar',
+            data: {
+                labels: {!! json_encode($stats['paddy_sales']['labels']) !!},
+                datasets: [
+                    {
+                        label: 'Quantity Sold (bu)',
+                        data: {!! json_encode($stats['paddy_sales']['quantities']) !!},
+                        backgroundColor: 'rgba(31, 69, 41, 0.7)',
+                        borderColor: 'rgba(31, 69, 41, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Revenue (Rs)',
+                        data: {!! json_encode($stats['paddy_sales']['revenues']) !!},
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        borderColor: 'rgba(0, 0, 0, 1)',
+                        borderWidth: 1,
+                        type: 'line',
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Quantity (bu)'
+                        },
+                        beginAtZero: true
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Revenue (Rs)'
+                        },
+                        beginAtZero: true,
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.datasetIndex === 0) {
+                                    label += context.raw + ' bu';
+                                } else {
+                                    label += 'Rs ' + context.raw.toFixed(2);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Order Status Chart
+        const orderStatusCtx = document.getElementById('orderStatusChart').getContext('2d');
+        const orderStatusChart = new Chart(orderStatusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: {!! json_encode(array_map(function($status) use ($stats) {
+                    return $stats['status_configs'][$status]['text'] ?? ucfirst($status);
+                }, array_keys($stats['order_status_counts']))) !!},
+                datasets: [{
+                    data: {!! json_encode(array_values($stats['order_status_counts'])) !!},
+                    backgroundColor: {!! json_encode(array_map(function($status) use ($stats) {
+                        return $stats['status_configs'][$status]['chart_color'] ?? 'rgba(158, 158, 158, 0.6)';
+                    }, array_keys($stats['order_status_counts']))) !!},
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((value / total) * 100);
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
 @endsection

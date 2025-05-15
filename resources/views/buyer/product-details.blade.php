@@ -32,7 +32,7 @@
                                 <svg class="w-3 h-3 sm:w-4 sm:h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                 </svg>
-                                {{ $paddyListing->Quantity }} kg available
+                                {{ $paddyListing->Quantity }} bu available
                             </span>
                         </div>
                     </div>
@@ -50,7 +50,7 @@
                                 <span class="text-2xl font-bold text-[#1F4529]">
                                     Rs {{ number_format($paddyListing->PriceSelected, 2) }}
                                 </span>
-                                <span class="text-gray-500 text-xs sm:text-sm">/ kg</span>
+                                <span class="text-gray-500 text-xs sm:text-sm">/ bu</span>
                             </div>
                         </div>
 
@@ -92,7 +92,7 @@
                             <!-- Quantity Selector -->
                             <div class="mb-4 sm:mb-6">
                                 <label for="quantity" class="block text-sm font-medium text-gray-700 mb-2 sm:mb-3">
-                                    Select Quantity (in kilograms)
+                                    Select Quantity (in bu)
                                 </label>
                                 <div class="relative">
                                     <input type="number" 
@@ -105,16 +105,16 @@
                                            required
                                            step="0.1">
                                     <div class="absolute inset-y-0 right-0 flex items-center pr-3 sm:pr-5 pointer-events-none">
-                                        <span class="text-gray-500 text-sm sm:text-base">kg</span>
+                                        <span class="text-gray-500 text-sm sm:text-base">bu</span>
                                     </div>
                                 </div>
                                 <p class="mt-1 sm:mt-2 text-xs sm:text-sm text-gray-500">
-                                    Maximum available: <span class="font-medium">{{ $paddyListing->Quantity }} kg</span>
+                                    Maximum available: <span class="font-medium">{{ $paddyListing->Quantity }} bu</span>
                                 </p>
                                 @error('quantity')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
-                                <p id="quantity-error" class="text-red-500 text-sm mt-1 hidden">Please enter a valid quantity between 1 and {{ $paddyListing->Quantity }} kg</p>
+                                <p id="quantity-error" class="text-red-500 text-sm mt-1 hidden">Please enter a valid quantity between 1 and {{ $paddyListing->Quantity }} bu</p>
                             </div>
                             
                             <!-- Order Summary -->
@@ -122,12 +122,12 @@
                                 <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Order Summary</h3>
                                 <div class="space-y-2 sm:space-y-3">
                                     <div class="flex justify-between">
-                                        <span class="text-sm sm:text-base text-gray-600">Price per kg</span>
+                                        <span class="text-sm sm:text-base text-gray-600">Price per bu</span>
                                         <span class="text-sm sm:text-base font-medium">Rs {{ number_format($paddyListing->PriceSelected, 2) }}</span>
                                     </div>
                                     <div class="flex justify-between">
                                         <span class="text-sm sm:text-base text-gray-600">Quantity</span>
-                                        <span class="text-sm sm:text-base font-medium"><span id="quantity-preview">{{ old('quantity', 1) }}</span> kg</span>
+                                        <span class="text-sm sm:text-base font-medium"><span id="quantity-preview">{{ old('quantity', 1) }}</span> bu</span>
                                     </div>
                                     <div class="flex justify-between">
                                         <span class="text-sm sm:text-base text-gray-600">Delivery fee (5%)</span>
@@ -223,35 +223,36 @@
             @endif
         });
     </script>
-
-    <!-- BotMan Chatbot Integration -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/assets/css/chat.min.css">
-    <style>
-        .botmanWidgetBtn {
-            background-color: #1F4529 !important;
-        }
-        .botmanWidgetContainer {
-            z-index: 10000;
-        }
-    </style>
-    <script>
-        var botmanWidget = {
-            aboutText: 'Need help? Start with "Hi"',
-            introMessage: "WELCOME TO FAIRFARM !",
-            bubbleAvatarUrl: '',
-            mainColor: '#1F4529',
-            bubbleBackground: '#1F4529',
-            desktopHeight: 500,
-            desktopWidth: 400,
-            chatServer: '/botman',
-            title: 'Paddy Assistant',
-            widgetHeight: '500px',
-            widgetWidth: '350px',
-            headerTextColor: 'white',
-            headerBackgroundColor: '#1F4529',
-            bodyBackgroundColor: 'white',
-            bodyTextColor: '#333333'
-        };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js"></script>
+    <!-- Isolated BotMan Integration -->
+    <div id="botman-isolation-wrapper">
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/assets/css/chat.min.css">
+        <style>
+            #botman-isolation-wrapper .botmanWidgetBtn {
+                background-color: #1F4529 !important;
+            }
+            #botman-isolation-wrapper .botmanWidgetContainer {
+                z-index: 10000;
+            }
+        </style>
+        <script>
+            var botmanWidget = {
+                aboutText: 'Need help? Start with "Hi"',
+                introMessage: "WELCOME TO FAIRFARM! HOW CAN I HELP YOU?",
+                bubbleAvatarUrl: '',
+                mainColor: '#1F4529',
+                bubbleBackground: '#1F4529',
+                desktopHeight: 500,
+                desktopWidth: 400,
+                chatServer: '/botman',
+                title: 'Order Assistant',
+                widgetHeight: '500px',
+                widgetWidth: '350px',
+                headerTextColor: 'white',
+                headerBackgroundColor: '#1F4529',
+                bodyBackgroundColor: 'white',
+                bodyTextColor: '#333333'
+            };
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js"></script>
+    </div>
 @endsection

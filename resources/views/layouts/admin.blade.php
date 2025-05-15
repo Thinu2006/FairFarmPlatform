@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin Dashboard')</title>
     <link rel="icon" type="image/png" href="../../Images/Logo.png">
     <!-- Fonts -->
@@ -14,6 +13,9 @@
           crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         /* Custom styles */
         body {
@@ -100,9 +102,13 @@
                 <i class="fas fa-list-check text-white w-5 text-center"></i>
                 <span>Farmer Selections</span>
             </a>
-            <a href="{{ url('admin/orders') }}" class="flex items-center space-x-3 p-3 rounded-lg transition-colors @if(request()->is('admin/orders*')) active-nav-link @endif">
+            <a href="{{ route('admin.orders.index') }}" class="flex items-center space-x-3 p-3 rounded-lg transition-colors @if(request()->routeIs('admin.orders.index')) active-nav-link @endif">
                 <i class="fas fa-box text-white w-5 text-center"></i>
                 <span>Orders</span>
+            </a>
+            <a href="{{ route('admin.account') }}" class="flex items-center space-x-3 p-3 rounded-lg transition-colors ">
+                <i class="fas fa-user-cog text-white w-5 text-center"></i>
+                <span>Account Setting</span>
             </a>
             <button onclick="showLogoutModal()" class="flex items-center space-x-3 p-3 rounded-lg w-full transition-colors hover:bg-green-800">
                 <i class="fas fa-sign-out-alt text-white w-5 text-center"></i>
@@ -137,10 +143,15 @@
                 <i class="fas fa-list-check text-white w-5"></i>
                 <span>Farmer Selections</span>
             </a>
-            <a href="{{ url('admin/orders') }}" class="nav-item flex items-center space-x-3 p-3 rounded-lg transition-colors @if(request()->is('admin/orders*')) active-nav-link @endif">
+            <a href="{{ route('admin.orders.index') }}" class="nav-item flex items-center space-x-3 p-3 rounded-lg transition-colors @if(request()->routeIs('admin.orders.index')) active-nav-link @endif">
                 <i class="fas fa-box text-white w-5"></i>
                 <span>Orders</span>
             </a>
+            <a href="{{route('admin.account')}}" class="nav-item flex items-center space-x-3 p-3 rounded-lg transition-colors ">
+                <i class="fas fa-user-cog text-white w-5"></i>
+                <span>Account Setting</span>
+            </a>
+
             <button onclick="showLogoutModal()" class="nav-item flex items-center space-x-3 p-3 rounded-lg w-full transition-colors hover:bg-green-800">
                 <i class="fas fa-sign-out-alt text-white w-5"></i>
                 <span>Logout</span>

@@ -92,7 +92,7 @@
                 
                 <!-- Price Slider -->
                 <div class="space-y-4">
-                    <label class="block text-base font-medium text-gray-700">Price Per Kg (Rs.) <span class="text-red-500">*</span></label>
+                    <label class="block text-base font-medium text-gray-700">Price Per bu(Rs.) <span class="text-red-500">*</span></label>
                     <div class="flex items-center justify-between mb-2">
                         <span id="minPriceLabel" class="text-sm text-gray-500">Minimum: Rs. 0</span>
                         <span id="selectedPrice" class="text-sm font-semibold">Select type first</span>
@@ -114,7 +114,7 @@
 
                 <!-- Quantity Input -->
                 <div class="space-y-2">
-                    <label for="Quantity" class="block text-base font-medium text-gray-700">Available Quantity (kg) <span class="text-red-500">*</span></label>
+                    <label for="Quantity" class="block text-base font-medium text-gray-700">Available Quantity (bu) <span class="text-red-500">*</span></label>
                     <input type="number" name="Quantity" id="Quantity" min="1" 
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition text-base" required>
                     <div id="quantityError" class="error-message"></div>
@@ -268,7 +268,7 @@
         const quantity = parseFloat(quantityInput.value);
         
         if (isNaN(quantity) || quantity <= 0) {
-            showError('quantityError', 'Please enter a valid quantity (minimum 1kg)');
+            showError('quantityError', 'Please enter a valid quantity (minimum 1bu)');
             quantityInput.classList.add('border-error');
             return false;
         }
