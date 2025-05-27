@@ -8,34 +8,35 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Roboto+Slab:wght@400;600&display=swap');
+
         body {
             background-image: url('{{ asset('images/AdminLoginBG.jpg') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             min-height: 100vh;
-        }
-        body {
+
             font-family: "Roboto Slab", serif;
             font-size: 16px;
         }
+
         h1, h2 {
             font-family: "Playfair Display", serif;
         }
-        .error-message {
-            color: #ef4444;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-        }
-        .input-error {
-            border-color: #ef4444 !important;
-            focus: border-color: #ef4444 !important;
-        }
     </style>
+
 </head>
 <body class="flex items-center justify-center p-4 sm:p-6">
+    <!-- Back Button (Top Left) -->
+    <a href="{{ url('/') }}" class="absolute top-4 left-4 bg-white/80 hover:bg-white text-black font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Welcome
+    </a>
     <!-- Login Container -->
-    <div class="bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row w-full max-w-4xl overflow-hidden min-h-[380px] md:min-h-[300px]"> 
+    <div class="bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row w-full max-w-4xl overflow-hidden min-h-[350px] md:min-h-[300px]"> 
         <!-- Left Section (Image or Branding) - Hidden on small screens -->
         <div class="hidden md:flex bg-gradient-to-r from-gray-900 to-gray-700 text-white p-8 md:p-10 flex-col justify-center items-center text-center md:w-1/2">
             <h1 class="text-3xl md:text-4xl font-bold mb-3 md:mb-4">Admin Portal</h1>
@@ -46,8 +47,8 @@
         <!-- Right Section (Login Form) - Full width on small screens -->
         <div class="w-full p-6 md:p-8 lg:p-12 flex flex-col justify-between md:w-1/2">
             <div>
-                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 md:mb-8 mt-4 text-center">Login</h2>
-                <form method="POST" action="{{ route('admin.login') }}" class="space-y-6 md:space-y-8" id="loginForm" novalidate>
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 md:mb-8 mt-4 md:mt-0 text-center">Login</h2>
+                <form method="POST" action="{{ route('admin.login') }}" class="space-y-8 md:space-y-8" id="loginForm" novalidate>
                     @csrf
                     <!-- Email Input -->
                     <div>
@@ -75,21 +76,8 @@
                                 <i id="eye-icon" class="far fa-eye text-gray-500"></i>
                             </span>
                         </div>
-                        <div id="password-error" class="error-message hidden">Password must be at least 8 characters</div>
+                        <div id="password-error" class="error-message hidden text-sm">Password must be at least 8 characters</div>
                     </div>
-
-                    <!-- Remember Me Checkbox -->
-                    <!-- <div class="flex items-center justify-end">
-                        <input 
-                            type="checkbox" 
-                            name="remember" 
-                            id="remember" 
-                            class="h-4 w-4 text-gray-800 focus:ring-gray-700 border-gray-300 rounded"
-                        >
-                        <label for="remember" class="ml-2 block md:text-base text-gray-900">
-                            Remember me
-                        </label>
-                    </div> -->
                 </form>
                 
                 <!-- Error Message Display -->
@@ -99,7 +87,7 @@
             </div>
 
             <!-- Login Button - Fixed to bottom -->
-            <div class="pt-10 px-20">
+            <div class="pt-8 md:pt-10 px-20">
                 <button type="submit" form="loginForm" class=" w-full bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-900 transition text-lg">
                     Sign In
                 </button>

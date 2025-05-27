@@ -16,7 +16,11 @@ return new class extends Migration
             $table->decimal('price_per_kg', 10, 2);
             $table->decimal('quantity', 10, 2);
             $table->decimal('total_amount', 12, 2);
-            $table->string('status')->default('pending');
+            $table->string('status')->default('pending'); // pending, processing, delivery_started, delivered, completed, buyer_cancelled, farmer_cancelled
+            $table->string('cancelled_by')->nullable(); // 'buyer' or 'farmer'
+            $table->timestamp('cancelled_at')->nullable();
+            $table->timestamp('delivered_at')->nullable(); // When admin marks as delivered
+            $table->timestamp('completed_at')->nullable(); // When buyer confirms receipt
             $table->timestamps();
             
             $table->foreign('buyer_id')->references('BuyerID')->on('buyers')->onDelete('cascade');

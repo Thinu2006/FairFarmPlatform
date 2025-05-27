@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="si">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Paddy Record</title>
+    <title>වී වර්ගය ලියාපදිංචි කිරීම</title>
     <link rel="icon" type="image/png" href="../../Images/Logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
@@ -55,10 +55,10 @@
     <div class="form-container w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden">
         <!-- Header Section -->
         <div class="bg-gradient-to-r from-green-700 to-green-600 px-6 py-4">
-            <h1 class="text-2xl font-bold text-white text-center">List New Paddy Type</h1>
-            <p class="text-green-100 text-sm text-center mt-1">Fill out the form to list a new paddy type for sale</p>
+            <h1 class="text-2xl font-bold text-white text-center">නව වී වර්ගය ලියාපදිංචි කිරීම</h1>
+            <p class="text-green-100 text-sm text-center mt-1">විකිණීම සඳහා නව වී වර්ගයක් ලියාපදිංචි කිරීමට පෝරමය පුරවන්න</p>
         </div>
-        
+
         <!-- Form Section -->
         <div class="p-6 md:p-8">
             @if(session('error'))
@@ -66,22 +66,22 @@
                     <span class="text-center">{{ session('error') }}</span>
                 </div>
             @endif
-            
+
             <form action="{{ route('farmer.selling.paddy.store') }}" method="POST" id="sellingForm" class="space-y-6" onsubmit="return validateForm()">
                 @csrf
                 <input type="hidden" name="FarmerID" value="{{ auth()->id() }}">
-                
+
                 <!-- Paddy Type Dropdown -->
                 <div class="space-y-2">
-                    <label for="PaddyType" class="block text-base font-medium text-gray-700">Select Paddy Type <span class="text-red-500">*</span></label>
-                    <select name="PaddyID" id="PaddyType" 
+                    <label for="PaddyType" class="block text-base font-medium text-gray-700">වී වර්ගය තෝරන්න <span class="text-red-500">*</span></label>
+                    <select name="PaddyID" id="PaddyType"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition text-base" required>
-                        <option value="" disabled selected>Choose paddy variety</option>
+                        <option value="" disabled selected>වී වර්ගය තෝරන්න</option>
                         @foreach($paddyTypes as $type)
-                            <option value="{{ $type->PaddyID }}" 
+                            <option value="{{ $type->PaddyID }}"
                                     data-min-price="{{ $type->MinPricePerKg }}"
-                                    data-max-price="{{ $type->MaxPricePerKg }}" 
-                                    data-image="{{ $type->Image ? asset('storage/'.$type->Image) : '' }}" 
+                                    data-max-price="{{ $type->MaxPricePerKg }}"
+                                    data-image="{{ $type->Image ? asset('storage/'.$type->Image) : '' }}"
                                     data-name="{{ $type->PaddyName }}">
                                 {{ $type->PaddyName }}
                             </option>
@@ -89,46 +89,46 @@
                     </select>
                     <div id="paddyTypeError" class="error-message"></div>
                 </div>
-                
+
                 <!-- Price Slider -->
                 <div class="space-y-4">
-                    <label class="block text-base font-medium text-gray-700">Price Per Kg (Rs.) <span class="text-red-500">*</span></label>
+                    <label class="block text-base font-medium text-gray-700">බුෂලයක මිල (රු.) <span class="text-red-500">*</span></label>
                     <div class="flex items-center justify-between mb-2">
-                        <span id="minPriceLabel" class="text-sm text-gray-500">Minimum: Rs. 0</span>
-                        <span id="selectedPrice" class="text-sm font-semibold">Select type first</span>
-                        <span id="maxPriceLabel" class="text-sm text-gray-500">Maximum: Rs. 0</span>
+                        <span id="minPriceLabel" class="text-sm text-gray-500">අවම: රු. 0</span>
+                        <span id="selectedPrice" class="text-sm font-semibold">පළමුව වර්ගය තෝරන්න</span>
+                        <span id="maxPriceLabel" class="text-sm text-gray-500">උපරිම: රු. 0</span>
                     </div>
-                    <input type="range" name="PriceSelected" id="PriceSelected" min="0" max="0" value="0" 
+                    <input type="range" name="PriceSelected" id="PriceSelected" min="0" max="0" value="0"
                            class="w-full" required>
                     <div id="priceError" class="error-message"></div>
                 </div>
 
                 <!-- Paddy Image Preview -->
                 <div id="imagePreviewContainer" class="hidden space-y-2">
-                    <label class="block text-base font-medium text-gray-700">Paddy Image</label>
+                    <label class="block text-base font-medium text-gray-700">වී පින්තූරය</label>
                     <div class="relative">
-                        <img id="paddyImage" src="" alt="Paddy Image" 
+                        <img id="paddyImage" src="" alt="වී පින්තූරය"
                              class="w-full h-40 object-cover rounded-lg border border-gray-200">
                     </div>
                 </div>
 
                 <!-- Quantity Input -->
                 <div class="space-y-2">
-                    <label for="Quantity" class="block text-base font-medium text-gray-700">Available Quantity (kg) <span class="text-red-500">*</span></label>
-                    <input type="number" name="Quantity" id="Quantity" min="1" 
+                    <label for="Quantity" class="block text-base font-medium text-gray-700">ලබා ගත හැකි ප්‍රමාණය (කි.ග්‍රෑ) <span class="text-red-500">*</span></label>
+                    <input type="number" name="Quantity" id="Quantity" min="1"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition text-base" required>
                     <div id="quantityError" class="error-message"></div>
                 </div>
 
                 <!-- Form Actions -->
                 <div class="flex justify-between pt-4">
-                    <button type="button" onclick="window.location.href='{{ route('farmer.paddy.listing') }}'" 
+                    <button type="button" onclick="window.location.href='{{ route('farmer.paddy.listing') }}'"
                             class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition flex items-center">
-                        <i class="fas fa-arrow-left mr-2"></i> Cancel
+                        <i class="fas fa-arrow-left mr-2"></i> අවලංගු කරන්න
                     </button>
-                    <button type="submit" 
+                    <button type="submit"
                             class="px-6 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 transition flex items-center">
-                        <i class="fas fa-plus mr-2"></i> Add Listing
+                        <i class="fas fa-plus mr-2"></i> ලැයිස්තුවට එක් කරන්න
                     </button>
                 </div>
             </form>
@@ -159,7 +159,7 @@
             const name = selectedOption.getAttribute('data-name');
 
             if (!minPrice || !maxPrice || isNaN(minPrice) || isNaN(maxPrice)) {
-                showError('priceError', 'Invalid paddy type selected');
+                showError('priceError', 'වලංගු නොවන වී වර්ගයක් තෝරා ඇත');
                 return;
             }
 
@@ -167,18 +167,18 @@
             priceSlider.min = minPrice;
             priceSlider.max = maxPrice;
             priceSlider.value = maxPrice;
-            selectedPriceDisplay.textContent = `Rs. ${maxPrice}`;
+            selectedPriceDisplay.textContent = `රු. ${maxPrice}`;
             selectedPriceDisplay.classList.add('text-green-600', 'font-bold');
-            minPriceLabel.textContent = `Minimum: Rs. ${minPrice}`;
-            maxPriceLabel.textContent = `Maximum: Rs. ${maxPrice}`;
+            minPriceLabel.textContent = `අවම: රු. ${minPrice}`;
+            maxPriceLabel.textContent = `උපරිම: රු. ${maxPrice}`;
             clearError('priceError');
 
             // Update image
             if (imageUrl) {
                 paddyImage.src = imageUrl;
-                paddyImage.alt = `${name} image`;
+                paddyImage.alt = `${name} පින්තූරය`;
                 imagePreviewContainer.classList.remove('hidden');
-                
+
                 paddyImage.onerror = function() {
                     this.src = '{{ asset('images/default-paddy.jpg') }}';
                 };
@@ -189,7 +189,7 @@
         });
 
         priceSlider.addEventListener('input', function() {
-            selectedPriceDisplay.textContent = `Rs. ${this.value}`;
+            selectedPriceDisplay.textContent = `රු. ${this.value}`;
             validatePrice();
         });
 
@@ -205,11 +205,11 @@
 
     function validateForm() {
         let isValid = true;
-        
+
         isValid = validatePaddyType() && isValid;
         isValid = validatePrice() && isValid;
         isValid = validateQuantity() && isValid;
-        
+
         if (!isValid) {
             // Scroll to the first error
             const firstError = document.querySelector('.error-message:not(:empty)');
@@ -217,20 +217,20 @@
                 firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
-        
+
         return isValid;
     }
 
     function validatePaddyType() {
         const paddyType = document.getElementById('PaddyType');
         const errorElement = document.getElementById('paddyTypeError');
-        
+
         if (!paddyType.value) {
-            showError('paddyTypeError', 'Please select a paddy type');
+            showError('paddyTypeError', 'කරුණාකර වී වර්ගයක් තෝරන්න');
             paddyType.classList.add('border-error');
             return false;
         }
-        
+
         clearError('paddyTypeError');
         paddyType.classList.remove('border-error');
         return true;
@@ -242,22 +242,22 @@
         const price = parseFloat(priceSlider.value);
         const minPrice = parseFloat(priceSlider.min);
         const maxPrice = parseFloat(priceSlider.max);
-        
+
         if (isNaN(price) || price <= 0) {
-            showError('priceError', 'Please set a valid price');
+            showError('priceError', 'කරුණාකර වලංගු මිලක් සකසන්න');
             return false;
         }
-        
+
         if (price < minPrice) {
-            showError('priceError', `Price cannot be less than Rs. ${minPrice}`);
+            showError('priceError', `මිල රු. ${minPrice} ට වඩා අඩු විය නොහැක`);
             return false;
         }
-        
+
         if (price > maxPrice) {
-            showError('priceError', `Price cannot exceed Rs. ${maxPrice}`);
+            showError('priceError', `මිල රු. ${maxPrice} ඉක්මවිය නොහැක`);
             return false;
         }
-        
+
         clearError('priceError');
         return true;
     }
@@ -266,19 +266,19 @@
         const quantityInput = document.getElementById('Quantity');
         const errorElement = document.getElementById('quantityError');
         const quantity = parseFloat(quantityInput.value);
-        
+
         if (isNaN(quantity) || quantity <= 0) {
-            showError('quantityError', 'Please enter a valid quantity (minimum 1kg)');
+            showError('quantityError', 'කරුණාකර වලංගු ප්‍රමාණයක් ඇතුළත් කරන්න (අවම 1 කි.ග්‍රෑ)');
             quantityInput.classList.add('border-error');
             return false;
         }
-        
+
         if (!Number.isInteger(quantity)) {
-            showError('quantityError', 'Quantity must be a whole number');
+            showError('quantityError', 'ප්‍රමාණය පූර්ණ සංඛ්‍යාවක් විය යුතුය');
             quantityInput.classList.add('border-error');
             return false;
         }
-        
+
         clearError('quantityError');
         quantityInput.classList.remove('border-error');
         return true;

@@ -1,4 +1,4 @@
-<nav class="bg-white border-b border-gray-100 py-3 px-6 md:px-10 flex items-center justify-between sticky top-0 z-50">
+<nav class="bg-white border-b border-gray-100 py-3 px-6 md:px-10 flex items-center justify-between sticky top-0 z-50 font-slab text-lg font-bold">
     <!-- Logo -->
     <div class="flex items-center">
         <a href="{{ route('buyer.dashboard') }}" class="flex items-center group">
@@ -33,14 +33,21 @@
             <a href="#" class="text-gray-700 hover:text-[#2f613c] transition-colors duration-300 px-4 py-2 font-medium">
                 Contact
             </a>
-            @auth('buyer')
-            <form action="{{ route('buyer.logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="text-gray-700 hover:text-red-600 transition-colors duration-300 px-4 py-2 font-medium">
-                    Logout
+            
+            <!-- Account Dropdown -->
+            <div class="relative group">
+                <button class="flex items-center text-gray-700 hover:text-[#2f613c] transition-colors duration-300 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
                 </button>
-            </form>
-            @endauth
+                <div class="absolute right-0 w-[180px] bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block">
+                    <a href="{{ route('buyer.account') }}" class="block px-4 py-2 font-medium text-gray-700 hover:bg-gray-100">Account Settings</a>
+                    <button onclick="showLogoutConfirmation()" class="block w-full text-left px-4 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-red-600">
+                        Logout
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -65,8 +72,13 @@
                 </a>
             </li>
             <li>
-                <a href="" class="block py-2 text-gray-700 hover:text-[#1F4529] transition-colors duration-300 font-medium">
+                <a href="{{ route('buyer.orders') }}" class="block py-2 text-gray-700 hover:text-[#1F4529] transition-colors duration-300 font-medium">
                     My Orders
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('buyer.account') }}" class="block py-2 text-gray-700 hover:text-[#1F4529] transition-colors duration-300 font-medium">
+                    Account Settings
                 </a>
             </li>
             <li class="pt-4 border-t border-gray-100">
@@ -76,30 +88,38 @@
             </li>
             @auth('buyer')
             <li>
-                <form action="{{ route('buyer.logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="block py-2 text-gray-700 hover:text-red-600 transition-colors duration-300 font-medium w-full text-left">
-                        Logout
-                    </button>
-                </form>
+                <button onclick="showLogoutConfirmation()" class="block py-2 text-gray-700 hover:text-red-600 transition-colors duration-300 font-medium w-full text-left">
+                    Logout
+                </button>
             </li>
             @endauth
         </ul>
     </div>
 </nav>
-
+<!-- Logout Confirmation Modal -->
+<div id="logoutModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-sm w-full">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Confirm Logout</h3>
+        <p class="text-gray-600 mb-6">Are you sure you want to logout?</p>
+        <div class="flex justify-end space-x-3">
+            <button onclick="hideLogoutConfirmation()" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md">
+                Cancel
+            </button>
+            <form id="logoutForm" action="{{ route('buyer.logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                    Logout
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 <script>
-    // Mobile menu toggle
-    document.getElementById('mobile-menu-button').addEventListener('click', function() {
-        const menu = document.getElementById('mobile-menu');
-        menu.classList.toggle('hidden');
-        
-        // Change icon to X when menu is open
-        const icon = this.querySelector('svg');
-        if (menu.classList.contains('hidden')) {
-            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
-        } else {
-            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>';
-        }
-    });
+    function showLogoutConfirmation() {
+        document.getElementById('logoutModal').classList.remove('hidden');
+    }
+    
+    function hideLogoutConfirmation() {
+        document.getElementById('logoutModal').classList.add('hidden');
+    }
 </script>

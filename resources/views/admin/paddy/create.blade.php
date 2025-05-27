@@ -285,7 +285,7 @@
 
                 <!-- Price Range Section -->
                 <div class="space-y-6">
-                    <h3 class="text-base font-medium text-gray-700">Price Range (per kg) <span class="text-red-500">*</span></h3>
+                    <h3 class="text-base font-medium text-gray-700">Price Range (per bushel) <span class="text-red-500">*</span></h3>
                     
                     <!-- Minimum Price -->
                     <div class="space-y-4">

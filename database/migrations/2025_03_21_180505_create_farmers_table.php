@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('farmers', function (Blueprint $table) {
             $table->id('FarmerID');
             $table->string('FullName');
-            $table->string('NIC');
+            $table->string('NIC')->unique();
             $table->string('ContactNo');
             $table->string('Address');
             $table->string('Email')->unique();

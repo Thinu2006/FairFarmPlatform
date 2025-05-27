@@ -22,8 +22,8 @@
                     <!-- Product Image Section -->
                     <div class="lg:w-2/5 relative">
                         <div class="aspect-w-4 aspect-h-3 lg:aspect-none">
-                            <img src="{{ asset('storage/' . $paddyListing->paddyType->Image) }}" 
-                                 alt="{{ $paddyListing->paddyType->PaddyName }}" 
+                            <img src="{{ asset('storage/' . $paddyListing->paddyType->Image) }}"
+                                 alt="{{ $paddyListing->paddyType->PaddyName }}"
                                  class="w-full h-64 sm:h-80 md:h-96 lg:h-full object-cover">
                         </div>
                         <!-- Availability badge -->
@@ -76,13 +76,13 @@
                         <form action="{{ route('buyer.place.order') }}" method="POST" id="orderForm">
                             @csrf
                             <input type="hidden" name="listing_id" value="{{ $paddyListing->id }}">
-                            
+
                             @if(session('success'))
                                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6" role="alert">
                                     {{ session('success') }}
                                 </div>
                             @endif
-                            
+
                             @if(session('error'))
                                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
                                     {{ session('error') }}
@@ -92,13 +92,13 @@
                             <!-- Quantity Selector -->
                             <div class="mb-4 sm:mb-6">
                                 <label for="quantity" class="block text-sm font-medium text-gray-700 mb-2 sm:mb-3">
-                                    Select Quantity (in kilograms)
+                                    Select Quantity (in kg)
                                 </label>
                                 <div class="relative">
-                                    <input type="number" 
-                                           id="quantity" 
-                                           name="quantity" 
-                                           min="1" 
+                                    <input type="number"
+                                           id="quantity"
+                                           name="quantity"
+                                           min="1"
                                            max="{{ $paddyListing->Quantity }}"
                                            value="{{ old('quantity', 1) }}"
                                            class="block w-full px-4 sm:px-5 py-2 sm:py-3 text-base sm:text-lg border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-[#1F4529] focus:border-[#1F4529] @error('quantity') border-red-500 @enderror"
@@ -109,14 +109,14 @@
                                     </div>
                                 </div>
                                 <p class="mt-1 sm:mt-2 text-xs sm:text-sm text-gray-500">
-                                    Maximum available: <span class="font-medium">{{ $paddyListing->Quantity }} kg</span>
+                                    Maximum available: <span class="font-medium">{{ $paddyListing->Quantity }} kg </span>
                                 </p>
                                 @error('quantity')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
-                                <p id="quantity-error" class="text-red-500 text-sm mt-1 hidden">Please enter a valid quantity between 1 and {{ $paddyListing->Quantity }} kg</p>
+                                <p id="quantity-error" class="text-red-500 text-sm mt-1 hidden">Please enter a valid quantity between 1 and {{ $paddyListing->Quantity }} kg </p>
                             </div>
-                            
+
                             <!-- Order Summary -->
                             <div class="bg-[#F8FAF7] border border-[#E8F0E5] rounded-lg sm:rounded-xl p-4 sm:p-5 mb-6 sm:mb-8">
                                 <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Order Summary</h3>
@@ -127,7 +127,7 @@
                                     </div>
                                     <div class="flex justify-between">
                                         <span class="text-sm sm:text-base text-gray-600">Quantity</span>
-                                        <span class="text-sm sm:text-base font-medium"><span id="quantity-preview">{{ old('quantity', 1) }}</span> kg</span>
+                                        <span class="text-sm sm:text-base font-medium"><span id="quantity-preview">{{ old('quantity', 1) }}</span> kg </span>
                                     </div>
                                     <div class="flex justify-between">
                                         <span class="text-sm sm:text-base text-gray-600">Delivery fee (5%)</span>
@@ -142,7 +142,7 @@
                             </div>
 
                             <!-- Order Button -->
-                            <button type="submit" 
+                            <button type="submit"
                                     id="submitBtn"
                                     class="w-full flex justify-center items-center py-3 sm:py-3 px-4 sm:px-3 border border-transparent rounded-lg sm:rounded-xl shadow-sm text-base sm:text-lg font-bold text-white bg-[#1F4529] hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1F4529] transition duration-150 ease-in-out transform hover:scale-[1.01]">
                                 <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -173,7 +173,7 @@
             // Real-time validation for quantity input
             quantityInput.addEventListener('input', function() {
                 const quantity = parseFloat(this.value) || 0;
-                
+
                 // Validate quantity
                 if (quantity <= 0 || quantity > maxQuantity || isNaN(quantity)) {
                     quantityError.classList.remove('hidden');
@@ -184,12 +184,12 @@
                     submitBtn.disabled = false;
                     submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
                 }
-                
+
                 // Calculate prices
                 const subtotal = pricePerKg * quantity;
                 const shippingFee = subtotal * 0.05;
                 const grandTotal = subtotal + shippingFee;
-                
+
                 quantityPreview.textContent = quantity.toFixed(1);
                 shippingPreview.textContent = shippingFee.toFixed(2);
                 totalPreview.textContent = grandTotal.toFixed(2);
@@ -199,13 +199,13 @@
             orderForm.addEventListener('submit', function(e) {
                 const quantity = parseFloat(quantityInput.value) || 0;
                 const termsChecked = document.getElementById('terms').checked;
-                
+
                 if (quantity <= 0 || quantity > maxQuantity || isNaN(quantity)) {
                     e.preventDefault();
                     quantityError.classList.remove('hidden');
                     quantityInput.focus();
                 }
-                
+
                 if (!termsChecked) {
                     e.preventDefault();
                     alert('Please agree to the terms and conditions');
@@ -223,35 +223,36 @@
             @endif
         });
     </script>
-
-    <!-- BotMan Chatbot Integration -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/assets/css/chat.min.css">
-    <style>
-        .botmanWidgetBtn {
-            background-color: #1F4529 !important;
-        }
-        .botmanWidgetContainer {
-            z-index: 10000;
-        }
-    </style>
-    <script>
-        var botmanWidget = {
-            aboutText: 'Need help? Start with "Hi"',
-            introMessage: "WELCOME TO FAIRFARM !",
-            bubbleAvatarUrl: '',
-            mainColor: '#1F4529',
-            bubbleBackground: '#1F4529',
-            desktopHeight: 500,
-            desktopWidth: 400,
-            chatServer: '/botman',
-            title: 'Paddy Assistant',
-            widgetHeight: '500px',
-            widgetWidth: '350px',
-            headerTextColor: 'white',
-            headerBackgroundColor: '#1F4529',
-            bodyBackgroundColor: 'white',
-            bodyTextColor: '#333333'
-        };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js"></script>
+    <!-- Isolated BotMan Integration -->
+    <div id="botman-isolation-wrapper">
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/assets/css/chat.min.css">
+        <style>
+            #botman-isolation-wrapper .botmanWidgetBtn {
+                background-color: #1F4529 !important;
+            }
+            #botman-isolation-wrapper .botmanWidgetContainer {
+                z-index: 10000;
+            }
+        </style>
+        <script>
+            var botmanWidget = {
+                aboutText: 'Need help? Start with "Hi"',
+                introMessage: "WELCOME TO FAIRFARM! HOW CAN I HELP YOU?",
+                bubbleAvatarUrl: '',
+                mainColor: '#1F4529',
+                bubbleBackground: '#1F4529',
+                desktopHeight: 500,
+                desktopWidth: 400,
+                chatServer: '/botman',
+                title: 'Order Assistant',
+                widgetHeight: '500px',
+                widgetWidth: '350px',
+                headerTextColor: 'white',
+                headerBackgroundColor: '#1F4529',
+                bodyBackgroundColor: 'white',
+                bodyTextColor: '#333333'
+            };
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js"></script>
+    </div>
 @endsection

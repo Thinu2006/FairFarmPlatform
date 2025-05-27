@@ -122,7 +122,7 @@
                     </tbody>
                 </table>
             </div>
-            
+
             @if($buyers instanceof \Illuminate\Pagination\AbstractPaginator && $buyers->hasPages())
             <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
                 {{ $buyers->links() }}
@@ -141,17 +141,17 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
-        
+
         .responsive-table thead {
             display: none;
         }
-        
+
         .responsive-table tbody {
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
-        
+
         .responsive-table tr {
             display: flex;
             flex-direction: column;
@@ -162,7 +162,7 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             position: relative;
         }
-        
+
         .responsive-table tr.empty-state-row {
             display: flex;
             justify-content: center;
@@ -172,21 +172,21 @@
             box-shadow: none;
             padding: 0;
         }
-        
+
         .responsive-table td {
             display: flex;
             padding: 0.5rem 0;
             border: none;
             align-items: flex-start;
         }
-        
+
         .responsive-table tr.empty-state-row td {
             display: block;
             width: 100%;
             padding: 0;
             text-align: center;
         }
-        
+
         .responsive-table td:before {
             content: attr(data-label) ": ";
             font-weight: 700;
@@ -197,11 +197,11 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
-        
+
         .responsive-table tr.empty-state-row td:before {
             display: none;
         }
-        
+
         .responsive-table td > div {
             flex-grow: 1;
             word-break: break-word;
@@ -220,7 +220,7 @@
         .responsive-table td[data-label="Actions"]:before {
             display: none;
         }
-        
+
         .responsive-table td:first-child {
             padding-right: 2.5rem;
         }

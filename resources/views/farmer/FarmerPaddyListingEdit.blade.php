@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="si">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Paddy Record</title>
+    <title>වී වගා තොරතුරු සංස්කරණය</title>
     <link rel="icon" type="image/png" href="../../Images/Logo.png">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
-          integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+          integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
           crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -112,7 +112,7 @@
             <div class="form-container rounded-xl sm:rounded-2xl overflow-hidden border border-gray-200">
                 <!-- Header Section -->
                 <div class="bg-gradient-to-r from-green-700 to-green-600 px-6 py-6 sm:py-8 text-center">
-                    <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2 font-merriweather">Edit Paddy Listing</h1>
+                    <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2 font-merriweather">වී ලැයිස්තුව සංස්කරණය</h1>
                 </div>
 
                 <!-- Form Section -->
@@ -130,7 +130,7 @@
                                 <i class="fas fa-seedling text-green-600 text-lg"></i>
                             </div>
                             <div>
-                                <p class="text-xs sm:text-sm font-medium text-green-600">PADDY TYPE</p>
+                                <p class="text-xs sm:text-sm font-medium text-green-600">වී වර්ගය</p>
                                 <h3 class="text-lg sm:text-xl font-bold text-green-800 font-merriweather">{{ $paddyListing->paddyType->PaddyName }}</h3>
                             </div>
                         </div>
@@ -139,59 +139,59 @@
                     <!-- Price Slider Section -->
                     <div class="info-card p-4 sm:p-5 rounded-lg space-y-4">
                         <div>
-                            <label class="block text-sm sm:text-base font-semibold text-green-700 mb-1">Price Per Kilogram <span class="text-red-500">*</span></label>
+                            <label class="block text-sm sm:text-base font-semibold text-green-700 mb-1">බුෂලයක මිල: <span class="text-red-500">*</span></label>
                         </div>
-                        
+
                         <!-- Price Range Indicators -->
                         <div class="flex justify-between items-center space-x-4">
                             <div class="flex-1 bg-green-50 px-3 py-2 rounded">
-                                <span class="text-sm font-medium text-green-700">Minimum Price:</span>
-                                <span class="text-sm font-bold text-green-800">Rs. <span id="minPriceDisplay">{{ $paddyListing->paddyType->MinPricePerKg }}</span></span>
+                                <span class="text-sm font-medium text-green-700">අවම මිල:</span>
+                                <span class="text-sm font-bold text-green-800">රු. <span id="minPriceDisplay">{{ $paddyListing->paddyType->MinPricePerKg }}</span></span>
                             </div>
                             <div class="flex-1 bg-green-50 px-3 py-2 rounded">
-                                <span class="text-sm font-medium text-green-700">Maximum Price:</span>
-                                <span class="text-sm font-bold text-green-800">Rs. <span id="maxPriceDisplay">{{ $paddyListing->paddyType->MaxPricePerKg }}</span></span>
+                                <span class="text-sm font-medium text-green-700">උපරිම මිල:</span>
+                                <span class="text-sm font-bold text-green-800">රු. <span id="maxPriceDisplay">{{ $paddyListing->paddyType->MaxPricePerKg }}</span></span>
                             </div>
                         </div>
-                        
+
                         <!-- Price Slider -->
                         <div class="px-2 sm:px-4">
-                            <input type="range" name="PriceSelected" id="PriceSelected" 
-                                   min="{{ $paddyListing->paddyType->MinPricePerKg }}" 
-                                   max="{{ $paddyListing->paddyType->MaxPricePerKg }}" 
-                                   value="{{ $paddyListing->PriceSelected }}" 
+                            <input type="range" name="PriceSelected" id="PriceSelected"
+                                   min="{{ $paddyListing->paddyType->MinPricePerKg }}"
+                                   max="{{ $paddyListing->paddyType->MaxPricePerKg }}"
+                                   value="{{ $paddyListing->PriceSelected }}"
                                    class="w-full h-2 sm:h-2.5">
                             <div id="priceError" class="error-message price-error-container"></div>
                         </div>
-                        
+
                         <!-- Selected Price Display -->
                         <div class="flex justify-between items-center bg-green-100 px-4 py-3 rounded-lg">
-                            <span class="text-sm font-medium text-green-700">Your Price:</span>
-                            <span class="text-lg font-bold text-green-800">Rs. <span id="dynamicPriceDisplay">{{ $paddyListing->PriceSelected }}</span></span>
+                            <span class="text-sm font-medium text-green-700">ඔබේ මිල:</span>
+                            <span class="text-lg font-bold text-green-800">රු. <span id="dynamicPriceDisplay">{{ $paddyListing->PriceSelected }}</span></span>
                         </div>
                     </div>
 
                     <!-- Quantity Input -->
                     <div class="info-card p-4 sm:p-5 rounded-lg space-y-3">
-                        <label for="Quantity" class="block text-sm sm:text-base font-semibold text-green-700">Available Quantity (kg) <span class="text-red-500">*</span></label>
+                        <label for="Quantity" class="block text-sm sm:text-base font-semibold text-green-700">ලබා ගත හැකි ප්‍රමාණය (කි.ග්‍රෑ) <span class="text-red-500">*</span></label>
                         <div class="relative">
-                            <input type="number" name="Quantity" id="Quantity" 
-                                   value="{{ $paddyListing->Quantity }}" min="1" 
+                            <input type="number" name="Quantity" id="Quantity"
+                                   value="{{ $paddyListing->Quantity }}" min="1"
                                    class="w-full px-4 py-2 sm:py-3 border border-green-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-700">
-                            <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">kg</span>
+                            <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">කි.ග්‍රෑ</span>
                         </div>
                         <div id="quantityError" class="error-message"></div>
                     </div>
 
                     <!-- Form Actions -->
                     <div class="flex flex-col sm:flex-row justify-between gap-4 pt-4">
-                        <button type="button" onclick="window.location.href='{{ route('farmer.paddy.listing') }}'" 
+                        <button type="button" onclick="window.location.href='{{ route('farmer.paddy.listing') }}'"
                                 class="btn-secondary px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium shadow-sm text-sm sm:text-base border border-gray-200">
-                            <i class="fas fa-arrow-left mr-2"></i> Back to Listings
+                            <i class="fas fa-arrow-left mr-2"></i> ලැයිස්තුවට ආපසු
                         </button>
-                        <button type="submit" 
+                        <button type="submit"
                                 class="btn-primary px-6 py-3 text-white rounded-lg font-medium shadow-sm text-sm sm:text-base">
-                            <i class="fas fa-save mr-2"></i> Update Listing
+                            <i class="fas fa-save mr-2"></i> ලැයිස්තුව යාවත්කාලීන කරන්න
                         </button>
                     </div>
                 </form>
@@ -205,12 +205,12 @@
             const priceSlider = document.getElementById('PriceSelected');
             const dynamicPriceDisplay = document.getElementById('dynamicPriceDisplay');
             const priceError = document.getElementById('priceError');
-            
+
             dynamicPriceDisplay.textContent = priceSlider.value;
-            
+
             // Validate price when slider moves
             validatePrice();
-            
+
             // Add visual feedback when changing price
             dynamicPriceDisplay.classList.add('text-green-600', 'scale-105');
             setTimeout(() => {
@@ -225,19 +225,19 @@
             const price = parseFloat(priceSlider.value);
             const minPrice = parseFloat(priceSlider.min);
             const maxPrice = parseFloat(priceSlider.max);
-            
+
             if (price < minPrice) {
-                priceError.textContent = `Price cannot be less than Rs. ${minPrice}`;
+                priceError.textContent = `මිල රු. ${minPrice} ට වඩා අඩු විය නොහැක`;
                 priceSlider.classList.add('border-error');
                 return false;
             }
-            
+
             if (price > maxPrice) {
-                priceError.textContent = `Price cannot exceed Rs. ${maxPrice}`;
+                priceError.textContent = `මිල රු. ${maxPrice} ඉක්මවිය නොහැක`;
                 priceSlider.classList.add('border-error');
                 return false;
             }
-            
+
             priceError.textContent = '';
             priceSlider.classList.remove('border-error');
             return true;
@@ -248,19 +248,19 @@
             const quantityInput = document.getElementById('Quantity');
             const quantityError = document.getElementById('quantityError');
             const quantity = parseFloat(quantityInput.value);
-            
+
             if (isNaN(quantity) || quantity <= 0) {
-                quantityError.textContent = 'Quantity must be at least 1 kg';
+                quantityError.textContent = 'ප්‍රමාණය කි.ග්‍රෑ 1ක්වත් විය යුතුය';
                 quantityInput.classList.add('border-error');
                 return false;
             }
-            
+
             if (!Number.isInteger(quantity)) {
-                quantityError.textContent = 'Quantity must be a whole number';
+                quantityError.textContent = 'ප්‍රමාණය පූර්ණ සංඛ්‍යාවක් විය යුතුය';
                 quantityInput.classList.add('border-error');
                 return false;
             }
-            
+
             quantityError.textContent = '';
             quantityInput.classList.remove('border-error');
             return true;
@@ -269,17 +269,17 @@
         // Validate form before submission
         function validateForm() {
             let isValid = true;
-            
+
             // Validate price
             if (!validatePrice()) {
                 isValid = false;
             }
-            
+
             // Validate quantity
             if (!validateQuantity()) {
                 isValid = false;
             }
-            
+
             if (!isValid) {
                 // Scroll to the first error
                 const firstError = document.querySelector('.error-message:not(:empty)');
@@ -287,7 +287,7 @@
                     firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }
-            
+
             return isValid;
         }
 
@@ -296,13 +296,13 @@
             // Set up event listeners
             const priceSlider = document.getElementById('PriceSelected');
             const quantityInput = document.getElementById('Quantity');
-            
+
             // Update price display when slider moves
             priceSlider.addEventListener('input', updatePriceDisplay);
-            
+
             // Validate quantity when input changes
             quantityInput.addEventListener('input', validateQuantity);
-            
+
             // Add touch support for mobile devices
             priceSlider.addEventListener('touchstart', function() {
                 this.classList.add('active');

@@ -4,6 +4,7 @@ use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
+use Illuminate\Support\Facades\Auth;
 
 class BotManController extends Controller
 {
@@ -24,15 +25,12 @@ class BotManController extends Controller
             3 => 'What payment methods are supported?',
             4 => 'Is full payment required at delivery?',
             5 => 'Will I get a receipt for my payment?',
-            6 => 'Can I pay partially in advance?',
-            7 => 'What happens if I refuse the delivery?'
+            6 => 'Can I pay partially in advance?'
         ],
         3 => [
             1 => 'What varieties of paddy are currently available?',
-            2 => 'What is the standard moisture content for paddy?',
-            3 => 'How is paddy quality verified?',
-            4 => 'Where is the paddy sourced from?',
-            5 => 'What certifications does the paddy have?'
+            2 => 'How is paddy quality verified?',
+            3 => 'Where is the paddy sourced from?'
         ],
         4 => [
             1 => 'How long will delivery take?',
@@ -51,19 +49,16 @@ class BotManController extends Controller
             3 => "We only accept Cash on Delivery (COD). Payment must be made in cash when the paddy is delivered to your location.",
             4 => "Yes, 100% payment in cash is mandatory upon delivery to complete the transaction.",
             5 => "Yes, a printed or digital receipt will be provided upon payment confirmation.",
-            6 => "No, Fair Farm follows a strict COD policy — full payment is collected only upon delivery.",
-            7 => "Orders refused without valid reasons may incur a restocking fee, and future orders could be restricted."
+            6 => "No, Fair Farm follows a strict COD policy — full payment is collected only upon delivery."
         ],
         3 => [
             1 => "Available paddy varieties: Samba, Nadu, Red Raw Rice, Suwandel. Updated daily based on farmer listings.",
-            2 => "Fair Farm requires 12-14% moisture content for optimal quality. All listed paddy meets this standard.",
-            3 => "All paddy undergoes Fair Farm quality checks for moisture, purity, and grain integrity before listing.",
-            4 => "Paddy is sourced from verified Fair Farm partner growers across Sri Lanka. Location details are shown in each listing.",
-            5 => "Listed paddy meets SLS standards for milling quality. Organic certifications are marked when applicable."
+            2 => "All paddy undergoes Fair Farm quality checks for moisture, purity, and grain integrity before listing.",
+            3 => "Paddy is sourced from verified Fair Farm partner growers across Sri Lanka. Location details are shown in each listing."
         ],
         4 => [
             1 => "Delivery usually takes 2-5 business days, depending on your location.",
-            2 => "Delivery charges are calculated separately based on your location. You'll see the total cost before confirming the order.",
+            2 => "Delivery charges are calculated separately based on your quantity. You'll see the total cost before confirming the order.",
             3 => "FairFarm's logistics team ensures safe and timely delivery after quality checks."
         ]
     ];
@@ -94,7 +89,14 @@ class BotManController extends Controller
      */
     public function handleGreeting($botman)
     {
-        $botman->reply('👋 Hello! I can help answer your questions about our paddy products.');
+        $buyer = Auth::guard('buyer')->user();
+        $buyerName = $buyer ? $buyer->FullName : '';
+        $reply = "Thank you for using our website";
+        if ($buyerName) {
+            $reply .= " {$buyerName}";
+        }
+        $reply .= ". I can help answer your questions about our paddy products.";
+        $botman->reply("👋 {$reply}");
         $this->showCategoriesList($botman);
     }
     /**

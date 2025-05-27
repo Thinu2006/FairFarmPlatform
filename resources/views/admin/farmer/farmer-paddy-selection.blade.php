@@ -57,10 +57,10 @@
                                 Paddy Type
                             </th>
                             <th scope="col" class="px-4 py-3 text-left text-sm font-bold text-gray-800 uppercase">
-                                Qty (kg)
+                                Qty (bu)
                             </th>
                             <th scope="col" class="px-4 py-3 text-left text-sm font-bold text-gray-800 uppercase">
-                                Price (Rs/kg)
+                                Price (Rs/bu)
                             </th>
                             <th scope="col" class="px-4 py-3 text-center text-sm font-bold text-gray-800 uppercase">
                                 Actions

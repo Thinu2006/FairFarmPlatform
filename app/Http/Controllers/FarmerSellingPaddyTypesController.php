@@ -4,202 +4,219 @@ namespace App\Http\Controllers;
 
 use App\Models\FarmerSellingPaddyType;
 use App\Models\PaddyType;
-use Illuminate\Http\Request;
-use App\Models\Farmer;
 use App\Models\Order;
+use Illuminate\Http\Request;
 
 class FarmerSellingPaddyTypesController extends Controller
 {
     /**
-     * Display the form for listing a new paddy type.
+     * Display form for creating new paddy listing
      */
     public function create()
     {
-        // Fetch all paddy types for the dropdown
-        $paddyTypes = PaddyType::all();
-
-        // Render the form view and pass the paddy types
-        return view('farmer.FarmerPaddyListingForm', compact('paddyTypes'));
+        return view('farmer.FarmerPaddyListingForm', [
+            'paddyTypes' => $this->getAllPaddyTypes()
+        ]);
     }
 
     /**
-     * Store a newly listed paddy type.
+     * Store new paddy listing
      */
     public function store(Request $request)
     {
-        // Check if farmer already has this paddy type listed
-        $existingListing = FarmerSellingPaddyType::where('FarmerID', $request->FarmerID)
-            ->where('PaddyID', $request->PaddyID)
-            ->first();
+        $validated = $this->validatePaddyListingRequest($request);
     
-        if ($existingListing) {
+        if ($this->hasExistingListing($request->FarmerID, $request->PaddyID)) {
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'You already have a listing for this paddy type.');
         }
-    
-        // Validate the form data
-        $request->validate([
-            'FarmerID' => 'required|exists:farmers,FarmerID',
-            'PaddyID' => 'required|exists:paddy_types,PaddyID',
-            'PriceSelected' => 'required|numeric|min:0',
-            'Quantity' => 'required|numeric|min:1',
-        ]);
-    
-        // Save the data to the database
-        FarmerSellingPaddyType::create([
-            'FarmerID' => $request->FarmerID,
-            'PaddyID' => $request->PaddyID,
-            'PriceSelected' => $request->PriceSelected,
-            'Quantity' => $request->Quantity,
-        ]);
-    
-        // Redirect to the paddy listing page with a success message
-        return redirect()->route('farmer.paddy.listing')->with('success', 'Paddy listed successfully!');
+
+        $this->createPaddyListing($validated); // Use the returned validated data
+
+        return redirect()->route('farmer.paddy.listing')
+            ->with('success', 'Paddy listed successfully!');
     }
 
     /**
-     * Display the form for editing a paddy listing.
+     * Show form for editing paddy listing
      */
     public function edit($id)
     {
-        // Find the paddy listing by ID
-        $paddyListing = FarmerSellingPaddyType::findOrFail($id);
+        $paddyListing = $this->getPaddyListing($id);
+        $this->authorizeListingAccess($paddyListing);
 
-        // Ensure the farmer can only edit their own listings
-        if ($paddyListing->FarmerID !== auth()->id()) {
-            return redirect()->route('farmer.dashboard')->with('error', 'You are not authorized to edit this listing.');
-        }
-
-        // Fetch all paddy types for the dropdown
-        $paddyTypes = PaddyType::all();
-
-        // Pass the data to the edit view
-        return view('farmer.FarmerPaddyListingEdit', compact('paddyListing', 'paddyTypes'));
+        return view('farmer.FarmerPaddyListingEdit', [
+            'paddyListing' => $paddyListing,
+            'paddyTypes' => $this->getAllPaddyTypes()
+        ]);
     }
 
     /**
-     * Update a paddy listing.
+     * Update paddy listing
      */
     public function update(Request $request, $id)
     {
-        // Validate the form data
-        $request->validate([
-            'PaddyID' => 'required|exists:paddy_types,PaddyID',
-            'PriceSelected' => 'required|numeric|min:0',
-            'Quantity' => 'required|numeric|min:1',
-        ]);
+        $validated = $this->validatePaddyListingRequest($request, false);
+        $paddyListing = $this->getPaddyListing($id);
+        $this->authorizeListingAccess($paddyListing);
 
-        // Find the paddy listing by ID
-        $paddyListing = FarmerSellingPaddyType::findOrFail($id);
+        $paddyListing->update($validated);
 
-        // Ensure the farmer can only update their own listings
-        if ($paddyListing->FarmerID !== auth()->id()) {
-            return redirect()->route('farmer.dashboard')->with('error', 'You are not authorized to update this listing.');
-        }
-
-        // Update the listing
-        $paddyListing->update([
-            'PaddyID' => $request->PaddyID,
-            'PriceSelected' => $request->PriceSelected,
-            'Quantity' => $request->Quantity,
-        ]);
-
-        // Redirect to the paddy listing page with a success message
-        return redirect()->route('farmer.paddy.listing')->with('success', 'Paddy listing updated successfully!');
+        return redirect()->route('farmer.paddy.listing')
+            ->with('success', 'Paddy listing updated successfully!');
     }
 
     /**
-     * Delete a paddy listing.
+     * Delete paddy listing
      */
     public function destroy($id)
     {
-        // Find the paddy listing by ID
-        $paddyListing = FarmerSellingPaddyType::findOrFail($id);
+        $paddyListing = $this->getPaddyListing($id);
+        $this->authorizeListingAccess($paddyListing);
 
-        // Ensure the farmer can only delete their own listings
-        if ($paddyListing->FarmerID !== auth()->id()) {
-            return redirect()->route('farmer.dashboard')->with('error', 'You are not authorized to delete this listing.');
-        }
-
-        // Delete the listing
         $paddyListing->delete();
 
-        // Redirect to the paddy listing page with a success message
-        return redirect()->route('farmer.paddy.listing')->with('success', 'Paddy listing deleted successfully!');
+        return redirect()->route('farmer.paddy.listing')
+            ->with('success', 'Paddy listing deleted successfully!');
     }
 
     /**
-     * Display the paddy listing page.
+     * Display paddy listings for farmer
      */
     public function index()
     {
-        // Fetch all paddy listings for the authenticated farmer
-        // Including those with zero quantity
-        $sellingPaddyTypes = FarmerSellingPaddyType::where('FarmerID', auth()->id())
-            ->with(['paddyType'])
-            ->get();
-        
-        // For each listing, check if there are pending orders
-        foreach ($sellingPaddyTypes as $listing) {
-            $pendingOrdersCount = Order::where('farmer_id', auth()->id())
-                ->where('paddy_type_id', $listing->PaddyID)
-                ->where('status', 'pending')
-                ->count();
-            
-            $listing->has_pending_orders = ($pendingOrdersCount > 0);
-            $listing->pending_orders_count = $pendingOrdersCount;
-        }
-
-        // Pass the data to the view
-        return view('farmer.FarmerPaddyListing', compact('sellingPaddyTypes'));
+        $listings = $this->getFarmerListingsWithPendingOrders();
+        return view('farmer.FarmerPaddyListing', compact('listings'));
     }
 
     /**
-     * Display the products page with farmer's selling paddy types.
+     * Display products page with available paddy types
      */
     public function products(Request $request)
     {
-        $query = $request->input('query');
-        
-        $sellingPaddyTypes = FarmerSellingPaddyType::with(['farmer', 'paddyType'])
-            ->where('Quantity', '>', 0) // Only show listings with quantity greater than 0
-            ->when($query, function ($q) use ($query) {
-                return $q->whereHas('paddyType', function ($q) use ($query) {
-                    $q->where('PaddyName', 'like', '%' . $query . '%');
-                });
-            })
-            ->get();
-
-        return view('buyer.products', compact('sellingPaddyTypes'));
+        return view('buyer.products', [
+            'sellingPaddyTypes' => $this->getAvailablePaddyListings($request->input('query'))
+        ]);
     }
 
     /**
-     * Display the farmer selections page.
+     * Display farmer selections for admin
      */
     public function farmerSelections()
     {
-        $selections = FarmerSellingPaddyType::with(['farmer', 'paddyType'])
-            ->latest()
-            ->paginate(10);
-        
-        $paddyTypes = PaddyType::all();
-        
-        return view('admin.farmer.farmer-paddy-selection', compact('selections', 'paddyTypes'));
+        return view('admin.farmer.farmer-paddy-selection', [
+            'selections' => $this->getPaginatedFarmerSelections(),
+            'paddyTypes' => $this->getAllPaddyTypes()
+        ]);
     }
 
     /**
-     * Delete a farmer selected paddy type.
+     * Delete farmer selected paddy type (admin)
      */
     public function destroyFarmerSelectedPaddyType($id)
     {
         try {
-            $selection = FarmerSellingPaddyType::findOrFail($id);
+            $selection = $this->getPaddyListing($id);
             $selection->delete();
             
-            return redirect()->back()->with('success', 'Paddy selection deleted successfully!');
+            return redirect()->back()
+                ->with('success', 'Paddy selection deleted successfully!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Error deleting paddy selection: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Error deleting paddy selection: ' . $e->getMessage());
         }
+    }
+
+    // ==================== Protected Helper Methods ====================
+
+    protected function getAllPaddyTypes()
+    {
+        return PaddyType::all();
+    }
+
+    protected function validatePaddyListingRequest(Request $request, $includeFarmerId = true)
+    {
+        $rules = [
+            'PaddyID' => 'required|exists:paddy_types,PaddyID',
+            'PriceSelected' => 'required|numeric|min:0',
+            'Quantity' => 'required|numeric|min:1',
+        ];
+
+        if ($includeFarmerId) {
+            $rules['FarmerID'] = 'required|exists:farmers,FarmerID';
+        }
+
+        return $request->validate($rules); // Returns validated data
+    }
+
+    protected function hasExistingListing($farmerId, $paddyId)
+    {
+        return FarmerSellingPaddyType::where('FarmerID', $farmerId)
+            ->where('PaddyID', $paddyId)
+            ->exists();
+    }
+
+    protected function createPaddyListing(array $data)
+    {
+        return FarmerSellingPaddyType::create($data);
+    }
+
+    protected function getPaddyListing($id)
+    {
+        return FarmerSellingPaddyType::findOrFail($id);
+    }
+
+    protected function authorizeListingAccess(FarmerSellingPaddyType $listing)
+    {
+        if ($listing->FarmerID !== auth()->id()) {
+            return redirect()->route('farmer.dashboard')
+                ->with('error', 'You are not authorized to access this listing.');
+        }
+    }
+
+    protected function getFarmerListingsWithPendingOrders()
+    {
+        $listings = FarmerSellingPaddyType::where('FarmerID', auth()->id())
+            ->with(['paddyType'])
+            ->get();
+
+        return $listings->map(function ($listing) {
+            $listing->has_pending_orders = $this->hasPendingOrders($listing->PaddyID);
+            $listing->pending_orders_count = $this->countPendingOrders($listing->PaddyID);
+            return $listing;
+        });
+    }
+
+    protected function hasPendingOrders($paddyId)
+    {
+        return $this->countPendingOrders($paddyId) > 0;
+    }
+
+    protected function countPendingOrders($paddyId)
+    {
+        return Order::where('farmer_id', auth()->id())
+            ->where('paddy_type_id', $paddyId)
+            ->where('status', 'pending')
+            ->count();
+    }
+
+    protected function getAvailablePaddyListings($searchQuery = null)
+    {
+        return FarmerSellingPaddyType::with(['farmer', 'paddyType'])
+            ->where('Quantity', '>', 0)
+            ->when($searchQuery, function ($query) use ($searchQuery) {
+                return $query->whereHas('paddyType', function ($q) use ($searchQuery) {
+                    $q->where('PaddyName', 'like', '%' . $searchQuery . '%');
+                });
+            })
+            ->get();
+    }
+
+    protected function getPaginatedFarmerSelections()
+    {
+        return FarmerSellingPaddyType::with(['farmer', 'paddyType'])
+            ->latest()
+            ->paginate(10);
     }
 }

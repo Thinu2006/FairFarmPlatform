@@ -54,17 +54,17 @@
                 <!-- Image with action buttons -->
                 <div class="relative h-48 w-full bg-gray-100">
                     @if ($paddy->Image)
-                        <img src="{{ asset('storage/' . $paddy->Image) }}" alt="{{ $paddy->PaddyName }}" 
+                        <img src="{{ asset('storage/' . $paddy->Image) }}" alt="{{ $paddy->PaddyName }}"
                              class="h-full w-full object-cover">
                     @else
                         <div class="h-full flex flex-col items-center justify-center text-gray-400">
                             <i class="fas fa-seedling text-5xl mb-2"></i>
                         </div>
                     @endif
-                    
+
                     <!-- Floating action buttons -->
                     <div class="absolute top-3 right-3 flex space-x-2">
-                        <a href="{{ route('admin.paddy.edit', $paddy->PaddyID) }}" 
+                        <a href="{{ route('admin.paddy.edit', $paddy->PaddyID) }}"
                            class="p-2 bg-white rounded-full shadow-md text-green-600 hover:bg-green-50 transition-colors"
                            title="Edit">
                             <i class="fas fa-pencil-alt text-sm"></i>
@@ -76,7 +76,7 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <!-- Card content -->
                 <div class="p-4 mb-4">
                     <div class="flex justify-between items-start">
@@ -88,11 +88,11 @@
                     <div class="mt-4">
                         <div class="flex justify-between items-center">
                             <span class="text-sm font-medium text-gray-500">Min Price:</span>
-                            <span class="text-sm font-medium text-blue-600">Rs. {{ number_format($paddy->MinPricePerKg, 2) }}/kg</span>
+                            <span class="text-sm font-bold text-gray-800">Rs. {{ number_format($paddy->MinPricePerKg, 2) }}/kg</span>
                         </div>
                         <div class="flex justify-between items-center mt-1">
                             <span class="text-sm font-medium text-gray-500">Max Price:</span>
-                            <span class="text-sm font-medium text-green-600">Rs. {{ number_format($paddy->MaxPricePerKg, 2) }}/kg</span>
+                            <span class="text-sm font-bold text-gray-800">Rs. {{ number_format($paddy->MaxPricePerKg, 2) }}/kg</span>
                         </div>
                     </div>
                 </div>

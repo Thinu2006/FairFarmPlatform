@@ -10,12 +10,12 @@
                 </div>
             </div>
         </div>
-    </header>  
+    </header>
     <!-- Search and filter -->
     <div class="bg-white shadow overflow-hidden sm:rounded-lg mt-6 mb-4 p-4 sm:p-6 text-sm">
         <form action="{{ route('admin.orders.index') }}" method="GET" class="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div class="flex-grow">
-                <input type="text" name="query" placeholder="Search" 
+                <input type="text" name="query" placeholder="Search"
                     class="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-green-700"
                     value="{{ request('query') }}">
             </div>
@@ -39,7 +39,7 @@
             </div>
         </form>
     </div>
-    
+
     <!-- Flash messages -->
     @if (session('success'))
         <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 text-sm sm:text-base" role="alert">
@@ -105,9 +105,9 @@
                             Rs. {{ number_format($order->total_amount * 1.05, 2) }}
                         </td>
                         <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                @if($order->status == 'processing') bg-green-100 text-green-800 
-                                @elseif($order->status == 'completed') bg-green-100 text-green-800 
+                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
+                                @if($order->status == 'processing') bg-green-100 text-green-800
+                                @elseif($order->status == 'completed') bg-green-100 text-green-800
                                 @elseif($order->status == 'cancelled') bg-red-100 text-red-800
                                 @elseif($order->status == 'pending') bg-yellow-100 text-yellow-800
                                 @else bg-gray-100 text-gray-800 @endif">
@@ -133,7 +133,7 @@
                 </tbody>
             </table>
         </div>
-        
+
         <!-- Mobile Cards - Single Column -->
         <div class="sm:hidden space-y-3">
             @forelse ($orders as $order)
@@ -141,21 +141,21 @@
                 <div class="space-y-2">
                     <div class="flex justify-between">
                         <span class="text-xs text-gray-500">Order #{{ $order->id }}</span>
-                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                            @if($order->status == 'processing') bg-green-100 text-green-800 
-                            @elseif($order->status == 'completed') bg-green-100 text-green-800 
+                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
+                            @if($order->status == 'processing') bg-green-100 text-green-800
+                            @elseif($order->status == 'completed') bg-green-100 text-green-800
                             @elseif($order->status == 'cancelled') bg-red-100 text-red-800
                             @elseif($order->status == 'pending') bg-yellow-100 text-yellow-800
                             @else bg-gray-100 text-gray-800 @endif">
                             {{ $order->status == 'cancelled' ? 'Declined' : ($order->status == 'processing' ? 'Accepted' : ucfirst($order->status)) }}
                         </span>
                     </div>
-                    
+
                     <div class="border-t border-gray-100 pt-2">
                         <p class="text-sm font-medium text-gray-900">{{ $order->paddyType->PaddyName }}</p>
                         <p class="text-xs text-gray-500">{{ $order->created_at->format('M d, Y') }}</p>
                     </div>
-                    
+
                     <div class="space-y-1 text-sm">
                         <div>
                             <span class="text-gray-500">Buyer: </span>
@@ -174,7 +174,7 @@
                             <span class="text-gray-900">Rs. {{ number_format($order->total_amount * 1.05, 2) }}</span>
                         </div>
                     </div>
-                    
+
                     <div class="pt-2 text-right">
                         <a href="{{ route('admin.orders.show', $order->id) }}" class="text-blue-600 hover:text-blue-900 text-sm">
                             <i class="fas fa-eye mr-1"></i>View Details
@@ -192,7 +192,7 @@
             @endforelse
         </div>
     </div>
-    
+
     <!-- Pagination -->
     @if($orders instanceof \Illuminate\Pagination\LengthAwarePaginator && $orders->hasPages())
     <div class="mt-4 sm:mt-6">

@@ -36,4 +36,8 @@ class FarmerSellingPaddyType extends Model
     {
         return $this->belongsTo(PaddyType::class, 'PaddyID', 'PaddyID'); // Changed from PaddyTypeID to PaddyID
     }
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'paddy_type_id', 'PaddyID');
+    }
 }
